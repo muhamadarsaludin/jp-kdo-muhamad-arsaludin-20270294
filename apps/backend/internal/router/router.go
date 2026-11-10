@@ -18,6 +18,7 @@ func New(
 	pool *pgxpool.Pool,
 	authHandler *handler.AuthHandler,
 	pdHandler *handler.PerangkatDaerahHandler,
+	pegawaiHandler *handler.PegawaiHandler,
 	jwtManager *auth.Manager,
 ) *gin.Engine {
 	r := gin.New()
@@ -50,6 +51,13 @@ func New(
 	pd.POST("", pdTulis, pdHandler.Create)
 	pd.PUT("/:id", pdTulis, pdHandler.Update)
 	pd.DELETE("/:id", pdTulis, pdHandler.Delete)
+
+	pegawai := terlindungi.Group("/pegawai")
+	pegawai.GET("", pegawaiHandler.List)
+	pegawai.GET("/:id", pegawaiHandler.Get)
+	pegawai.POST("", pdTulis, pegawaiHandler.Create)
+	pegawai.PUT("/:id", pdTulis, pegawaiHandler.Update)
+	pegawai.DELETE("/:id", pdTulis, pegawaiHandler.Delete)
 
 	return r
 }

@@ -24,6 +24,112 @@ definitions:
       user:
         $ref: '#/definitions/dto.PenggunaResponse'
     type: object
+  dto.PegawaiRequest:
+    properties:
+      email:
+        example: siti@kdo.go.id
+        maxLength: 100
+        type: string
+      gelar_belakang:
+        maxLength: 30
+        type: string
+      gelar_depan:
+        example: S.Pd
+        maxLength: 20
+        type: string
+      golongan:
+        example: III/d
+        type: string
+      jabatan:
+        example: Sekretaris Dinas
+        maxLength: 100
+        type: string
+      nama:
+        example: Siti Rahmawati
+        maxLength: 100
+        type: string
+      nip:
+        example: "198203152009012002"
+        type: string
+      pangkat:
+        example: Penata Tingkat I
+        maxLength: 50
+        type: string
+      perangkat_daerah_id:
+        example: 1
+        type: integer
+      status_pegawai:
+        enum:
+        - aktif
+        - nonaktif
+        - pensiun
+        example: aktif
+        type: string
+      tanggal_lahir:
+        example: "1982-03-15"
+        type: string
+      telepon:
+        example: "081200000002"
+        maxLength: 20
+        type: string
+    required:
+    - golongan
+    - jabatan
+    - nama
+    - nip
+    - perangkat_daerah_id
+    type: object
+  dto.PegawaiResponse:
+    properties:
+      created_at:
+        example: "2026-11-10T12:00:00+07:00"
+        type: string
+      email:
+        example: siti@kdo.go.id
+        type: string
+      gelar_belakang:
+        example: ""
+        type: string
+      gelar_depan:
+        example: S.Pd
+        type: string
+      golongan:
+        example: III/d
+        type: string
+      id:
+        example: 1
+        type: integer
+      jabatan:
+        example: Sekretaris Dinas
+        type: string
+      nama:
+        example: Siti Rahmawati
+        type: string
+      nip:
+        example: "198203152009012002"
+        type: string
+      pangkat:
+        example: Penata Tingkat I
+        type: string
+      perangkat_daerah_id:
+        example: 1
+        type: integer
+      perangkat_daerah_nama:
+        example: Dinas Pendidikan
+        type: string
+      status_pegawai:
+        example: aktif
+        type: string
+      tanggal_lahir:
+        example: "1982-03-15"
+        type: string
+      telepon:
+        example: "081200000002"
+        type: string
+      updated_at:
+        example: "2026-11-10T12:00:00+07:00"
+        type: string
+    type: object
   dto.PenggunaResponse:
     properties:
       email:
@@ -213,6 +319,212 @@ paths:
       summary: Profil pengguna aktif
       tags:
       - auth
+  /api/v1/pegawai:
+    get:
+      description: Mendukung search nama/NIP, filter OPD/golongan/status, sorting,
+        dan pagination.
+      parameters:
+      - description: Halaman (default 1)
+        in: query
+        name: page
+        type: integer
+      - description: Jumlah per halaman (default 10, max 100)
+        in: query
+        name: limit
+        type: integer
+      - description: Cari nama atau NIP
+        in: query
+        name: search
+        type: string
+      - description: Filter perangkat daerah
+        in: query
+        name: perangkat_daerah_id
+        type: integer
+      - description: Filter golongan (mis. III/a)
+        in: query
+        name: golongan
+        type: string
+      - description: aktif|nonaktif|pensiun
+        in: query
+        name: status
+        type: string
+      - description: nama|nip|created_at
+        in: query
+        name: sort
+        type: string
+      - description: asc|desc
+        in: query
+        name: order
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: dibungkus data + meta
+          schema:
+            items:
+              $ref: '#/definitions/dto.PegawaiResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+      security:
+      - BearerAuth: []
+      summary: Daftar pegawai
+      tags:
+      - pegawai
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Data pegawai
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.PegawaiRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: dibungkus data
+          schema:
+            $ref: '#/definitions/dto.PegawaiResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+      security:
+      - BearerAuth: []
+      summary: Tambah pegawai
+      tags:
+      - pegawai
+  /api/v1/pegawai/{id}:
+    delete:
+      description: Menolak penghapusan bila pegawai punya riwayat peminjaman.
+      parameters:
+      - description: ID pegawai
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: tidak ada isi
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+      security:
+      - BearerAuth: []
+      summary: Hapus pegawai
+      tags:
+      - pegawai
+    get:
+      parameters:
+      - description: ID pegawai
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: dibungkus data
+          schema:
+            $ref: '#/definitions/dto.PegawaiResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+      security:
+      - BearerAuth: []
+      summary: Detail pegawai
+      tags:
+      - pegawai
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID pegawai
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Data pegawai
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.PegawaiRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: dibungkus data
+          schema:
+            $ref: '#/definitions/dto.PegawaiResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+      security:
+      - BearerAuth: []
+      summary: Ubah pegawai
+      tags:
+      - pegawai
   /api/v1/perangkat-daerah:
     get:
       description: Mendukung search, filter is_active, sorting, dan pagination.

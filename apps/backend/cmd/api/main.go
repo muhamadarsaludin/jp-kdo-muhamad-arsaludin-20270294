@@ -78,9 +78,13 @@ func main() {
 	pdService := service.NewPerangkatDaerahService(pdRepo)
 	pdHandler := handler.NewPerangkatDaerahHandler(pdService)
 
+	pegawaiRepo := repository.NewPegawaiRepository(pool, queries)
+	pegawaiService := service.NewPegawaiService(pegawaiRepo)
+	pegawaiHandler := handler.NewPegawaiHandler(pegawaiService)
+
 	srv := &http.Server{
 		Addr:              ":" + cfg.AppPort,
-		Handler:           router.New(pool, authHandler, pdHandler, jwtManager),
+		Handler:           router.New(pool, authHandler, pdHandler, pegawaiHandler, jwtManager),
 		ReadHeaderTimeout: 10 * time.Second,
 	}
 

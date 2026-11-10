@@ -181,6 +181,87 @@ Penghapusan bersifat **soft delete**; data tidak hilang dari database.
 
 ---
 
+## Pegawai
+
+Semua endpoint memerlukan `Authorization: Bearer <token>`.
+Endpoint tulis hanya untuk role `admin` dan `operator`.
+
+### `GET /api/v1/pegawai`
+
+Query: `page`, `limit` (max 100), `search` (nama/NIP), `perangkat_daerah_id`,
+`golongan`, `status` (`aktif|nonaktif|pensiun`), `sort` (`nama|nip|created_at`),
+`order` (`asc|desc`).
+
+```json
+{
+  "data": [
+    {
+      "id": 2,
+      "nip": "198203152009012002",
+      "nama": "Siti Rahmawati",
+      "gelar_depan": "S.Pd",
+      "gelar_belakang": "",
+      "jabatan": "Sekretaris Dinas",
+      "golongan": "III/d",
+      "pangkat": "Penata Tingkat I",
+      "perangkat_daerah_id": 1,
+      "perangkat_daerah_nama": "Dinas Pendidikan",
+      "email": "siti@kdo.go.id",
+      "telepon": "081200000002",
+      "tanggal_lahir": "1982-03-15",
+      "status_pegawai": "aktif",
+      "created_at": "2026-11-10T12:00:00+07:00",
+      "updated_at": "2026-11-10T12:00:00+07:00"
+    }
+  ],
+  "meta": { "page": 1, "limit": 10, "total": 12, "total_pages": 2 }
+}
+```
+
+### `GET /api/v1/pegawai/{id}`
+
+Sukses `200`, tidak ditemukan `404`.
+
+### `POST /api/v1/pegawai`
+
+```json
+{
+  "nip": "199901012020011001",
+  "nama": "Rizky Pratama",
+  "gelar_depan": "S.Kom",
+  "jabatan": "Pranata Komputer",
+  "golongan": "III/a",
+  "pangkat": "Penata Muda",
+  "perangkat_daerah_id": 4,
+  "email": "rizky@kdo.go.id",
+  "telepon": "081200000013",
+  "tanggal_lahir": "1999-01-01",
+  "status_pegawai": "aktif"
+}
+```
+
+Aturan:
+
+- `nip` wajib **18 digit angka** dan unik → selain itu `400`, duplikat `409`.
+- `golongan` harus salah satu `I/a`–`IV/e`.
+- `status_pegawai` default `aktif`.
+- `tanggal_lahir` format `YYYY-MM-DD` (opsional).
+- `perangkat_daerah_id` harus ada → `400` bila tidak ditemukan.
+- Sukses `201`.
+
+### `PUT /api/v1/pegawai/{id}`
+
+Body sama dengan create. Sukses `200`, tidak ditemukan `404`, duplikat NIP `409`.
+
+### `DELETE /api/v1/pegawai/{id}`
+
+- Sukses `204` tanpa body.
+- `409` bila pegawai masih punya riwayat peminjaman.
+- Saat dihapus, kendaraan yang menjadikannya penanggung jawab otomatis di-set `NULL`.
+- Penghapusan bersifat soft delete.
+
+---
+
 ## Akun Demo
 
 | Role | Email | Password |

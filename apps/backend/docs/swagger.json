@@ -110,6 +110,327 @@
                 }
             }
         },
+        "/api/v1/pegawai": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Mendukung search nama/NIP, filter OPD/golongan/status, sorting, dan pagination.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "pegawai"
+                ],
+                "summary": "Daftar pegawai",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Halaman (default 1)",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Jumlah per halaman (default 10, max 100)",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Cari nama atau NIP",
+                        "name": "search",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Filter perangkat daerah",
+                        "name": "perangkat_daerah_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter golongan (mis. III/a)",
+                        "name": "golongan",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "aktif|nonaktif|pensiun",
+                        "name": "status",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "nama|nip|created_at",
+                        "name": "sort",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "asc|desc",
+                        "name": "order",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "dibungkus data + meta",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/dto.PegawaiResponse"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "pegawai"
+                ],
+                "summary": "Tambah pegawai",
+                "parameters": [
+                    {
+                        "description": "Data pegawai",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.PegawaiRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "dibungkus data",
+                        "schema": {
+                            "$ref": "#/definitions/dto.PegawaiResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/pegawai/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "pegawai"
+                ],
+                "summary": "Detail pegawai",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID pegawai",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "dibungkus data",
+                        "schema": {
+                            "$ref": "#/definitions/dto.PegawaiResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "pegawai"
+                ],
+                "summary": "Ubah pegawai",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID pegawai",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Data pegawai",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.PegawaiRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "dibungkus data",
+                        "schema": {
+                            "$ref": "#/definitions/dto.PegawaiResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Menolak penghapusan bila pegawai punya riwayat peminjaman.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "pegawai"
+                ],
+                "summary": "Hapus pegawai",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID pegawai",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "tidak ada isi"
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/perangkat-daerah": {
             "get": {
                 "security": [
@@ -472,6 +793,146 @@
                 },
                 "user": {
                     "$ref": "#/definitions/dto.PenggunaResponse"
+                }
+            }
+        },
+        "dto.PegawaiRequest": {
+            "type": "object",
+            "required": [
+                "golongan",
+                "jabatan",
+                "nama",
+                "nip",
+                "perangkat_daerah_id"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "maxLength": 100,
+                    "example": "siti@kdo.go.id"
+                },
+                "gelar_belakang": {
+                    "type": "string",
+                    "maxLength": 30
+                },
+                "gelar_depan": {
+                    "type": "string",
+                    "maxLength": 20,
+                    "example": "S.Pd"
+                },
+                "golongan": {
+                    "type": "string",
+                    "example": "III/d"
+                },
+                "jabatan": {
+                    "type": "string",
+                    "maxLength": 100,
+                    "example": "Sekretaris Dinas"
+                },
+                "nama": {
+                    "type": "string",
+                    "maxLength": 100,
+                    "example": "Siti Rahmawati"
+                },
+                "nip": {
+                    "type": "string",
+                    "example": "198203152009012002"
+                },
+                "pangkat": {
+                    "type": "string",
+                    "maxLength": 50,
+                    "example": "Penata Tingkat I"
+                },
+                "perangkat_daerah_id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "status_pegawai": {
+                    "type": "string",
+                    "enum": [
+                        "aktif",
+                        "nonaktif",
+                        "pensiun"
+                    ],
+                    "example": "aktif"
+                },
+                "tanggal_lahir": {
+                    "type": "string",
+                    "example": "1982-03-15"
+                },
+                "telepon": {
+                    "type": "string",
+                    "maxLength": 20,
+                    "example": "081200000002"
+                }
+            }
+        },
+        "dto.PegawaiResponse": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string",
+                    "example": "2026-11-10T12:00:00+07:00"
+                },
+                "email": {
+                    "type": "string",
+                    "example": "siti@kdo.go.id"
+                },
+                "gelar_belakang": {
+                    "type": "string",
+                    "example": ""
+                },
+                "gelar_depan": {
+                    "type": "string",
+                    "example": "S.Pd"
+                },
+                "golongan": {
+                    "type": "string",
+                    "example": "III/d"
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "jabatan": {
+                    "type": "string",
+                    "example": "Sekretaris Dinas"
+                },
+                "nama": {
+                    "type": "string",
+                    "example": "Siti Rahmawati"
+                },
+                "nip": {
+                    "type": "string",
+                    "example": "198203152009012002"
+                },
+                "pangkat": {
+                    "type": "string",
+                    "example": "Penata Tingkat I"
+                },
+                "perangkat_daerah_id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "perangkat_daerah_nama": {
+                    "type": "string",
+                    "example": "Dinas Pendidikan"
+                },
+                "status_pegawai": {
+                    "type": "string",
+                    "example": "aktif"
+                },
+                "tanggal_lahir": {
+                    "type": "string",
+                    "example": "1982-03-15"
+                },
+                "telepon": {
+                    "type": "string",
+                    "example": "081200000002"
+                },
+                "updated_at": {
+                    "type": "string",
+                    "example": "2026-11-10T12:00:00+07:00"
                 }
             }
         },
