@@ -18,6 +18,101 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/api/v1/auth/login": {
+            "post": {
+                "description": "Login dengan email dan password, mengembalikan token JWT.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Login",
+                "parameters": [
+                    {
+                        "description": "Kredensial pengguna",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.LoginRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "data berisi token dan profil",
+                        "schema": {
+                            "$ref": "#/definitions/dto.LoginResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/auth/me": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Mengembalikan data pengguna berdasarkan token JWT.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Profil pengguna aktif",
+                "responses": {
+                    "200": {
+                        "description": "data berisi profil pengguna",
+                        "schema": {
+                            "$ref": "#/definitions/dto.PenggunaResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    }
+                }
+            }
+        },
         "/health": {
             "get": {
                 "description": "Mengembalikan status aplikasi dan koneksi PostgreSQL.",
@@ -46,6 +141,61 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "dto.LoginRequest": {
+            "type": "object",
+            "required": [
+                "email",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "example": "admin@kdo.go.id"
+                },
+                "password": {
+                    "type": "string",
+                    "minLength": 6,
+                    "example": "admin123"
+                }
+            }
+        },
+        "dto.LoginResponse": {
+            "type": "object",
+            "properties": {
+                "expires_at": {
+                    "type": "string",
+                    "example": "2026-11-10T22:00:00+07:00"
+                },
+                "token": {
+                    "type": "string",
+                    "example": "eyJhbGciOi..."
+                },
+                "user": {
+                    "$ref": "#/definitions/dto.PenggunaResponse"
+                }
+            }
+        },
+        "dto.PenggunaResponse": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "example": "admin@kdo.go.id"
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "nama": {
+                    "type": "string",
+                    "example": "Administrator"
+                },
+                "role": {
+                    "type": "string",
+                    "example": "admin"
+                }
+            }
+        },
         "handler.HealthResponse": {
             "type": "object",
             "properties": {
@@ -66,6 +216,36 @@ const docTemplate = `{
                     "example": "1.0.0"
                 }
             }
+        },
+        "response.ErrorBody": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "$ref": "#/definitions/response.ErrorDetail"
+                }
+            }
+        },
+        "response.ErrorDetail": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string",
+                    "example": "VALIDATION_ERROR"
+                },
+                "details": {},
+                "message": {
+                    "type": "string",
+                    "example": "Data tidak valid"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "BearerAuth": {
+            "description": "Masukkan token dengan format: Bearer {token}",
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     }
 }`

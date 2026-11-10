@@ -8,11 +8,13 @@ import (
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 
+	"kdo/backend/internal/auth"
 	"kdo/backend/internal/handler"
+	"kdo/backend/internal/middleware"
 )
 
 // New menyusun seluruh route aplikasi.
-func New(pool *pgxpool.Pool) *gin.Engine {
+func New(pool *pgxpool.Pool, authHandler *handler.AuthHandler, jwtManager *auth.Manager) *gin.Engine {
 	r := gin.New()
 	r.Use(gin.Logger(), gin.Recovery())
 
@@ -27,6 +29,13 @@ func New(pool *pgxpool.Pool) *gin.Engine {
 
 	r.GET("/health", handler.Health(pool))
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
+	api := r.Group("/api/v1")
+	api.POST("/auth/login", authHandler.Login)
+
+	terlindungi := api.Group("")
+	terlindungi.Use(middleware.Auth(jwtManager))
+	terlindungi.GET("/auth/me", authHandler.Me)
 
 	return r
 }

@@ -1,5 +1,44 @@
 basePath: /
 definitions:
+  dto.LoginRequest:
+    properties:
+      email:
+        example: admin@kdo.go.id
+        type: string
+      password:
+        example: admin123
+        minLength: 6
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  dto.LoginResponse:
+    properties:
+      expires_at:
+        example: "2026-11-10T22:00:00+07:00"
+        type: string
+      token:
+        example: eyJhbGciOi...
+        type: string
+      user:
+        $ref: '#/definitions/dto.PenggunaResponse'
+    type: object
+  dto.PenggunaResponse:
+    properties:
+      email:
+        example: admin@kdo.go.id
+        type: string
+      id:
+        example: 1
+        type: integer
+      nama:
+        example: Administrator
+        type: string
+      role:
+        example: admin
+        type: string
+    type: object
   handler.HealthResponse:
     properties:
       database:
@@ -15,6 +54,21 @@ definitions:
         example: 1.0.0
         type: string
     type: object
+  response.ErrorBody:
+    properties:
+      error:
+        $ref: '#/definitions/response.ErrorDetail'
+    type: object
+  response.ErrorDetail:
+    properties:
+      code:
+        example: VALIDATION_ERROR
+        type: string
+      details: {}
+      message:
+        example: Data tidak valid
+        type: string
+    type: object
 host: localhost:8090
 info:
   contact:
@@ -26,6 +80,67 @@ info:
   title: KDO API
   version: "1.0"
 paths:
+  /api/v1/auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Login dengan email dan password, mengembalikan token JWT.
+      parameters:
+      - description: Kredensial pengguna
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data berisi token dan profil
+          schema:
+            $ref: '#/definitions/dto.LoginResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+      summary: Login
+      tags:
+      - auth
+  /api/v1/auth/me:
+    get:
+      description: Mengembalikan data pengguna berdasarkan token JWT.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data berisi profil pengguna
+          schema:
+            $ref: '#/definitions/dto.PenggunaResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+      security:
+      - BearerAuth: []
+      summary: Profil pengguna aktif
+      tags:
+      - auth
   /health:
     get:
       description: Mengembalikan status aplikasi dan koneksi PostgreSQL.
@@ -45,4 +160,10 @@ paths:
       - system
 schemes:
 - http
+securityDefinitions:
+  BearerAuth:
+    description: 'Masukkan token dengan format: Bearer {token}'
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

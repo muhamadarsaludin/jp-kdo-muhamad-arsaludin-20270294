@@ -10,10 +10,15 @@ import (
 	"syscall"
 	"time"
 
+	"kdo/backend/internal/auth"
 	"kdo/backend/internal/config"
 	"kdo/backend/internal/database"
+	"kdo/backend/internal/database/sqlc"
+	"kdo/backend/internal/handler"
+	"kdo/backend/internal/repository"
 	"kdo/backend/internal/router"
 	"kdo/backend/internal/seed"
+	"kdo/backend/internal/service"
 
 	_ "kdo/backend/docs"
 )
@@ -27,6 +32,10 @@ import (
 // @host            localhost:8090
 // @BasePath        /
 // @schemes         http
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
+// @description Masukkan token dengan format: Bearer {token}
 func main() {
 	cfg := config.Load()
 
@@ -58,9 +67,16 @@ func main() {
 		}
 	}
 
+	jwtManager := auth.NewManager(cfg.JWTSecret, time.Duration(cfg.JWTExpiredHours)*time.Hour)
+
+	queries := sqlc.New(pool)
+	penggunaRepo := repository.NewPenggunaRepository(queries)
+	authService := service.NewAuthService(penggunaRepo, jwtManager)
+	authHandler := handler.NewAuthHandler(authService)
+
 	srv := &http.Server{
 		Addr:              ":" + cfg.AppPort,
-		Handler:           router.New(pool),
+		Handler:           router.New(pool, authHandler, jwtManager),
 		ReadHeaderTimeout: 10 * time.Second,
 	}
 

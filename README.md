@@ -41,6 +41,7 @@ Dibangun sebagai tugas **Ujian Praktik Junior Programmer — BPAD**.
 | [`docs/product-overview.md`](docs/product-overview.md) | Latar belakang, tujuan, pengguna, ruang lingkup |
 | [`docs/prd.md`](docs/prd.md) | Kebutuhan fungsional, aturan bisnis, acceptance criteria |
 | [`docs/erd.md`](docs/erd.md) | Skema tabel, relasi, index, rencana migrasi |
+| [`docs/api.md`](docs/api.md) | Dokumentasi endpoint & format response |
 | [`Agents.md`](Agents.md) | Konvensi teknis & alur kerja pengembangan |
 
 ---

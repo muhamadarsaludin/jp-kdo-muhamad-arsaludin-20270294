@@ -138,6 +138,7 @@ lihat dashboard berubah, dan data bertahan setelah restart.
 │   │       │   ├── postgres.go # pgxpool + ping
 │   │       │   ├── migrate.go  # jalankan migrasi dari embed.FS
 │   │       │   └── sqlc/       # hasil generate — JANGAN diedit manual
+│   │       ├── auth/           # JWT manager (generate & parse token)
 │   │       ├── dto/            # request/response, tidak pernah expose row sqlc
 │   │       ├── repository/     # bungkus sqlc.Queries + transaksi pgx
 │   │       ├── service/        # aturan bisnis, validasi, transaksi
