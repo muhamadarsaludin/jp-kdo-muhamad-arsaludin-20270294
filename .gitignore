@@ -1,0 +1,67 @@
+# ===== Dependencies =====
+node_modules/
+.pnpm-store/
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# ===== Build output =====
+dist/
+build/
+out/
+.turbo/
+coverage/
+*.tsbuildinfo
+.next/
+.vite/
+apps/backend/bin/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# ===== Go =====
+*.test
+*.out
+vendor/
+go.work.sum
+debug
+
+# ===== Environment =====
+.env
+.env.*
+!.env.example
+
+# ===== Logs & cache =====
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.eslintcache
+.stylelintcache
+.cache/
+
+# ===== Database / local data =====
+*.sqlite
+*.sqlite3
+*.db
+pgdata/
+
+# ===== Testing =====
+coverage.out
+coverage.html
+
+# ===== Editors & OS =====
+.DS_Store
+Thumbs.db
+.idea/
+*.swp
+*.swo
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
