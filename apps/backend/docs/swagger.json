@@ -110,6 +110,340 @@
                 }
             }
         },
+        "/api/v1/kendaraan": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Mendukung search nopol/merek/tipe, filter OPD/kondisi/status/jenis/tahun, sorting, dan pagination.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "kendaraan"
+                ],
+                "summary": "Daftar kendaraan",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Halaman (default 1)",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Jumlah per halaman (default 10, max 100)",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Cari nomor polisi, merek, atau tipe",
+                        "name": "search",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Filter perangkat daerah",
+                        "name": "perangkat_daerah_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "baik|rusak_ringan|rusak_berat",
+                        "name": "kondisi",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "tersedia|digunakan|perbaikan|dihapuskan",
+                        "name": "status",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "motor|mobil|minibus|pickup|ambulans",
+                        "name": "jenis",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Filter tahun produksi",
+                        "name": "tahun",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "nomor_polisi|merek|tahun_produksi|created_at",
+                        "name": "sort",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "asc|desc",
+                        "name": "order",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "dibungkus data + meta",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/dto.KendaraanResponse"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "kendaraan"
+                ],
+                "summary": "Tambah kendaraan",
+                "parameters": [
+                    {
+                        "description": "Data kendaraan",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.KendaraanRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "dibungkus data",
+                        "schema": {
+                            "$ref": "#/definitions/dto.KendaraanResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/kendaraan/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "kendaraan"
+                ],
+                "summary": "Detail kendaraan",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID kendaraan",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "dibungkus data",
+                        "schema": {
+                            "$ref": "#/definitions/dto.KendaraanResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Status tidak dapat diubah selama masih ada peminjaman aktif.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "kendaraan"
+                ],
+                "summary": "Ubah kendaraan",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID kendaraan",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Data kendaraan",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.KendaraanRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "dibungkus data",
+                        "schema": {
+                            "$ref": "#/definitions/dto.KendaraanResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Menolak penghapusan bila masih ada peminjaman aktif.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "kendaraan"
+                ],
+                "summary": "Hapus kendaraan",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID kendaraan",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "tidak ada isi"
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/pegawai": {
             "get": {
                 "security": [
@@ -762,6 +1096,231 @@
         }
     },
     "definitions": {
+        "dto.KendaraanRequest": {
+            "type": "object",
+            "required": [
+                "jenis",
+                "merek",
+                "nomor_polisi",
+                "perangkat_daerah_id",
+                "tahun_produksi",
+                "tipe",
+                "warna"
+            ],
+            "properties": {
+                "bahan_bakar": {
+                    "type": "string",
+                    "enum": [
+                        "bensin",
+                        "solar",
+                        "listrik",
+                        "hybrid"
+                    ],
+                    "example": "bensin"
+                },
+                "foto_url": {
+                    "type": "string",
+                    "example": "https://contoh.id/foto.jpg"
+                },
+                "jenis": {
+                    "type": "string",
+                    "enum": [
+                        "motor",
+                        "mobil",
+                        "minibus",
+                        "pickup",
+                        "ambulans"
+                    ],
+                    "example": "minibus"
+                },
+                "kapasitas_cc": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "example": 1500
+                },
+                "keterangan": {
+                    "type": "string",
+                    "example": "Kendaraan operasional harian"
+                },
+                "kondisi": {
+                    "type": "string",
+                    "enum": [
+                        "baik",
+                        "rusak_ringan",
+                        "rusak_berat"
+                    ],
+                    "example": "baik"
+                },
+                "merek": {
+                    "type": "string",
+                    "maxLength": 50,
+                    "example": "Toyota"
+                },
+                "nomor_mesin": {
+                    "type": "string",
+                    "maxLength": 50,
+                    "example": "1NR-F000001"
+                },
+                "nomor_polisi": {
+                    "type": "string",
+                    "maxLength": 15,
+                    "example": "B 1234 XYZ"
+                },
+                "nomor_rangka": {
+                    "type": "string",
+                    "maxLength": 50,
+                    "example": "MHKA1BA3JKA00001"
+                },
+                "odometer_km": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "example": 48210
+                },
+                "penanggung_jawab_id": {
+                    "type": "integer",
+                    "example": 2
+                },
+                "perangkat_daerah_id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "status": {
+                    "type": "string",
+                    "enum": [
+                        "tersedia",
+                        "digunakan",
+                        "perbaikan",
+                        "dihapuskan"
+                    ],
+                    "example": "tersedia"
+                },
+                "tahun_produksi": {
+                    "type": "integer",
+                    "maximum": 2100,
+                    "minimum": 1980,
+                    "example": 2019
+                },
+                "tanggal_pajak": {
+                    "type": "string",
+                    "example": "2027-02-10"
+                },
+                "tanggal_stnk": {
+                    "type": "string",
+                    "example": "2027-02-10"
+                },
+                "tipe": {
+                    "type": "string",
+                    "maxLength": 50,
+                    "example": "Avanza"
+                },
+                "warna": {
+                    "type": "string",
+                    "maxLength": 30,
+                    "example": "Silver"
+                }
+            }
+        },
+        "dto.KendaraanResponse": {
+            "type": "object",
+            "properties": {
+                "bahan_bakar": {
+                    "type": "string",
+                    "example": "bensin"
+                },
+                "created_at": {
+                    "type": "string",
+                    "example": "2026-11-10T12:00:00+07:00"
+                },
+                "foto_url": {
+                    "type": "string",
+                    "example": ""
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "jenis": {
+                    "type": "string",
+                    "example": "minibus"
+                },
+                "kapasitas_cc": {
+                    "type": "integer",
+                    "example": 1500
+                },
+                "keterangan": {
+                    "type": "string",
+                    "example": ""
+                },
+                "kondisi": {
+                    "type": "string",
+                    "example": "baik"
+                },
+                "merek": {
+                    "type": "string",
+                    "example": "Toyota"
+                },
+                "nomor_mesin": {
+                    "type": "string",
+                    "example": "1NR-F000001"
+                },
+                "nomor_polisi": {
+                    "type": "string",
+                    "example": "B 1234 XYZ"
+                },
+                "nomor_rangka": {
+                    "type": "string",
+                    "example": "MHKA1BA3JKA00001"
+                },
+                "odometer_km": {
+                    "type": "integer",
+                    "example": 48210
+                },
+                "penanggung_jawab_id": {
+                    "type": "integer",
+                    "example": 2
+                },
+                "penanggung_jawab_nama": {
+                    "type": "string",
+                    "example": "Siti Rahmawati"
+                },
+                "perangkat_daerah_id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "perangkat_daerah_nama": {
+                    "type": "string",
+                    "example": "Dinas Pendidikan"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "tersedia"
+                },
+                "tahun_produksi": {
+                    "type": "integer",
+                    "example": 2019
+                },
+                "tanggal_pajak": {
+                    "type": "string",
+                    "example": "2027-02-10"
+                },
+                "tanggal_stnk": {
+                    "type": "string",
+                    "example": "2027-02-10"
+                },
+                "tipe": {
+                    "type": "string",
+                    "example": "Avanza"
+                },
+                "updated_at": {
+                    "type": "string",
+                    "example": "2026-11-10T12:00:00+07:00"
+                },
+                "warna": {
+                    "type": "string",
+                    "example": "Silver"
+                }
+            }
+        },
         "dto.LoginRequest": {
             "type": "object",
             "required": [

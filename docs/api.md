@@ -262,6 +262,94 @@ Body sama dengan create. Sukses `200`, tidak ditemukan `404`, duplikat NIP `409`
 
 ---
 
+## Kendaraan
+
+Semua endpoint memerlukan `Authorization: Bearer <token>`.
+Endpoint tulis hanya untuk role `admin` dan `operator`.
+
+### `GET /api/v1/kendaraan`
+
+Query: `page`, `limit` (max 100), `search` (nopol/merek/tipe), `perangkat_daerah_id`,
+`kondisi`, `status`, `jenis`, `tahun`, `sort` (`nomor_polisi|merek|tahun_produksi|created_at`),
+`order` (`asc|desc`).
+
+```json
+{
+  "data": [
+    {
+      "id": 1,
+      "nomor_polisi": "B 1234 XYZ",
+      "merek": "Toyota",
+      "tipe": "Avanza",
+      "tahun_produksi": 2019,
+      "warna": "Silver",
+      "jenis": "minibus",
+      "bahan_bakar": "bensin",
+      "kapasitas_cc": 1500,
+      "odometer_km": 48210,
+      "kondisi": "baik",
+      "status": "tersedia",
+      "tanggal_pajak": "2027-02-10",
+      "tanggal_stnk": "2027-02-10",
+      "perangkat_daerah_id": 1,
+      "perangkat_daerah_nama": "Dinas Pendidikan",
+      "penanggung_jawab_id": 2,
+      "penanggung_jawab_nama": "Siti Rahmawati"
+    }
+  ],
+  "meta": { "page": 1, "limit": 10, "total": 10, "total_pages": 1 }
+}
+```
+
+### `GET /api/v1/kendaraan/{id}`
+
+Sukses `200`, tidak ditemukan `404`.
+
+### `POST /api/v1/kendaraan`
+
+```json
+{
+  "nomor_polisi": "b 9999 kdo",
+  "nomor_rangka": "MHKA1BA3JKA00099",
+  "nomor_mesin": "1NR-F000099",
+  "merek": "Toyota",
+  "tipe": "Raize",
+  "tahun_produksi": 2023,
+  "warna": "Merah",
+  "jenis": "mobil",
+  "bahan_bakar": "bensin",
+  "kapasitas_cc": 1000,
+  "odometer_km": 1200,
+  "kondisi": "baik",
+  "status": "tersedia",
+  "tanggal_pajak": "2027-05-01",
+  "tanggal_stnk": "2027-05-01",
+  "perangkat_daerah_id": 4,
+  "penanggung_jawab_id": 1
+}
+```
+
+Aturan:
+
+- Nomor polisi dinormalisasi uppercase + spasi tunggal, format `AA 1234 BBB`.
+- Nomor polisi, rangka, dan mesin unik → duplikat `409`.
+- Tahun produksi 1980 s.d. tahun berjalan + 1.
+- `status` default `tersedia`, `kondisi` default `baik`, `bahan_bakar` default `bensin`.
+- `perangkat_daerah_id` wajib; `penanggung_jawab_id` opsional.
+- Sukses `201`.
+
+### `PUT /api/v1/kendaraan/{id}`
+
+Body sama dengan create. Status **tidak dapat diubah** selama ada peminjaman aktif (`409`).
+
+### `DELETE /api/v1/kendaraan/{id}`
+
+- Sukses `204`.
+- `409` bila masih ada peminjaman berstatus `diajukan`/`disetujui`.
+- Soft delete.
+
+---
+
 ## Akun Demo
 
 | Role | Email | Password |

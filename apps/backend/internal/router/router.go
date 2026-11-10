@@ -19,6 +19,7 @@ func New(
 	authHandler *handler.AuthHandler,
 	pdHandler *handler.PerangkatDaerahHandler,
 	pegawaiHandler *handler.PegawaiHandler,
+	kendaraanHandler *handler.KendaraanHandler,
 	jwtManager *auth.Manager,
 ) *gin.Engine {
 	r := gin.New()
@@ -58,6 +59,13 @@ func New(
 	pegawai.POST("", pdTulis, pegawaiHandler.Create)
 	pegawai.PUT("/:id", pdTulis, pegawaiHandler.Update)
 	pegawai.DELETE("/:id", pdTulis, pegawaiHandler.Delete)
+
+	kendaraan := terlindungi.Group("/kendaraan")
+	kendaraan.GET("", kendaraanHandler.List)
+	kendaraan.GET("/:id", kendaraanHandler.Get)
+	kendaraan.POST("", pdTulis, kendaraanHandler.Create)
+	kendaraan.PUT("/:id", pdTulis, kendaraanHandler.Update)
+	kendaraan.DELETE("/:id", pdTulis, kendaraanHandler.Delete)
 
 	return r
 }

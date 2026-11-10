@@ -1,5 +1,178 @@
 basePath: /
 definitions:
+  dto.KendaraanRequest:
+    properties:
+      bahan_bakar:
+        enum:
+        - bensin
+        - solar
+        - listrik
+        - hybrid
+        example: bensin
+        type: string
+      foto_url:
+        example: https://contoh.id/foto.jpg
+        type: string
+      jenis:
+        enum:
+        - motor
+        - mobil
+        - minibus
+        - pickup
+        - ambulans
+        example: minibus
+        type: string
+      kapasitas_cc:
+        example: 1500
+        minimum: 0
+        type: integer
+      keterangan:
+        example: Kendaraan operasional harian
+        type: string
+      kondisi:
+        enum:
+        - baik
+        - rusak_ringan
+        - rusak_berat
+        example: baik
+        type: string
+      merek:
+        example: Toyota
+        maxLength: 50
+        type: string
+      nomor_mesin:
+        example: 1NR-F000001
+        maxLength: 50
+        type: string
+      nomor_polisi:
+        example: B 1234 XYZ
+        maxLength: 15
+        type: string
+      nomor_rangka:
+        example: MHKA1BA3JKA00001
+        maxLength: 50
+        type: string
+      odometer_km:
+        example: 48210
+        minimum: 0
+        type: integer
+      penanggung_jawab_id:
+        example: 2
+        type: integer
+      perangkat_daerah_id:
+        example: 1
+        type: integer
+      status:
+        enum:
+        - tersedia
+        - digunakan
+        - perbaikan
+        - dihapuskan
+        example: tersedia
+        type: string
+      tahun_produksi:
+        example: 2019
+        maximum: 2100
+        minimum: 1980
+        type: integer
+      tanggal_pajak:
+        example: "2027-02-10"
+        type: string
+      tanggal_stnk:
+        example: "2027-02-10"
+        type: string
+      tipe:
+        example: Avanza
+        maxLength: 50
+        type: string
+      warna:
+        example: Silver
+        maxLength: 30
+        type: string
+    required:
+    - jenis
+    - merek
+    - nomor_polisi
+    - perangkat_daerah_id
+    - tahun_produksi
+    - tipe
+    - warna
+    type: object
+  dto.KendaraanResponse:
+    properties:
+      bahan_bakar:
+        example: bensin
+        type: string
+      created_at:
+        example: "2026-11-10T12:00:00+07:00"
+        type: string
+      foto_url:
+        example: ""
+        type: string
+      id:
+        example: 1
+        type: integer
+      jenis:
+        example: minibus
+        type: string
+      kapasitas_cc:
+        example: 1500
+        type: integer
+      keterangan:
+        example: ""
+        type: string
+      kondisi:
+        example: baik
+        type: string
+      merek:
+        example: Toyota
+        type: string
+      nomor_mesin:
+        example: 1NR-F000001
+        type: string
+      nomor_polisi:
+        example: B 1234 XYZ
+        type: string
+      nomor_rangka:
+        example: MHKA1BA3JKA00001
+        type: string
+      odometer_km:
+        example: 48210
+        type: integer
+      penanggung_jawab_id:
+        example: 2
+        type: integer
+      penanggung_jawab_nama:
+        example: Siti Rahmawati
+        type: string
+      perangkat_daerah_id:
+        example: 1
+        type: integer
+      perangkat_daerah_nama:
+        example: Dinas Pendidikan
+        type: string
+      status:
+        example: tersedia
+        type: string
+      tahun_produksi:
+        example: 2019
+        type: integer
+      tanggal_pajak:
+        example: "2027-02-10"
+        type: string
+      tanggal_stnk:
+        example: "2027-02-10"
+        type: string
+      tipe:
+        example: Avanza
+        type: string
+      updated_at:
+        example: "2026-11-10T12:00:00+07:00"
+        type: string
+      warna:
+        example: Silver
+        type: string
+    type: object
   dto.LoginRequest:
     properties:
       email:
@@ -319,6 +492,221 @@ paths:
       summary: Profil pengguna aktif
       tags:
       - auth
+  /api/v1/kendaraan:
+    get:
+      description: Mendukung search nopol/merek/tipe, filter OPD/kondisi/status/jenis/tahun,
+        sorting, dan pagination.
+      parameters:
+      - description: Halaman (default 1)
+        in: query
+        name: page
+        type: integer
+      - description: Jumlah per halaman (default 10, max 100)
+        in: query
+        name: limit
+        type: integer
+      - description: Cari nomor polisi, merek, atau tipe
+        in: query
+        name: search
+        type: string
+      - description: Filter perangkat daerah
+        in: query
+        name: perangkat_daerah_id
+        type: integer
+      - description: baik|rusak_ringan|rusak_berat
+        in: query
+        name: kondisi
+        type: string
+      - description: tersedia|digunakan|perbaikan|dihapuskan
+        in: query
+        name: status
+        type: string
+      - description: motor|mobil|minibus|pickup|ambulans
+        in: query
+        name: jenis
+        type: string
+      - description: Filter tahun produksi
+        in: query
+        name: tahun
+        type: integer
+      - description: nomor_polisi|merek|tahun_produksi|created_at
+        in: query
+        name: sort
+        type: string
+      - description: asc|desc
+        in: query
+        name: order
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: dibungkus data + meta
+          schema:
+            items:
+              $ref: '#/definitions/dto.KendaraanResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+      security:
+      - BearerAuth: []
+      summary: Daftar kendaraan
+      tags:
+      - kendaraan
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Data kendaraan
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.KendaraanRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: dibungkus data
+          schema:
+            $ref: '#/definitions/dto.KendaraanResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+      security:
+      - BearerAuth: []
+      summary: Tambah kendaraan
+      tags:
+      - kendaraan
+  /api/v1/kendaraan/{id}:
+    delete:
+      description: Menolak penghapusan bila masih ada peminjaman aktif.
+      parameters:
+      - description: ID kendaraan
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: tidak ada isi
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+      security:
+      - BearerAuth: []
+      summary: Hapus kendaraan
+      tags:
+      - kendaraan
+    get:
+      parameters:
+      - description: ID kendaraan
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: dibungkus data
+          schema:
+            $ref: '#/definitions/dto.KendaraanResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+      security:
+      - BearerAuth: []
+      summary: Detail kendaraan
+      tags:
+      - kendaraan
+    put:
+      consumes:
+      - application/json
+      description: Status tidak dapat diubah selama masih ada peminjaman aktif.
+      parameters:
+      - description: ID kendaraan
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Data kendaraan
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.KendaraanRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: dibungkus data
+          schema:
+            $ref: '#/definitions/dto.KendaraanResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+      security:
+      - BearerAuth: []
+      summary: Ubah kendaraan
+      tags:
+      - kendaraan
   /api/v1/pegawai:
     get:
       description: Mendukung search nama/NIP, filter OPD/golongan/status, sorting,
