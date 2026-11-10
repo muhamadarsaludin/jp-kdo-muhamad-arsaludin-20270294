@@ -34,6 +34,17 @@ Dibangun sebagai tugas **Ujian Praktik Junior Programmer — BPAD**.
 
 ---
 
+## Dokumentasi
+
+| Dokumen | Isi |
+| --- | --- |
+| [`docs/product-overview.md`](docs/product-overview.md) | Latar belakang, tujuan, pengguna, ruang lingkup |
+| [`docs/prd.md`](docs/prd.md) | Kebutuhan fungsional, aturan bisnis, acceptance criteria |
+| [`docs/erd.md`](docs/erd.md) | Skema tabel, relasi, index, rencana migrasi |
+| [`Agents.md`](Agents.md) | Konvensi teknis & alur kerja pengembangan |
+
+---
+
 ## Fitur
 
 ### Entitas utama (CRUD penuh)
@@ -76,9 +87,12 @@ Dibangun sebagai tugas **Ujian Praktik Junior Programmer — BPAD**.
 | --- | --- |
 | Bahasa | Go 1.23 |
 | HTTP framework | Gin |
-| ORM | GORM |
+| Driver database | pgx v5 (`pgxpool`) |
+| Query layer | sqlc (SQL manual, kode di-generate) |
+| Migrasi | golang-migrate (file SQL + `embed`) |
 | Database | PostgreSQL 16 |
 | Autentikasi | JWT (`golang-jwt/jwt/v5`) + bcrypt |
+| Dokumentasi API | Swaggo (Swagger UI) |
 | Testing | `testing`, `httptest`, `testify` |
 
 ### Frontend
@@ -99,6 +113,7 @@ Dibangun sebagai tugas **Ujian Praktik Junior Programmer — BPAD**.
 - **Docker Compose** untuk PostgreSQL.
 - **Biome** sebagai linter + formatter (menggantikan ESLint & Prettier).
 - Vitest untuk unit test frontend, `go test` untuk backend.
+- **Tanpa Redis**: JWT stateless, tidak ada session store terpusat.
 
 ---
 
@@ -113,7 +128,7 @@ Dibangun sebagai tugas **Ujian Praktik Junior Programmer — BPAD**.
                                                             ▼
                                                  ┌──────────────────────┐
                                                  │  Service (bisnis)    │
-                                                 │  Repository (GORM)   │
+                                                 │  Repository (sqlc)   │
                                                  └──────────┬───────────┘
                                                             │
                                                             ▼
@@ -144,10 +159,15 @@ Frontend memisahkan kode per fitur (`features/*`) dengan komponen UI reusable.
 │   ├── api.md                # dokumentasi endpoint
 │   └── erd.md                # diagram relasi
 ├── apps/
-│   ├── backend/              # Go + Gin + GORM (@kdo/backend)
+│   ├── backend/              # Go + Gin + pgx + sqlc (@kdo/backend)
 │   │   ├── cmd/api/main.go
+│   │   ├── sqlc.yaml
+│   │   ├── db/
+│   │   │   ├── migrations/   # golang-migrate (.up/.down.sql)
+│   │   │   └── queries/      # sumber query sqlc
+│   │   ├── docs/             # Swagger hasil generate
 │   │   ├── internal/
-│   │   │   ├── config/ database/ model/ dto/
+│   │   │   ├── config/ database/ dto/
 │   │   │   ├── repository/ service/ handler/
 │   │   │   ├── middleware/ router/ response/
 │   │   │   └── seed/ utils/
@@ -202,6 +222,7 @@ Semua tabel menggunakan soft delete (`deleted_at`) dan kolom waktu otomatis.
 | Node.js | ≥ 20 |
 | pnpm | ≥ 9 |
 | Docker Desktop | terbaru (untuk PostgreSQL) |
+| sqlc + golang-migrate CLI | opsional, hanya untuk regenerasi |
 
 ---
 
@@ -240,10 +261,11 @@ pnpm dev:backend
 ```
 
 Saat pertama kali dijalankan, backend otomatis:
-1. membuat tabel (AutoMigrate),
+1. menjalankan migrasi database (golang-migrate dari file yang di-`embed`),
 2. mengisi data contoh bila `SEED_ON_START=true`.
 
-API tersedia di `http://localhost:8080`, health check di `GET /health`.
+API tersedia di `http://localhost:8080`, health check di `GET /health`,
+dokumentasi Swagger di `http://localhost:8080/swagger/index.html`.
 
 ### 5. Jalankan frontend
 
@@ -277,6 +299,8 @@ pnpm check:fix  # perbaiki otomatis
 | `pnpm lint` | Biome lint |
 | `pnpm check` | Biome check (lint + format + import) |
 | `pnpm format` | Format kode |
+| `sqlc generate` | Regenerate kode dari query (di `apps/backend`) |
+| `swag init -g cmd/api/main.go -o docs` | Regenerate Swagger |
 | `docker compose up -d db` | Nyalakan PostgreSQL |
 | `docker compose down -v` | Reset database (hapus volume) |
 

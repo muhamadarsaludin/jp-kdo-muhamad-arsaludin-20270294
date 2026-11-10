@@ -56,13 +56,25 @@ lihat dashboard berubah, dan data bertahan setelah restart.
 | --- | --- |
 | Bahasa | Go 1.23+ |
 | HTTP framework | Gin `github.com/gin-gonic/gin` v1.10 |
-| ORM | GORM `gorm.io/gorm` + `gorm.io/driver/postgres` |
+| Driver database | pgx v5 `github.com/jackc/pgx/v5` + `pgxpool` |
+| Query layer | **sqlc** (`sqlc.dev`) — SQL ditulis manual, kode Go di-generate |
+| Migrasi | **golang-migrate** (`golang-migrate/migrate/v4`) dengan file SQL + `embed` |
 | Database | PostgreSQL 16 (Docker Compose) |
-| Auth | JWT `github.com/golang-jwt/jwt/v5`, password `golang.org/x/crypto/bcrypt` |
+| Auth | JWT `github.com/golang-jwt/jwt/v5` (HS256), password `golang.org/x/crypto/bcrypt` |
+| Dokumentasi API | **Swaggo** (`swaggo/swag` + `gin-swagger`) |
 | Validasi | tag `binding` Gin + validasi domain di service layer |
 | Config | `github.com/joho/godotenv` + `os.Getenv` |
 | Logging | `log/slog` (stdlib) |
 | Testing | `testing` + `net/http/httptest` + `testify` |
+
+### Keputusan yang sudah final
+- **Tanpa ORM/GORM.** Semua query lewat SQL eksplisit di `queries/*.sql` dan di-generate sqlc.
+- **Tanpa Redis.** Tidak ada cache/session store terpusat; JWT stateless dan query dashboard
+  cukup ringan. Redis baru dipertimbangkan bila butuh rate limit, refresh-token store, atau
+  deployment multi-instance.
+- **Tanpa refresh token** pada versi ujian: satu access token berumur 12 jam.
+- Migrasi dijalankan otomatis saat startup dari file yang di-`embed`, tanpa perlu CLI
+  `migrate` saat demo. CLI hanya dipakai untuk membuat/menguji migrasi baru.
 
 ### Frontend
 | Komponen | Pilihan |
@@ -84,7 +96,7 @@ lihat dashboard berubah, dan data bertahan setelah restart.
 - **Biome** untuk lint + format + urutkan import (menggantikan ESLint & Prettier).
 - Perintah harian lewat script root (`pnpm dev`, `pnpm build`, `pnpm check`); Turborepo
   mengorkestrasi task per package.
-- Tanpa ORM query builder tambahan, tanpa state manager global (cukup Query + Context auth).
+- Tanpa query builder tambahan, tanpa state manager global (cukup Query + Context auth).
 
 ---
 
@@ -107,21 +119,25 @@ lihat dashboard berubah, dan data bertahan setelah restart.
 │   ├── api.md                  # kontrak API (diupdate manual per endpoint baru)
 │   └── erd.md                  # diagram relasi (Mermaid)
 ├── apps/
-│   ├── backend/                # Go + Gin + GORM  → package name @kdo/backend
+│   ├── backend/                # Go + Gin + pgx + sqlc  → @kdo/backend
 │   │   ├── go.mod
+│   │   ├── sqlc.yaml           # konfigurasi generate query
 │   │   ├── .env.example
 │   │   ├── package.json        # wrapper script turbo → perintah go
-│   │   ├── Makefile            # opsional, shortcut Go
 │   │   ├── cmd/
-│   │   │   └── api/main.go     # entrypoint: config → db → migrate → seed → router
+│   │   │   └── api/main.go     # config → db → migrate → seed → router
+│   │   ├── db/
+│   │   │   ├── migrations/     # 000001_init.up.sql / .down.sql (golang-migrate)
+│   │   │   └── queries/        # *.sql, sumber generate sqlc
+│   │   ├── docs/               # hasil `swag init` (swagger.json, docs.go)
 │   │   └── internal/
 │   │       ├── config/config.go
 │   │       ├── database/
-│   │       │   ├── postgres.go # koneksi + pool tuning
-│   │       │   └── migrate.go  # AutoMigrate
-│   │       ├── model/          # struct GORM (1 file per entitas)
-│   │       ├── dto/            # request/response, tidak pernah expose model langsung
-│   │       ├── repository/     # akses DB murni, terima context.Context
+│   │       │   ├── postgres.go # pgxpool + ping
+│   │       │   ├── migrate.go  # jalankan migrasi dari embed.FS
+│   │       │   └── sqlc/       # hasil generate — JANGAN diedit manual
+│   │       ├── dto/            # request/response, tidak pernah expose row sqlc
+│   │       ├── repository/     # bungkus sqlc.Queries + transaksi pgx
 │   │       ├── service/        # aturan bisnis, validasi, transaksi
 │   │       ├── handler/        # HTTP: bind → service → response
 │   │       ├── middleware/     # auth JWT, role, CORS, request logger, recovery
@@ -163,8 +179,12 @@ lihat dashboard berubah, dan data bertahan setelah restart.
 - Folder dibuat kosong pada tahap scaffolding; kode diisi per fase di §10.
 
 **Aturan struktur:**
-- Satu entitas = satu file model, satu repository, satu service, satu handler.
-- Handler **tidak boleh** menyentuh `*gorm.DB` langsung; selalu lewat service.
+- Satu entitas = satu file query (`db/queries/<entitas>.sql`), satu repository, satu service,
+  satu handler.
+- Handler **tidak boleh** menyentuh `*pgxpool.Pool` atau `sqlc.Queries` langsung; selalu lewat service.
+- Semua SQL berada di `db/queries/*.sql`. Dilarang menulis query string di handler/service.
+  Setelah mengubah query: `sqlc generate`.
+- Setiap perubahan skema = file migrasi baru (`.up.sql` + `.down.sql`), bukan mengedit migrasi lama.
 - Repository **tidak boleh** berisi aturan bisnis.
 - Frontend: logika per fitur di `features/<fitur>`, bukan numpuk di `pages`.
 - Komponen UI generik hanya di `components/ui`, tanpa ketergantungan ke fitur.
@@ -277,8 +297,10 @@ kecuali tabel log). Nama tabel & kolom `snake_case` bahasa Indonesia.
 6. **Hapus kendaraan** ditolak bila masih punya peminjaman aktif; gunakan soft delete.
 7. **Hapus perangkat daerah** ditolak bila masih punya pegawai/kendaraan aktif.
 8. **Hapus pegawai** yang menjadi penanggung jawab kendaraan → set null, jangan gagal.
-9. Semua endpoint tulis (`POST/PUT/PATCH/DELETE`) wajib role `admin` atau `operator`;
-   `pimpinan` read-only. Manajemen `pengguna` hanya `admin`.
+9. Semua endpoint tulis data master (`POST/PUT/PATCH/DELETE` perangkat daerah, pegawai,
+   kendaraan, servis) wajib role `admin` atau `operator`. Khusus `PATCH /peminjaman/:id/setujui`
+   dan `/tolak`, role `pimpinan` ikut diizinkan. Manajemen `pengguna` hanya `admin`.
+   `pimpinan` tidak boleh mengubah data master.
 10. Validasi di **service layer** — bukan hanya di frontend.
 
 ---
@@ -360,13 +382,19 @@ Setiap endpoint baru **wajib** ditambahkan ke `docs/api.md` pada commit yang sam
 
 ### Go
 - `gofmt` + `goimports` wajib; jalankan `go vet ./...`.
-- Nama package singular: `model`, `handler`, `service`, `repository`.
+- Nama package singular: `handler`, `service`, `repository`, `config`, `database`.
 - Terima `context.Context` sebagai parameter pertama di repository/service.
 - Error domain: `var ErrNotFound = errors.New(...)`; handler memetakan ke HTTP via `response.Error`.
 - Jangan `panic` di handler; gunakan `gin.Recovery()` + error yang dikembalikan.
 - DTO terpisah: `CreateXRequest`, `UpdateXRequest`, `XResponse`, `XListResponse`.
-- Transaksi DB hanya di service (`db.Transaction(func(tx *gorm.DB) error {...})`).
-- Tidak ada string SQL mentah kecuali benar-benar perlu dan memakai placeholder.
+- Transaksi hanya di service: `pgxpool.Begin` → `defer tx.Rollback(ctx)` → `tx.Commit(ctx)`,
+  atau helper `database.WithTx(ctx, pool, func(q *sqlc.Queries) error {...})`.
+- SQL **hanya** di `db/queries/*.sql` dengan named parameter sqlc (`@nama`). Dilarang
+  menyusun SQL dengan string concatenation.
+- Kode di `internal/database/sqlc/` hasil generate — jangan diedit manual; regenerate
+  dengan `sqlc generate` setelah query berubah.
+- Setiap handler baru wajib diberi anotasi Swaggo (`@Summary`, `@Tags`, `@Success`, `@Failure`),
+  lalu `swag init` dijalankan ulang.
 - Jangan log password/token.
 
 ### TypeScript / React
@@ -435,6 +463,13 @@ pnpm check                # biome check . (lint + format + import)
 pnpm check:fix            # biome check --write .
 pnpm format               # biome format --write .
 
+# backend (dari apps/backend)
+go run ./cmd/api          # jalankan API (migrasi otomatis)
+sqlc generate             # regenerate kode dari db/queries/*.sql
+swag init -g cmd/api/main.go -o docs   # regenerate dokumentasi Swagger
+migrate create -ext sql -dir db/migrations -seq nama_migrasi  # migrasi baru
+go test ./...
+
 docker compose up -d db   # nyalakan PostgreSQL
 docker compose down       # matikan container
 docker compose down -v    # reset volume database
@@ -459,7 +494,7 @@ Seed juga mengisi minimal: 4 perangkat daerah, 12 pegawai, 10 kendaraan, 6 pemin
 
 1. **Sebelum menulis kode**: baca `Agents.md`, cek kondisi repo, konfirmasi file terkait.
 2. **Implementasi bertahap** (satu fase = satu commit):
-   - Fase 1: scaffolding, config, koneksi DB, migrate, health check.
+   - Fase 1: scaffolding, config, koneksi pgx, migrasi awal, setup sqlc, health check.
    - Fase 2: auth + middleware + seed pengguna.
    - Fase 3: CRUD perangkat daerah → pegawai → kendaraan (backend).
    - Fase 4: peminjaman + servis + dashboard + export (backend).
@@ -481,7 +516,8 @@ Seed juga mengisi minimal: 4 perangkat daerah, 12 pegawai, 10 kendaraan, 6 pemin
 ## 11. Definisi Selesai (Definition of Done)
 
 - [ ] `docker compose up -d db` lalu backend jalan tanpa error di mesin bersih.
-- [ ] Migrasi otomatis membuat semua tabel + relasi + index unik.
+- [ ] Migrasi golang-migrate membuat semua tabel + relasi + index unik (up & down jalan).
+- [ ] `sqlc generate` menghasilkan kode tanpa error dan tidak ada query di luar `db/queries`.
 - [ ] Seed menghasilkan data contoh yang konsisten dan idempoten.
 - [ ] Login 3 role berfungsi; token kedaluwarsa ditangani (redirect ke login).
 - [ ] CRUD penuh 3 entitas + validasi server & client.
@@ -496,19 +532,7 @@ Seed juga mengisi minimal: 4 perangkat daerah, 12 pegawai, 10 kendaraan, 6 pemin
 
 ---
 
-## 12. Rencana Demo Ujian (±8 menit)
-
-1. Jelaskan arsitektur singkat (React → REST → Gin → GORM → PostgreSQL) — 1 menit.
-2. Login sebagai admin, tunjukkan dashboard berisi data seed — 1 menit.
-3. CRUD perangkat daerah + pegawai (tunjukkan validasi NIP 18 digit) — 2 menit.
-4. Tambah kendaraan baru, filter by kondisi/status, cari nomor polisi — 1,5 menit.
-5. Ajukan peminjaman → approve → kendaraan berubah `digunakan` → selesaikan — 2 menit.
-6. Tambah riwayat servis, tunjukkan grafik biaya di dashboard — 1 menit.
-7. Tunjukkan `go test ./...` dan struktur folder — 30 detik.
-
----
-
-## 13. Di Luar Scope (jangan dikerjakan)
+## 12. Di Luar Scope (jangan dikerjakan)
 
 - Mobile app / PWA offline.
 - Realtime websocket, notifikasi email/WA.
