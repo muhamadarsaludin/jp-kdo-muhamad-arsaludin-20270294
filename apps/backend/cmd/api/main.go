@@ -86,9 +86,17 @@ func main() {
 	kendaraanService := service.NewKendaraanService(kendaraanRepo)
 	kendaraanHandler := handler.NewKendaraanHandler(kendaraanService)
 
+	peminjamanRepo := repository.NewPeminjamanRepository(pool, queries)
+	peminjamanService := service.NewPeminjamanService(peminjamanRepo)
+	peminjamanHandler := handler.NewPeminjamanHandler(peminjamanService)
+
+	servisRepo := repository.NewServisRepository(queries)
+	servisService := service.NewServisService(servisRepo)
+	servisHandler := handler.NewServisHandler(servisService)
+
 	srv := &http.Server{
 		Addr:              ":" + cfg.AppPort,
-		Handler:           router.New(pool, authHandler, pdHandler, pegawaiHandler, kendaraanHandler, jwtManager),
+		Handler:           router.New(pool, authHandler, pdHandler, pegawaiHandler, kendaraanHandler, peminjamanHandler, servisHandler, jwtManager),
 		ReadHeaderTimeout: 10 * time.Second,
 	}
 

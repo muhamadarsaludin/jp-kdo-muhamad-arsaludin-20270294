@@ -20,6 +20,8 @@ func New(
 	pdHandler *handler.PerangkatDaerahHandler,
 	pegawaiHandler *handler.PegawaiHandler,
 	kendaraanHandler *handler.KendaraanHandler,
+	peminjamanHandler *handler.PeminjamanHandler,
+	servisHandler *handler.ServisHandler,
 	jwtManager *auth.Manager,
 ) *gin.Engine {
 	r := gin.New()
@@ -66,6 +68,23 @@ func New(
 	kendaraan.POST("", pdTulis, kendaraanHandler.Create)
 	kendaraan.PUT("/:id", pdTulis, kendaraanHandler.Update)
 	kendaraan.DELETE("/:id", pdTulis, kendaraanHandler.Delete)
+	kendaraan.GET("/:id/servis", servisHandler.ListByKendaraan)
+	kendaraan.POST("/:id/servis", pdTulis, servisHandler.Create)
+
+	servis := terlindungi.Group("/servis")
+	servis.PUT("/:id", pdTulis, servisHandler.Update)
+	servis.DELETE("/:id", pdTulis, servisHandler.Delete)
+
+	peminjaman := terlindungi.Group("/peminjaman")
+	peminjaman.GET("", peminjamanHandler.List)
+	peminjaman.GET("/:id", peminjamanHandler.Get)
+	peminjaman.POST("", pdTulis, peminjamanHandler.Create)
+
+	peminjamanPimpinan := middleware.RequireRole("admin", "pimpinan")
+	peminjaman.PATCH("/:id/setujui", peminjamanPimpinan, peminjamanHandler.Setujui)
+	peminjaman.PATCH("/:id/tolak", peminjamanPimpinan, peminjamanHandler.Tolak)
+	peminjaman.PATCH("/:id/selesai", pdTulis, peminjamanHandler.Selesai)
+	peminjaman.PATCH("/:id/batalkan", pdTulis, peminjamanHandler.Batalkan)
 
 	return r
 }

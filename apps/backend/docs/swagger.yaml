@@ -303,6 +303,102 @@ definitions:
         example: "2026-11-10T12:00:00+07:00"
         type: string
     type: object
+  dto.PeminjamanRequest:
+    properties:
+      catatan:
+        example: Membawa 3 orang
+        type: string
+      kendaraan_id:
+        example: 1
+        type: integer
+      keperluan:
+        example: Monitoring sekolah
+        maxLength: 200
+        type: string
+      pegawai_id:
+        example: 2
+        type: integer
+      tanggal_mulai:
+        example: "2026-11-15T07:00:00+07:00"
+        type: string
+      tanggal_selesai:
+        example: "2026-11-16T18:00:00+07:00"
+        type: string
+      tujuan:
+        example: Kecamatan Cendana
+        maxLength: 200
+        type: string
+    required:
+    - kendaraan_id
+    - keperluan
+    - pegawai_id
+    - tanggal_mulai
+    - tanggal_selesai
+    - tujuan
+    type: object
+  dto.PeminjamanResponse:
+    properties:
+      catatan:
+        example: ""
+        type: string
+      created_at:
+        example: "2026-11-10T12:00:00+07:00"
+        type: string
+      disetujui_oleh:
+        example: 1
+        type: integer
+      id:
+        example: 1
+        type: integer
+      kendaraan_id:
+        example: 1
+        type: integer
+      kendaraan_merek:
+        example: Toyota
+        type: string
+      kendaraan_nomor_polisi:
+        example: B 1234 XYZ
+        type: string
+      kendaraan_tipe:
+        example: Avanza
+        type: string
+      keperluan:
+        example: Monitoring sekolah
+        type: string
+      kode_peminjaman:
+        example: PJM-20261110-0001
+        type: string
+      pegawai_id:
+        example: 3
+        type: integer
+      pegawai_nama:
+        example: Andi Prasetyo
+        type: string
+      penyetuju_nama:
+        example: Administrator
+        type: string
+      perangkat_daerah_id:
+        example: 1
+        type: integer
+      perangkat_daerah_nama:
+        example: Dinas Pendidikan
+        type: string
+      status:
+        example: diajukan
+        type: string
+      tanggal_mulai:
+        example: "2026-11-15T07:00:00+07:00"
+        type: string
+      tanggal_selesai:
+        example: "2026-11-16T18:00:00+07:00"
+        type: string
+      tujuan:
+        example: Kecamatan Cendana
+        type: string
+      updated_at:
+        example: "2026-11-10T12:00:00+07:00"
+        type: string
+    type: object
   dto.PenggunaResponse:
     properties:
       email:
@@ -388,6 +484,84 @@ definitions:
         type: string
       updated_at:
         example: "2026-11-10T12:00:00+07:00"
+        type: string
+    type: object
+  dto.ServisRequest:
+    properties:
+      bengkel:
+        example: Auto2000
+        maxLength: 100
+        type: string
+      biaya:
+        example: 450000
+        minimum: 0
+        type: number
+      deskripsi:
+        example: ' Servis rutin 50.000 km'
+        type: string
+      jenis:
+        enum:
+        - rutin
+        - perbaikan
+        - ganti_part
+        example: rutin
+        type: string
+      odometer_km:
+        example: 50000
+        minimum: 0
+        type: integer
+      tanggal:
+        example: "2026-11-01"
+        type: string
+    required:
+    - deskripsi
+    - jenis
+    - tanggal
+    type: object
+  dto.ServisResponse:
+    properties:
+      bengkel:
+        example: Auto2000
+        type: string
+      biaya:
+        example: 450000
+        type: number
+      created_at:
+        example: "2026-11-10T12:00:00+07:00"
+        type: string
+      deskripsi:
+        example: Servis rutin 50.000 km
+        type: string
+      id:
+        example: 1
+        type: integer
+      jenis:
+        example: rutin
+        type: string
+      kendaraan_id:
+        example: 1
+        type: integer
+      merek:
+        example: Toyota
+        type: string
+      nomor_polisi:
+        example: B 1234 XYZ
+        type: string
+      odometer_km:
+        example: 50000
+        type: integer
+      tanggal:
+        example: "2026-11-01"
+        type: string
+      updated_at:
+        example: "2026-11-10T12:00:00+07:00"
+        type: string
+    type: object
+  dto.TolakPeminjamanRequest:
+    properties:
+      catatan:
+        example: Kendaraan sedang diperbaiki
+        maxLength: 500
         type: string
     type: object
   handler.HealthResponse:
@@ -707,6 +881,87 @@ paths:
       summary: Ubah kendaraan
       tags:
       - kendaraan
+  /api/v1/kendaraan/{id}/servis:
+    get:
+      parameters:
+      - description: ID kendaraan
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Halaman (default 1)
+        in: query
+        name: page
+        type: integer
+      - description: Jumlah per halaman (default 10, max 100)
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: dibungkus data + meta
+          schema:
+            items:
+              $ref: '#/definitions/dto.ServisResponse'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+      security:
+      - BearerAuth: []
+      summary: Riwayat servis kendaraan
+      tags:
+      - servis
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID kendaraan
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Data servis
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.ServisRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: dibungkus data
+          schema:
+            $ref: '#/definitions/dto.ServisResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+      security:
+      - BearerAuth: []
+      summary: Tambah servis
+      tags:
+      - servis
   /api/v1/pegawai:
     get:
       description: Mendukung search nama/NIP, filter OPD/golongan/status, sorting,
@@ -913,6 +1168,290 @@ paths:
       summary: Ubah pegawai
       tags:
       - pegawai
+  /api/v1/peminjaman:
+    get:
+      description: Filter status/kendaraan/pegawai/rentang tanggal, sorting, dan pagination.
+      parameters:
+      - description: Halaman (default 1)
+        in: query
+        name: page
+        type: integer
+      - description: Jumlah per halaman (default 10, max 100)
+        in: query
+        name: limit
+        type: integer
+      - description: Cari kode/keperluan/tujuan
+        in: query
+        name: search
+        type: string
+      - description: diajukan|disetujui|ditolak|selesai|dibatalkan
+        in: query
+        name: status
+        type: string
+      - description: Filter kendaraan
+        in: query
+        name: kendaraan_id
+        type: integer
+      - description: Filter pegawai
+        in: query
+        name: pegawai_id
+        type: integer
+      - description: Tanggal mulai (YYYY-MM-DD atau ISO-8601)
+        in: query
+        name: dari
+        type: string
+      - description: Tanggal selesai (YYYY-MM-DD atau ISO-8601)
+        in: query
+        name: sampai
+        type: string
+      - description: tanggal_mulai|kode_peminjaman|created_at
+        in: query
+        name: sort
+        type: string
+      - description: asc|desc
+        in: query
+        name: order
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: dibungkus data + meta
+          schema:
+            items:
+              $ref: '#/definitions/dto.PeminjamanResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+      security:
+      - BearerAuth: []
+      summary: Daftar peminjaman
+      tags:
+      - peminjaman
+    post:
+      consumes:
+      - application/json
+      description: Validasi kendaraan tersedia dan tidak ada jadwal yang bentrok.
+      parameters:
+      - description: Data pengajuan
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.PeminjamanRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: dibungkus data
+          schema:
+            $ref: '#/definitions/dto.PeminjamanResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+      security:
+      - BearerAuth: []
+      summary: Ajukan peminjaman
+      tags:
+      - peminjaman
+  /api/v1/peminjaman/{id}:
+    get:
+      parameters:
+      - description: ID peminjaman
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: dibungkus data
+          schema:
+            $ref: '#/definitions/dto.PeminjamanResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+      security:
+      - BearerAuth: []
+      summary: Detail peminjaman
+      tags:
+      - peminjaman
+  /api/v1/peminjaman/{id}/batalkan:
+    patch:
+      parameters:
+      - description: ID peminjaman
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: dibungkus data
+          schema:
+            $ref: '#/definitions/dto.PeminjamanResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+      security:
+      - BearerAuth: []
+      summary: Batalkan peminjaman
+      tags:
+      - peminjaman
+  /api/v1/peminjaman/{id}/selesai:
+    patch:
+      parameters:
+      - description: ID peminjaman
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: dibungkus data
+          schema:
+            $ref: '#/definitions/dto.PeminjamanResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+      security:
+      - BearerAuth: []
+      summary: Selesaikan peminjaman
+      tags:
+      - peminjaman
+  /api/v1/peminjaman/{id}/setujui:
+    patch:
+      parameters:
+      - description: ID peminjaman
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: dibungkus data
+          schema:
+            $ref: '#/definitions/dto.PeminjamanResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+      security:
+      - BearerAuth: []
+      summary: Setujui peminjaman
+      tags:
+      - peminjaman
+  /api/v1/peminjaman/{id}/tolak:
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID peminjaman
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Alasan penolakan
+        in: body
+        name: request
+        schema:
+          $ref: '#/definitions/dto.TolakPeminjamanRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: dibungkus data
+          schema:
+            $ref: '#/definitions/dto.PeminjamanResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+      security:
+      - BearerAuth: []
+      summary: Tolak peminjaman
+      tags:
+      - peminjaman
   /api/v1/perangkat-daerah:
     get:
       description: Mendukung search, filter is_active, sorting, dan pagination.
@@ -1106,6 +1645,79 @@ paths:
       summary: Ubah perangkat daerah
       tags:
       - perangkat-daerah
+  /api/v1/servis/{id}:
+    delete:
+      parameters:
+      - description: ID servis
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: tidak ada isi
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+      security:
+      - BearerAuth: []
+      summary: Hapus servis
+      tags:
+      - servis
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID servis
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Data servis
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.ServisRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: dibungkus data
+          schema:
+            $ref: '#/definitions/dto.ServisResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+      security:
+      - BearerAuth: []
+      summary: Ubah servis
+      tags:
+      - servis
   /health:
     get:
       description: Mengembalikan status aplikasi dan koneksi PostgreSQL.

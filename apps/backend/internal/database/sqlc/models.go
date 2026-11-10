@@ -98,7 +98,7 @@ type PerangkatDaerah struct {
 	DeletedAt  pgtype.Timestamptz
 }
 
-type Servi struct {
+type Servis struct {
 	ID          int64
 	KendaraanID int64
 	Tanggal     pgtype.Date

@@ -350,6 +350,101 @@ Body sama dengan create. Status **tidak dapat diubah** selama ada peminjaman akt
 
 ---
 
+## Peminjaman
+
+Semua endpoint memerlukan `Authorization: Bearer <token>`.
+
+| Method | Path | Akses |
+| --- | --- | --- |
+| GET | `/api/v1/peminjaman` | semua role |
+| GET | `/api/v1/peminjaman/{id}` | semua role |
+| POST | `/api/v1/peminjaman` | admin, operator |
+| PATCH | `/api/v1/peminjaman/{id}/setujui` | admin, pimpinan |
+| PATCH | `/api/v1/peminjaman/{id}/tolak` | admin, pimpinan |
+| PATCH | `/api/v1/peminjaman/{id}/selesai` | admin, operator |
+| PATCH | `/api/v1/peminjaman/{id}/batalkan` | admin, operator |
+
+Query list: `page`, `limit`, `search` (kode/keperluan/tujuan), `status`, `kendaraan_id`,
+`pegawai_id`, `dari`, `sampai` (YYYY-MM-DD atau ISO-8601), `sort`
+(`tanggal_mulai|kode_peminjaman|created_at`), `order` (default `tanggal_mulai desc`).
+
+### `POST /api/v1/peminjaman`
+
+```json
+{
+  "kendaraan_id": 5,
+  "pegawai_id": 3,
+  "keperluan": "Rapat koordinasi",
+  "tujuan": "Kantor Pusat",
+  "tanggal_mulai": "2026-12-01T08:00",
+  "tanggal_selesai": "2026-12-02T17:00",
+  "catatan": "Membawa 3 orang"
+}
+```
+
+Aturan:
+
+- `tanggal_selesai` harus setelah `tanggal_mulai`.
+- Kendaraan harus ada dan berstatus `tersedia` → selain itu `400`.
+- Jadwal yang beririsan dengan peminjaman `diajukan`/`disetujui` ditolak `409`.
+- Perangkat daerah diambil otomatis dari data pegawai.
+- Kode dibuat otomatis: `PJM-YYYYMMDD-XXXX`.
+- Sukses `201`.
+
+### Transisi status
+
+| Aksi | Status awal | Status akhir | Efek kendaraan |
+| --- | --- | --- | --- |
+| setujui | `diajukan` | `disetujui` | `digunakan` |
+| tolak | `diajukan` | `ditolak` | tidak berubah |
+| selesai | `disetujui` | `selesai` | `tersedia` |
+| batalkan | `diajukan` | `dibatalkan` | tidak berubah |
+| batalkan | `disetujui` | `dibatalkan` | `tersedia` |
+
+Transisi lain menghasilkan `409` dengan pesan status saat ini.
+
+Body `tolak` opsional:
+
+```json
+{ "catatan": "Kendaraan dipakai pimpinan" }
+```
+
+Semua aksi mengembalikan data peminjaman terbaru pada `data`.
+
+---
+
+## Servis
+
+| Method | Path | Akses |
+| --- | --- | --- |
+| GET | `/api/v1/kendaraan/{id}/servis` | semua role |
+| POST | `/api/v1/kendaraan/{id}/servis` | admin, operator |
+| PUT | `/api/v1/servis/{id}` | admin, operator |
+| DELETE | `/api/v1/servis/{id}` | admin, operator |
+
+Query list: `page`, `limit`.
+
+```json
+{
+  "tanggal": "2026-11-05",
+  "jenis": "rutin",
+  "deskripsi": "Servis rutin 50.000 km",
+  "bengkel": "Auto2000",
+  "biaya": 250000,
+  "odometer_km": 50000
+}
+```
+
+Aturan:
+
+- `tanggal` format `YYYY-MM-DD`, `jenis` salah satu `rutin|perbaikan|ganti_part`.
+- `deskripsi` wajib, `biaya` ≥ 0.
+- Kendaraan harus ada → `404` bila tidak.
+- Sukses create `201`, update `200`, delete `204` (soft delete).
+- Data diurutkan dari tanggal terbaru.
+
+---
+
 ## Akun Demo
 
 | Role | Email | Password |

@@ -447,6 +447,133 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/kendaraan/{id}/servis": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "servis"
+                ],
+                "summary": "Riwayat servis kendaraan",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID kendaraan",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Halaman (default 1)",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Jumlah per halaman (default 10, max 100)",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "dibungkus data + meta",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/dto.ServisResponse"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "servis"
+                ],
+                "summary": "Tambah servis",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID kendaraan",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Data servis",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.ServisRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "dibungkus data",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ServisResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/pegawai": {
             "get": {
                 "security": [
@@ -740,6 +867,453 @@ const docTemplate = `{
                 "responses": {
                     "204": {
                         "description": "tidak ada isi"
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/peminjaman": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Filter status/kendaraan/pegawai/rentang tanggal, sorting, dan pagination.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "peminjaman"
+                ],
+                "summary": "Daftar peminjaman",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Halaman (default 1)",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Jumlah per halaman (default 10, max 100)",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Cari kode/keperluan/tujuan",
+                        "name": "search",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "diajukan|disetujui|ditolak|selesai|dibatalkan",
+                        "name": "status",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Filter kendaraan",
+                        "name": "kendaraan_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Filter pegawai",
+                        "name": "pegawai_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Tanggal mulai (YYYY-MM-DD atau ISO-8601)",
+                        "name": "dari",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Tanggal selesai (YYYY-MM-DD atau ISO-8601)",
+                        "name": "sampai",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "tanggal_mulai|kode_peminjaman|created_at",
+                        "name": "sort",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "asc|desc",
+                        "name": "order",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "dibungkus data + meta",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/dto.PeminjamanResponse"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Validasi kendaraan tersedia dan tidak ada jadwal yang bentrok.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "peminjaman"
+                ],
+                "summary": "Ajukan peminjaman",
+                "parameters": [
+                    {
+                        "description": "Data pengajuan",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.PeminjamanRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "dibungkus data",
+                        "schema": {
+                            "$ref": "#/definitions/dto.PeminjamanResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/peminjaman/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "peminjaman"
+                ],
+                "summary": "Detail peminjaman",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID peminjaman",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "dibungkus data",
+                        "schema": {
+                            "$ref": "#/definitions/dto.PeminjamanResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/peminjaman/{id}/batalkan": {
+            "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "peminjaman"
+                ],
+                "summary": "Batalkan peminjaman",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID peminjaman",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "dibungkus data",
+                        "schema": {
+                            "$ref": "#/definitions/dto.PeminjamanResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/peminjaman/{id}/selesai": {
+            "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "peminjaman"
+                ],
+                "summary": "Selesaikan peminjaman",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID peminjaman",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "dibungkus data",
+                        "schema": {
+                            "$ref": "#/definitions/dto.PeminjamanResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/peminjaman/{id}/setujui": {
+            "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "peminjaman"
+                ],
+                "summary": "Setujui peminjaman",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID peminjaman",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "dibungkus data",
+                        "schema": {
+                            "$ref": "#/definitions/dto.PeminjamanResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/peminjaman/{id}/tolak": {
+            "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "peminjaman"
+                ],
+                "summary": "Tolak peminjaman",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID peminjaman",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Alasan penolakan",
+                        "name": "request",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/dto.TolakPeminjamanRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "dibungkus data",
+                        "schema": {
+                            "$ref": "#/definitions/dto.PeminjamanResponse"
+                        }
                     },
                     "401": {
                         "description": "Unauthorized",
@@ -1064,6 +1638,121 @@ const docTemplate = `{
                     },
                     "409": {
                         "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/servis/{id}": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "servis"
+                ],
+                "summary": "Ubah servis",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID servis",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Data servis",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.ServisRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "dibungkus data",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ServisResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "servis"
+                ],
+                "summary": "Hapus servis",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID servis",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "tidak ada isi"
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
                         "schema": {
                             "$ref": "#/definitions/response.ErrorBody"
                         }
@@ -1498,6 +2187,134 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.PeminjamanRequest": {
+            "type": "object",
+            "required": [
+                "kendaraan_id",
+                "keperluan",
+                "pegawai_id",
+                "tanggal_mulai",
+                "tanggal_selesai",
+                "tujuan"
+            ],
+            "properties": {
+                "catatan": {
+                    "type": "string",
+                    "example": "Membawa 3 orang"
+                },
+                "kendaraan_id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "keperluan": {
+                    "type": "string",
+                    "maxLength": 200,
+                    "example": "Monitoring sekolah"
+                },
+                "pegawai_id": {
+                    "type": "integer",
+                    "example": 2
+                },
+                "tanggal_mulai": {
+                    "type": "string",
+                    "example": "2026-11-15T07:00:00+07:00"
+                },
+                "tanggal_selesai": {
+                    "type": "string",
+                    "example": "2026-11-16T18:00:00+07:00"
+                },
+                "tujuan": {
+                    "type": "string",
+                    "maxLength": 200,
+                    "example": "Kecamatan Cendana"
+                }
+            }
+        },
+        "dto.PeminjamanResponse": {
+            "type": "object",
+            "properties": {
+                "catatan": {
+                    "type": "string",
+                    "example": ""
+                },
+                "created_at": {
+                    "type": "string",
+                    "example": "2026-11-10T12:00:00+07:00"
+                },
+                "disetujui_oleh": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "kendaraan_id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "kendaraan_merek": {
+                    "type": "string",
+                    "example": "Toyota"
+                },
+                "kendaraan_nomor_polisi": {
+                    "type": "string",
+                    "example": "B 1234 XYZ"
+                },
+                "kendaraan_tipe": {
+                    "type": "string",
+                    "example": "Avanza"
+                },
+                "keperluan": {
+                    "type": "string",
+                    "example": "Monitoring sekolah"
+                },
+                "kode_peminjaman": {
+                    "type": "string",
+                    "example": "PJM-20261110-0001"
+                },
+                "pegawai_id": {
+                    "type": "integer",
+                    "example": 3
+                },
+                "pegawai_nama": {
+                    "type": "string",
+                    "example": "Andi Prasetyo"
+                },
+                "penyetuju_nama": {
+                    "type": "string",
+                    "example": "Administrator"
+                },
+                "perangkat_daerah_id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "perangkat_daerah_nama": {
+                    "type": "string",
+                    "example": "Dinas Pendidikan"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "diajukan"
+                },
+                "tanggal_mulai": {
+                    "type": "string",
+                    "example": "2026-11-15T07:00:00+07:00"
+                },
+                "tanggal_selesai": {
+                    "type": "string",
+                    "example": "2026-11-16T18:00:00+07:00"
+                },
+                "tujuan": {
+                    "type": "string",
+                    "example": "Kecamatan Cendana"
+                },
+                "updated_at": {
+                    "type": "string",
+                    "example": "2026-11-10T12:00:00+07:00"
+                }
+            }
+        },
         "dto.PenggunaResponse": {
             "type": "object",
             "properties": {
@@ -1612,6 +2429,111 @@ const docTemplate = `{
                 "updated_at": {
                     "type": "string",
                     "example": "2026-11-10T12:00:00+07:00"
+                }
+            }
+        },
+        "dto.ServisRequest": {
+            "type": "object",
+            "required": [
+                "deskripsi",
+                "jenis",
+                "tanggal"
+            ],
+            "properties": {
+                "bengkel": {
+                    "type": "string",
+                    "maxLength": 100,
+                    "example": "Auto2000"
+                },
+                "biaya": {
+                    "type": "number",
+                    "minimum": 0,
+                    "example": 450000
+                },
+                "deskripsi": {
+                    "type": "string",
+                    "example": " Servis rutin 50.000 km"
+                },
+                "jenis": {
+                    "type": "string",
+                    "enum": [
+                        "rutin",
+                        "perbaikan",
+                        "ganti_part"
+                    ],
+                    "example": "rutin"
+                },
+                "odometer_km": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "example": 50000
+                },
+                "tanggal": {
+                    "type": "string",
+                    "example": "2026-11-01"
+                }
+            }
+        },
+        "dto.ServisResponse": {
+            "type": "object",
+            "properties": {
+                "bengkel": {
+                    "type": "string",
+                    "example": "Auto2000"
+                },
+                "biaya": {
+                    "type": "number",
+                    "example": 450000
+                },
+                "created_at": {
+                    "type": "string",
+                    "example": "2026-11-10T12:00:00+07:00"
+                },
+                "deskripsi": {
+                    "type": "string",
+                    "example": "Servis rutin 50.000 km"
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "jenis": {
+                    "type": "string",
+                    "example": "rutin"
+                },
+                "kendaraan_id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "merek": {
+                    "type": "string",
+                    "example": "Toyota"
+                },
+                "nomor_polisi": {
+                    "type": "string",
+                    "example": "B 1234 XYZ"
+                },
+                "odometer_km": {
+                    "type": "integer",
+                    "example": 50000
+                },
+                "tanggal": {
+                    "type": "string",
+                    "example": "2026-11-01"
+                },
+                "updated_at": {
+                    "type": "string",
+                    "example": "2026-11-10T12:00:00+07:00"
+                }
+            }
+        },
+        "dto.TolakPeminjamanRequest": {
+            "type": "object",
+            "properties": {
+                "catatan": {
+                    "type": "string",
+                    "maxLength": 500,
+                    "example": "Kendaraan sedang diperbaiki"
                 }
             }
         },
