@@ -1,0 +1,495 @@
+{
+  "bg": {
+    "primary": {
+      "$value": "{color.white}",
+      "$type": "color",
+      "$description": ""
+    },
+    "primary_hover": {
+      "$value": "{color.neutral.50}",
+      "$type": "color",
+      "$description": ""
+    },
+    "primary_inverse": {
+      "$value": "{color.neutral.950}",
+      "$type": "color",
+      "$description": ""
+    },
+    "secondary": {
+      "$value": "{color.neutral.50}",
+      "$type": "color",
+      "$description": ""
+    },
+    "secondary_hover": {
+      "$value": "{color.neutral.100}",
+      "$type": "color",
+      "$description": ""
+    },
+    "secondary_inverse": {
+      "$value": "{color.neutral.900}",
+      "$type": "color",
+      "$description": ""
+    },
+    "tertiary": {
+      "$value": "{color.neutral.100}",
+      "$type": "color",
+      "$description": ""
+    },
+    "tertiary_hover": {
+      "$value": "{color.neutral.50}",
+      "$type": "color",
+      "$description": ""
+    },
+    "tertiary_inverse": {
+      "$value": "{color.neutral.800}",
+      "$type": "color",
+      "$description": ""
+    },
+    "quaternary": {
+      "$value": "{color.neutral.200}",
+      "$type": "color",
+      "$description": ""
+    },
+    "quaternary_inverse": {
+      "$value": "{color.neutral.700}",
+      "$type": "color",
+      "$description": ""
+    },
+    "quinary": {
+      "$value": "{color.neutral.300}",
+      "$type": "color",
+      "$description": ""
+    },
+    "quinary_inverse": {
+      "$value": "{color.neutral.600}",
+      "$type": "color",
+      "$description": ""
+    },
+    "brand": {
+      "primary": {
+        "$value": "{color.brand.400}",
+        "$type": "color",
+        "$description": ""
+      },
+      "primary_hover": {
+        "$value": "{color.brand.500}",
+        "$type": "color",
+        "$description": ""
+      },
+      "secondary": {
+        "$value": "{color.brand.300}",
+        "$type": "color",
+        "$description": ""
+      },
+      "secondary_hover": {
+        "$value": "{color.brand.400}",
+        "$type": "color",
+        "$description": ""
+      },
+      "muted": {
+        "primary": {
+          "$value": "{color.brand.50}",
+          "$type": "color",
+          "$description": ""
+        },
+        "primary_hover": {
+          "$value": "{color.brand.100}",
+          "$type": "color",
+          "$description": ""
+        },
+        "secondary": {
+          "$value": "{color.brand.100}",
+          "$type": "color",
+          "$description": ""
+        },
+        "secondary_hover": {
+          "$value": "{color.brand.200}",
+          "$type": "color",
+          "$description": ""
+        }
+      }
+    },
+    "info": {
+      "primary": {
+        "$value": "{color.blue.600}",
+        "$type": "color",
+        "$description": ""
+      },
+      "secondary": {
+        "$value": "{color.blue.500}",
+        "$type": "color",
+        "$description": ""
+      },
+      "muted": {
+        "primary": {
+          "$value": "{color.blue.50}",
+          "$type": "color",
+          "$description": ""
+        },
+        "secondary": {
+          "$value": "{color.blue.100}",
+          "$type": "color",
+          "$description": ""
+        }
+      }
+    },
+    "warning": {
+      "primary": {
+        "$value": "{color.yellow.600}",
+        "$type": "color",
+        "$description": ""
+      },
+      "secondary": {
+        "$value": "{color.yellow.500}",
+        "$type": "color",
+        "$description": ""
+      },
+      "muted": {
+        "primary": {
+          "$value": "{color.yellow.50}",
+          "$type": "color",
+          "$description": ""
+        },
+        "secondary": {
+          "$value": "{color.yellow.100}",
+          "$type": "color",
+          "$description": ""
+        }
+      }
+    },
+    "error": {
+      "primary": {
+        "$value": "{color.red.600}",
+        "$type": "color",
+        "$description": ""
+      },
+      "primary_hover": {
+        "$value": "{color.red.700}",
+        "$type": "color",
+        "$description": ""
+      },
+      "secondary": {
+        "$value": "{color.red.500}",
+        "$type": "color",
+        "$description": ""
+      },
+      "muted": {
+        "primary": {
+          "$value": "{color.red.50}",
+          "$type": "color",
+          "$description": ""
+        },
+        "secondary": {
+          "$value": "{color.red.100}",
+          "$type": "color",
+          "$description": ""
+        }
+      }
+    },
+    "success": {
+      "primary": {
+        "$value": "{color.green.600}",
+        "$type": "color",
+        "$description": ""
+      },
+      "secondary": {
+        "$value": "{color.green.500}",
+        "$type": "color",
+        "$description": ""
+      },
+      "muted": {
+        "primary": {
+          "$value": "{color.green.50}",
+          "$type": "color",
+          "$description": ""
+        },
+        "secondary": {
+          "$value": "{color.green.100}",
+          "$type": "color",
+          "$description": ""
+        }
+      }
+    },
+    "primary_inverse_hover": {
+      "$value": "{color.neutral.900}",
+      "$type": "color",
+      "$description": ""
+    },
+    "secondary_inverse_hover": {
+      "$value": "{color.neutral.800}",
+      "$type": "color",
+      "$description": ""
+    },
+    "tertiary_inverse_hover": {
+      "$value": "{color.neutral.900}",
+      "$type": "color",
+      "$description": ""
+    }
+  },
+  "border": {
+    "primary": {
+      "$value": "{color.neutral.300}",
+      "$type": "color",
+      "$description": ""
+    },
+    "primary_inverse": {
+      "$value": "{color.neutral.700}",
+      "$type": "color",
+      "$description": ""
+    },
+    "secondary": {
+      "$value": "{color.neutral.200}",
+      "$type": "color",
+      "$description": ""
+    },
+    "secondary_inverse": {
+      "$value": "{color.neutral.800}",
+      "$type": "color",
+      "$description": ""
+    },
+    "tertiary": {
+      "$value": "{color.neutral.100}",
+      "$type": "color",
+      "$description": ""
+    },
+    "tertiary_inverse": {
+      "$value": "{color.neutral.900}",
+      "$type": "color",
+      "$description": ""
+    },
+    "brand": {
+      "primary": {
+        "$value": "{color.brand.400}",
+        "$type": "color",
+        "$description": ""
+      },
+      "secondary": {
+        "$value": "{color.brand.300}",
+        "$type": "color",
+        "$description": ""
+      }
+    },
+    "info": {
+      "primary": {
+        "$value": "{color.blue.500}",
+        "$type": "color",
+        "$description": ""
+      },
+      "secondary": {
+        "$value": "{color.blue.300}",
+        "$type": "color",
+        "$description": ""
+      }
+    },
+    "warning": {
+      "primary": {
+        "$value": "{color.yellow.500}",
+        "$type": "color",
+        "$description": ""
+      },
+      "secondary": {
+        "$value": "{color.yellow.300}",
+        "$type": "color",
+        "$description": ""
+      }
+    },
+    "error": {
+      "primary": {
+        "$value": "{color.red.500}",
+        "$type": "color",
+        "$description": ""
+      },
+      "secondary": {
+        "$value": "{color.red.300}",
+        "$type": "color",
+        "$description": ""
+      }
+    },
+    "success": {
+      "primary": {
+        "$value": "{color.green.500}",
+        "$type": "color",
+        "$description": ""
+      },
+      "secondary": {
+        "$value": "{color.green.300}",
+        "$type": "color",
+        "$description": ""
+      }
+    }
+  },
+  "text": {
+    "primary": {
+      "$value": "{color.neutral.900}",
+      "$type": "color",
+      "$description": ""
+    },
+    "primary_inverse": {
+      "$value": "{color.white}",
+      "$type": "color",
+      "$description": ""
+    },
+    "secondary": {
+      "$value": "{color.neutral.700}",
+      "$type": "color",
+      "$description": ""
+    },
+    "secondary_hover": {
+      "$value": "{color.neutral.800}",
+      "$type": "color",
+      "$description": ""
+    },
+    "secondary_inverse": {
+      "$value": "{color.neutral.300}",
+      "$type": "color",
+      "$description": ""
+    },
+    "tertiary": {
+      "$value": "{color.neutral.600}",
+      "$type": "color",
+      "$description": ""
+    },
+    "tertiary_hover": {
+      "$value": "{color.neutral.700}",
+      "$type": "color",
+      "$description": ""
+    },
+    "tertiary_inverse": {
+      "$value": "{color.neutral.400}",
+      "$type": "color",
+      "$description": ""
+    },
+    "quaternary": {
+      "$value": "{color.neutral.500}",
+      "$type": "color",
+      "$description": ""
+    },
+    "quaternary_hover": {
+      "$value": "{color.neutral.600}",
+      "$type": "color",
+      "$description": ""
+    },
+    "quaternary_inverse": {
+      "$value": "{color.neutral.500}",
+      "$type": "color",
+      "$description": ""
+    },
+    "quinary": {
+      "$value": "{color.neutral.400}",
+      "$type": "color",
+      "$description": ""
+    },
+    "quinary_hover": {
+      "$value": "{color.neutral.500}",
+      "$type": "color",
+      "$description": ""
+    },
+    "quinary_inverse": {
+      "$value": "{color.neutral.600}",
+      "$type": "color",
+      "$description": ""
+    },
+    "placeholder": {
+      "$value": "{color.neutral.500}",
+      "$type": "color",
+      "$description": ""
+    },
+    "brand": {
+      "primary": {
+        "$value": "{color.brand.500}",
+        "$type": "color",
+        "$description": ""
+      },
+      "secondary": {
+        "$value": "{color.brand.400}",
+        "$type": "color",
+        "$description": ""
+      }
+    },
+    "info": {
+      "primary": {
+        "$value": "{color.blue.600}",
+        "$type": "color",
+        "$description": ""
+      },
+      "secondary": {
+        "$value": "{color.blue.500}",
+        "$type": "color",
+        "$description": ""
+      }
+    },
+    "warning": {
+      "primary": {
+        "$value": "{color.yellow.600}",
+        "$type": "color",
+        "$description": ""
+      },
+      "secondary": {
+        "$value": "{color.yellow.500}",
+        "$type": "color",
+        "$description": ""
+      }
+    },
+    "error": {
+      "primary": {
+        "$value": "{color.red.600}",
+        "$type": "color",
+        "$description": ""
+      },
+      "secondary": {
+        "$value": "{color.red.500}",
+        "$type": "color",
+        "$description": ""
+      }
+    },
+    "success": {
+      "primary": {
+        "$value": "{color.green.600}",
+        "$type": "color",
+        "$description": ""
+      },
+      "secondary": {
+        "$value": "{color.green.500}",
+        "$type": "color",
+        "$description": ""
+      }
+    },
+    "link": {
+      "primary": {
+        "$value": "{color.blue.600}",
+        "$type": "color",
+        "$description": ""
+      },
+      "hover": {
+        "$value": "{color.blue.700}",
+        "$type": "color",
+        "$description": ""
+      },
+      "visited": {
+        "$value": "{color.violet.600}",
+        "$type": "color",
+        "$description": ""
+      }
+    },
+    "secondary_inverse_hover": {
+      "$value": "{color.neutral.200}",
+      "$type": "color",
+      "$description": ""
+    },
+    "tertiary_inverse_hover": {
+      "$value": "{color.neutral.300}",
+      "$type": "color",
+      "$description": ""
+    },
+    "quaternary_inverse_hover": {
+      "$value": "{color.neutral.400}",
+      "$type": "color",
+      "$description": ""
+    },
+    "quinary_inverse_hover": {
+      "$value": "{color.neutral.500}",
+      "$type": "color",
+      "$description": ""
+    }
+  }
+}

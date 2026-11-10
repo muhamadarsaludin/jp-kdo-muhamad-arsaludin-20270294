@@ -1,0 +1,22 @@
+{
+  "name": "@kdo/design-tokens",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    "./primitives.css": "./output/web/primitives.css",
+    "./semantics.css": "./output/web/semantics.css",
+    "./utilities.css": "./output/web/utilities.css"
+  },
+  "scripts": {
+    "generate": "node build-tokens.ts",
+    "lint": "biome check .",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.0",
+    "style-dictionary": "^5.5.2",
+    "typescript": "^5.9.2"
+  }
+}

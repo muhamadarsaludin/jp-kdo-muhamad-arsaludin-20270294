@@ -1,0 +1,14 @@
+.indeterminate {
+  width: 40%;
+  animation: progress-bar-indeterminate 1.4s ease-in-out infinite;
+}
+
+@keyframes progress-bar-indeterminate {
+  0% {
+    transform: translateX(-110%);
+  }
+
+  100% {
+    transform: translateX(360%);
+  }
+}

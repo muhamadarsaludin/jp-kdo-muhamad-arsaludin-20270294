@@ -1,0 +1,5 @@
+{
+  "tokenSetOrder": ["primitives", "semantics-light", "semantics-dark", "utilities-light", "utilities-dark"],
+  "activeThemes": ["/light"],
+  "activeSets": ["utilities-light", "primitives", "semantics-light"]
+}

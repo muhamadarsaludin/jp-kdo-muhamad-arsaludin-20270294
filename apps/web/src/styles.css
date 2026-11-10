@@ -1,0 +1,31 @@
+@import "@fontsource-variable/outfit";
+@import "tailwindcss";
+@import "@kdo/design-tokens/primitives.css";
+@import "@kdo/design-tokens/semantics.css";
+@import "@kdo/design-tokens/utilities.css";
+
+@source "../../../packages/components/src";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: "Outfit", ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    color-scheme: light;
+  }
+
+  body {
+    margin: 0;
+    background-color: var(--color-bg-secondary);
+    color: var(--color-text-primary);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+}

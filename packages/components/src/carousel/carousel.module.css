@@ -1,0 +1,45 @@
+/* Dynamic indicator: the active pill's fill sweeps from zero to full over the
+   autoplay interval. Duration is set inline (animation-duration), so only the
+   keyframes and transform origin live here. transform (not width) keeps it on
+   the compositor. */
+.progressX {
+  transform-origin: left center;
+  animation-name: carousel-progress-x;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+
+.progressY {
+  transform-origin: center top;
+  animation-name: carousel-progress-y;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+
+@keyframes carousel-progress-x {
+  from {
+    transform: scaleX(0);
+  }
+
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes carousel-progress-y {
+  from {
+    transform: scaleY(0);
+  }
+
+  to {
+    transform: scaleY(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .progressX,
+  .progressY {
+    animation: none;
+    transform: none;
+  }
+}

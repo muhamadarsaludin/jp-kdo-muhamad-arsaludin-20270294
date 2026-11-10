@@ -1,0 +1,26 @@
+[
+  {
+    "id": "6068bdd9-d384-8098-8008-9dd502eced07",
+    "name": "light",
+    "group": "",
+    "description": "",
+    "isSource": false,
+    "selectedTokenSets": {
+      "utilities-light": "enabled",
+      "primitives": "enabled",
+      "semantics-light": "enabled"
+    }
+  },
+  {
+    "id": "6068bdd9-d384-8098-8008-9dd50dafba4f",
+    "name": "dark",
+    "group": "",
+    "description": "",
+    "isSource": false,
+    "selectedTokenSets": {
+      "utilities-dark": "enabled",
+      "primitives": "enabled",
+      "semantics-dark": "enabled"
+    }
+  }
+]

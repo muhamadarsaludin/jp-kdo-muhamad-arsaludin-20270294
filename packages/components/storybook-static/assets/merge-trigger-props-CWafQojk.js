@@ -1,0 +1,3 @@
+import{n as e}from"./rolldown-runtime-sJBDdmOt.js";import{O as t}from"./iframe-DVRGbldE.js";function n(e,t){if(!(0,r.isValidElement)(e))return e;let n=e.props,i=[t[`aria-describedby`],n[`aria-describedby`]].filter(e=>typeof e==`string`&&e.length>0).join(` `),a={...t,...n};return i!==``&&(a[`aria-describedby`]=i),(0,r.cloneElement)(e,a)}var r;function i(){return(i=e((()=>{r=t(),n.__docgenInfo={description:`Injects interaction props into the actual trigger element. The element's
+own props win so a consumer can override any state it owns; \`aria-describedby\`
+is merged because both a consumer description and a tooltip can be valid.`,methods:[],displayName:`mergeTriggerProps`}})))()}export{n,i as t};

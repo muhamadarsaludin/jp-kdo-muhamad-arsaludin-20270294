@@ -1,0 +1,48 @@
+.spinner {
+  animation: spinner-rotate 1.6s linear infinite;
+  transform-origin: center center;
+  transition: all 0.5s ease-in-out;
+  transform: rotate(90deg);
+}
+
+.spinner__track {
+  animation: spinner-track 1.6s linear infinite;
+  stroke-linecap: round;
+}
+
+.spinner__highlight {
+  animation: spinner-highlight 1.6s linear infinite;
+  stroke-linecap: round;
+}
+
+@keyframes spinner-rotate {
+  100% {
+    transform: rotate(450deg);
+  }
+}
+
+@keyframes spinner-track {
+  0% {
+    stroke-dasharray: 1, 200;
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dasharray: 100, 200;
+    stroke-dashoffset: -120px;
+  }
+}
+
+@keyframes spinner-highlight {
+  0% {
+    stroke-dasharray: 1, 200;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 50, 200;
+    stroke-dashoffset: -15px;
+  }
+  100% {
+    stroke-dasharray: 50, 200;
+    stroke-dashoffset: -124px;
+  }
+}
