@@ -1,3 +1,4 @@
+import { Avatar, Button } from "@kdo/components";
 import {
   Building2,
   Car,
@@ -8,8 +9,6 @@ import {
   Wrench,
 } from "lucide-react";
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
-
-import { Avatar, Button } from "@kdo/components";
 
 import { useAuth } from "@/auth/AuthProvider";
 
@@ -80,7 +79,9 @@ export function AppLayout() {
           <div className="flex items-center gap-2 rounded-lg px-2 py-2">
             <Avatar name={user?.nama ?? "Pengguna"} size="sm" />
             <div className="min-w-0 flex-1 leading-tight">
-              <p className="truncate font-medium text-primary text-sm">{user?.nama ?? "Pengguna"}</p>
+              <p className="truncate font-medium text-primary text-sm">
+                {user?.nama ?? "Pengguna"}
+              </p>
               <p className="truncate text-tertiary text-xs capitalize">{user?.role ?? "-"}</p>
             </div>
             <Button size="xs" variant="text" color="neutral" onClick={keluar} aria-label="Keluar">

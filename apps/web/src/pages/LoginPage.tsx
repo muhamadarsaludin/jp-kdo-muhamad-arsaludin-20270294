@@ -1,8 +1,7 @@
-import { useState } from "react";
-import { Car } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-
 import { Button, Card, Input } from "@kdo/components";
+import { Car } from "lucide-react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { useAuth } from "@/auth/AuthProvider";
 import { pesanError } from "@/lib/api";
@@ -75,7 +74,9 @@ export function LoginPage() {
             </div>
 
             {error ? (
-              <p className="rounded-lg bg-error-muted-primary px-3 py-2 text-error-primary text-sm">{error}</p>
+              <p className="rounded-lg bg-error-muted-primary px-3 py-2 text-error-primary text-sm">
+                {error}
+              </p>
             ) : null}
 
             <Button type="submit" size="lg" fullWidth loading={loading}>
@@ -84,9 +85,7 @@ export function LoginPage() {
           </form>
         </Card>
 
-        <p className="mt-4 text-center text-tertiary text-xs">
-          Demo: admin@kdo.go.id / admin123
-        </p>
+        <p className="mt-4 text-center text-tertiary text-xs">Demo: admin@kdo.go.id / admin123</p>
       </div>
     </div>
   );

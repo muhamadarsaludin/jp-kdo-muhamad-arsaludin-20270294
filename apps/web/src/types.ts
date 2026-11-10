@@ -68,3 +68,40 @@ export interface LoginResult {
   expires_at: string;
   user: Pengguna;
 }
+
+export interface Kendaraan {
+  id: number;
+  nomor_polisi: string;
+  nomor_rangka: string;
+  nomor_mesin: string;
+  merek: string;
+  tipe: string;
+  tahun_produksi: number;
+  warna: string;
+  jenis: "motor" | "mobil" | "minibus" | "pickup" | "ambulans";
+  bahan_bakar: "bensin" | "solar" | "listrik" | "hybrid";
+  kapasitas_cc: number | null;
+  odometer_km: number;
+  kondisi: "baik" | "rusak_ringan" | "rusak_berat";
+  status: "tersedia" | "digunakan" | "perbaikan" | "dihapuskan";
+  tanggal_pajak: string;
+  tanggal_stnk: string;
+  perangkat_daerah_id: number;
+  perangkat_daerah_nama: string;
+  penanggung_jawab_id: number | null;
+  penanggung_jawab_nama: string;
+  foto_url: string;
+  keterangan: string;
+}
+
+export interface OpsiOpd {
+  id: number;
+  kode: string;
+  nama: string;
+}
+
+export interface OpsiPegawai {
+  id: number;
+  nip: string;
+  nama: string;
+}

@@ -1,3 +1,5 @@
+import { cn } from "@kdo/utils";
+import { ChevronDown } from "lucide-react";
 import {
   cloneElement,
   forwardRef,
@@ -11,9 +13,6 @@ import {
   useState,
 } from "react";
 
-import { cn } from "@kdo/utils";
-import { ChevronDown } from "lucide-react";
-
 import { Button } from "../button/button";
 import type { ButtonProps } from "../button/button.type";
 import { Popover } from "../popover/popover";
@@ -22,7 +21,15 @@ import type { DropdownProps } from "./dropdown.type";
 import { DropdownContext, focusDropdownTrigger } from "./dropdown-context";
 import { DropdownItem } from "./dropdown-item";
 
-function DropdownMenu({ label, className, children }: { label?: string; className?: string; children?: ReactNode }) {
+function DropdownMenu({
+  label,
+  className,
+  children,
+}: {
+  label?: string;
+  className?: string;
+  children?: ReactNode;
+}) {
   const menuRef = useRef<HTMLDivElement | null>(null);
 
   const menuItems = useCallback(() => {
@@ -39,7 +46,9 @@ function DropdownMenu({ label, className, children }: { label?: string; classNam
   // present, otherwise the first item.
   // biome-ignore lint/correctness/useExhaustiveDependencies: intentional mount-only effect; re-running while open would steal focus mid-interaction.
   useEffect(() => {
-    const selected = menuRef.current?.querySelector<HTMLElement>('[role="menuitemradio"][aria-checked="true"]');
+    const selected = menuRef.current?.querySelector<HTMLElement>(
+      '[role="menuitemradio"][aria-checked="true"]',
+    );
     (selected ?? menuItems()[0])?.focus();
   }, []);
 
@@ -173,10 +182,15 @@ const DropdownRoot = forwardRef<HTMLDivElement, DropdownProps>(function Dropdown
   };
 
   const enhancedTrigger =
-    isValidElement<ButtonProps>(trigger) && trigger.type === Button && trigger.props.endContent === undefined
+    isValidElement<ButtonProps>(trigger) &&
+    trigger.type === Button &&
+    trigger.props.endContent === undefined
       ? cloneElement(trigger as ReactElement<ButtonProps>, {
           endContent: (
-            <ChevronDown aria-hidden="true" className={cn("transition-transform", isOpen && "-rotate-180")} />
+            <ChevronDown
+              aria-hidden="true"
+              className={cn("transition-transform", isOpen && "-rotate-180")}
+            />
           ),
         })
       : trigger;

@@ -52,7 +52,17 @@ export function cropImageToBlob(
       reject(new Error("Canvas 2D context is not available"));
       return;
     }
-    context.drawImage(image, rect.sx, rect.sy, rect.sWidth, rect.sHeight, 0, 0, canvas.width, canvas.height);
+    context.drawImage(
+      image,
+      rect.sx,
+      rect.sy,
+      rect.sWidth,
+      rect.sHeight,
+      0,
+      0,
+      canvas.width,
+      canvas.height,
+    );
     canvas.toBlob(
       (blob) => {
         if (blob) resolve(blob);

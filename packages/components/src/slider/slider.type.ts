@@ -5,7 +5,10 @@ import type { SliderColor, SliderOrientation } from "./slider.variants";
 
 export type SliderValue = number | number[];
 
-export type SliderProps = Omit<ComponentPropsWithoutRef<"div">, "children" | "defaultValue" | "onChange"> & {
+export type SliderProps = Omit<
+  ComponentPropsWithoutRef<"div">,
+  "children" | "defaultValue" | "onChange"
+> & {
   /** Single value, or `[min, max]` for a two-thumb range slider. */
   value?: SliderValue;
   defaultValue?: SliderValue;

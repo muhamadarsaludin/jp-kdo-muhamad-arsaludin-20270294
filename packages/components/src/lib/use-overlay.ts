@@ -8,7 +8,12 @@ import {
 } from "react";
 
 import { focusableElements, focusFirst } from "./focus";
-import { isTopOverlayLayer, lockBodyScroll, unlockBodyScroll, useOverlayLayer } from "./overlay-stack";
+import {
+  isTopOverlayLayer,
+  lockBodyScroll,
+  unlockBodyScroll,
+  useOverlayLayer,
+} from "./overlay-stack";
 
 export type UseOverlayOptions = {
   open?: boolean;

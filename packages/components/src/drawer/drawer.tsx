@@ -1,3 +1,4 @@
+import { cn } from "@kdo/utils";
 import {
   type CSSProperties,
   forwardRef,
@@ -8,8 +9,6 @@ import {
   useRef,
   useState,
 } from "react";
-
-import { cn } from "@kdo/utils";
 import { createPortal } from "react-dom";
 
 import { OverlayContext } from "../lib/overlay-context";
@@ -31,7 +30,10 @@ const hiddenPositions: Record<DrawerPosition, string> = {
   right: "translate-x-full",
 };
 
-function drawerSizeStyle(position: DrawerPosition, size: number | string | undefined): CSSProperties {
+function drawerSizeStyle(
+  position: DrawerPosition,
+  size: number | string | undefined,
+): CSSProperties {
   if (size === undefined) return {};
   const value = typeof size === "number" ? `${size}px` : size;
   return position === "left" || position === "right" ? { width: value } : { height: value };

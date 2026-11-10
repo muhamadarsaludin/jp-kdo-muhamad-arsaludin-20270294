@@ -56,9 +56,11 @@ export function formatDateTimeValue(
 ): string {
   if (value.date === null) return "";
 
-  const dateText = new Intl.DateTimeFormat(locale, { day: "numeric", month: "short", year: "numeric" }).format(
-    value.date,
-  );
+  const dateText = new Intl.DateTimeFormat(locale, {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  }).format(value.date);
   const timeText = formatTimeValue(value.time, format);
 
   return timeText === "" ? dateText : `${dateText}, ${timeText}`;
@@ -90,7 +92,8 @@ export function parseDateTimeInput(text: string): DateTimeValue | null {
   const year = yearText.length === 2 ? 2000 + Number(yearText) : Number(yearText);
   const date = new Date(year, month - 1, day);
 
-  if (date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day) return null;
+  if (date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day)
+    return null;
 
   const timeText = match[4]?.trim() ?? "";
   const time = timeText === "" ? null : parseTimeInput(timeText);

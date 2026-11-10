@@ -1,6 +1,5 @@
-import type { ReactNode } from "react";
-
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import type { ReactNode } from "react";
 
 import { Button } from "../button/button";
 import type { DatePickerLabels, DatePickerLocale, DatePickerView } from "./date-picker.type";
@@ -84,7 +83,10 @@ export function DatePickerHeader({
       >
         <ChevronLeft aria-hidden="true" />
       </Button.Icon>
-      <div aria-live="polite" className="flex min-w-0 flex-1 items-center justify-center whitespace-nowrap">
+      <div
+        aria-live="polite"
+        className="flex min-w-0 flex-1 items-center justify-center whitespace-nowrap"
+      >
         {title}
       </div>
       <Button.Icon

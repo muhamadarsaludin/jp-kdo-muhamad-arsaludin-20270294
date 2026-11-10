@@ -1,6 +1,12 @@
-import { type KeyboardEvent as ReactKeyboardEvent, useCallback, useEffect, useId, useRef, useState } from "react";
-
 import { cn } from "@kdo/utils";
+import {
+  type KeyboardEvent as ReactKeyboardEvent,
+  useCallback,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+} from "react";
 
 import type { TimePickerColumnOption } from "./time-picker-option";
 
@@ -36,7 +42,11 @@ function nearestEnabled(options: TimePickerColumnOption[], index: number): numbe
   return null;
 }
 
-function stepEnabled(options: TimePickerColumnOption[], from: number, direction: 1 | -1): number | null {
+function stepEnabled(
+  options: TimePickerColumnOption[],
+  from: number,
+  direction: 1 | -1,
+): number | null {
   if (options.length === 0) return null;
   for (let step = 1; step <= options.length; step += 1) {
     const index = (from + direction * step + options.length) % options.length;
@@ -53,7 +63,14 @@ function wheelOptionClass(option: TimePickerColumnOption, isActive: boolean): st
   return cn(base, "cursor-pointer text-primary");
 }
 
-export function TimeWheel({ options, ariaLabel, valueKey, onSelect, autoFocus = false, className }: TimeWheelProps) {
+export function TimeWheel({
+  options,
+  ariaLabel,
+  valueKey,
+  onSelect,
+  autoFocus = false,
+  className,
+}: TimeWheelProps) {
   const id = useId();
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const settleTimer = useRef<number | null>(null);
@@ -155,7 +172,9 @@ export function TimeWheel({ options, ariaLabel, valueKey, onSelect, autoFocus = 
       ref={scrollRef}
       role="listbox"
       aria-label={ariaLabel}
-      aria-activedescendant={options[activeIndex] === undefined ? undefined : `${id}-${options[activeIndex].key}`}
+      aria-activedescendant={
+        options[activeIndex] === undefined ? undefined : `${id}-${options[activeIndex].key}`
+      }
       tabIndex={0}
       onScroll={handleScroll}
       onWheel={() => {

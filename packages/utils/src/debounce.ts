@@ -36,7 +36,10 @@ export interface DebouncedFunction<F extends (...args: never[]) => unknown> {
  *
  * search.cancel(); // drop the pending call entirely
  */
-export function debounce<F extends (...args: never[]) => unknown>(fn: F, wait = 0): DebouncedFunction<F> {
+export function debounce<F extends (...args: never[]) => unknown>(
+  fn: F,
+  wait = 0,
+): DebouncedFunction<F> {
   let timeout: ReturnType<typeof setTimeout> | undefined;
   let lastArgs: Parameters<F> | undefined;
   let lastThis: unknown;

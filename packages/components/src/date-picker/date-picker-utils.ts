@@ -25,7 +25,11 @@ export function daysInMonth(year: number, month: number): number {
 
 export function isSameDay(a: Date | null | undefined, b: Date | null | undefined): boolean {
   if (a === null || a === undefined || b === null || b === undefined) return false;
-  return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+  return (
+    a.getFullYear() === b.getFullYear() &&
+    a.getMonth() === b.getMonth() &&
+    a.getDate() === b.getDate()
+  );
 }
 
 export function isSameMonth(a: Date, b: Date): boolean {
@@ -61,7 +65,12 @@ export function isBeforeMonth(a: Date, b: Date): boolean {
   return startOfMonth(a).getTime() < startOfMonth(b).getTime();
 }
 
-export function isMonthOutsideBounds(year: number, month: number, minDate?: Date, maxDate?: Date): boolean {
+export function isMonthOutsideBounds(
+  year: number,
+  month: number,
+  minDate?: Date,
+  maxDate?: Date,
+): boolean {
   const monthStart = new Date(year, month, 1);
   const monthEnd = new Date(year, month, daysInMonth(year, month));
   if (minDate !== undefined && isBeforeDay(monthEnd, minDate)) return true;
@@ -100,7 +109,9 @@ export function isDayInRange(day: Date, start: Date | null, end: Date | null): b
 
 export function holidayDateKeys(holidays?: DatePickerHolidayInput[]): Set<string> {
   return new Set(
-    (holidays ?? []).map((holiday) => dateKey(startOfDay(holiday instanceof Date ? holiday : holiday.date))),
+    (holidays ?? []).map((holiday) =>
+      dateKey(startOfDay(holiday instanceof Date ? holiday : holiday.date)),
+    ),
   );
 }
 
@@ -113,7 +124,11 @@ function isWorkday(date: Date, holidayKeys: ReadonlySet<string>): boolean {
  * Returns the date of the Nth working day on/after `start`, skipping weekends
  * and holidays. The scan is capped so a pathological holiday set cannot hang.
  */
-export function addWorkdays(start: Date, count: number, holidayKeys: ReadonlySet<string> = NO_HOLIDAYS): Date | null {
+export function addWorkdays(
+  start: Date,
+  count: number,
+  holidayKeys: ReadonlySet<string> = NO_HOLIDAYS,
+): Date | null {
   if (!Number.isFinite(count)) return null;
 
   let remaining = Math.max(Math.trunc(count), 1);
@@ -239,7 +254,8 @@ export function findActiveRangePreset(
 
     const resolved = resolvePresetRange(preset, anchor, minDate, maxDate, holidayKeys);
     if (resolved === null) continue;
-    if (sameOptionalDay(resolved.start, range.start) && sameOptionalDay(resolved.end, range.end)) return index;
+    if (sameOptionalDay(resolved.start, range.start) && sameOptionalDay(resolved.end, range.end))
+      return index;
   }
   return null;
 }

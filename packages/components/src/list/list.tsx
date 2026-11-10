@@ -1,3 +1,4 @@
+import { cn } from "@kdo/utils";
 import {
   type KeyboardEvent as ReactKeyboardEvent,
   type ReactNode,
@@ -10,8 +11,6 @@ import {
   useRef,
   useState,
 } from "react";
-
-import { cn } from "@kdo/utils";
 
 import type {
   FlatListRow,
@@ -120,7 +119,10 @@ export function List<T extends ListItemData = ListItemData>({
   const resolvedIndicator = resolveIndicator(selectionMode, selectionIndicator);
 
   const [internalSelected, setInternalSelected] = useState<ListKey[]>(defaultSelectedKeys);
-  const selected = useMemo(() => toKeySet(selectedKeys ?? internalSelected), [selectedKeys, internalSelected]);
+  const selected = useMemo(
+    () => toKeySet(selectedKeys ?? internalSelected),
+    [selectedKeys, internalSelected],
+  );
 
   const [internalActive, setInternalActive] = useState<ListKey | undefined>(defaultActiveKey);
   const active = activeKey ?? internalActive;
@@ -150,12 +152,21 @@ export function List<T extends ListItemData = ListItemData>({
     const fresh = parents.filter((key) => !seen.has(key));
     for (const key of parents) seen.add(key);
     if (defaultExpanded && fresh.length > 0) {
-      setInternalExpanded((previous) => [...previous, ...fresh.filter((key) => !previous.includes(key))]);
+      setInternalExpanded((previous) => [
+        ...previous,
+        ...fresh.filter((key) => !previous.includes(key)),
+      ]);
     }
   }, [items, expandedKeys, defaultExpandedKeys, defaultExpanded]);
-  const expanded = useMemo(() => toKeySet(expandedKeys ?? internalExpanded), [expandedKeys, internalExpanded]);
+  const expanded = useMemo(
+    () => toKeySet(expandedKeys ?? internalExpanded),
+    [expandedKeys, internalExpanded],
+  );
 
-  const rows = useMemo(() => flattenListItems(items, { expanded, groupBy }), [items, expanded, groupBy]);
+  const rows = useMemo(
+    () => flattenListItems(items, { expanded, groupBy }),
+    [items, expanded, groupBy],
+  );
   // Separators render as standalone divider rows (a hairline `div` with no
   // radius) instead of a `border-t` on the rounded row, whose border would
   // follow the corner radius. Dividers sit between two item rows only — never
@@ -265,7 +276,16 @@ export function List<T extends ListItemData = ListItemData>({
       else if (childItems(row.item).length > 0) toggleExpand(row.item.key);
       onItemAction?.(row.item);
     },
-    [disabled, highlight, setActiveKey, selectable, selectOnRowClick, toggleSelect, toggleExpand, onItemAction],
+    [
+      disabled,
+      highlight,
+      setActiveKey,
+      selectable,
+      selectOnRowClick,
+      toggleSelect,
+      toggleExpand,
+      onItemAction,
+    ],
   );
 
   const rowNodes = useRef(new Map<number, HTMLElement | null>());
@@ -297,7 +317,9 @@ export function List<T extends ListItemData = ListItemData>({
   }, []);
   const firstFocusable = focusableIndices[0] ?? -1;
   const tabbableIndex =
-    roving && focusedIndex !== null && focusableIndices.includes(focusedIndex) ? focusedIndex : firstFocusable;
+    roving && focusedIndex !== null && focusableIndices.includes(focusedIndex)
+      ? focusedIndex
+      : firstFocusable;
 
   const handleRowKeyDown = useCallback(
     (flatIndex: number, event: ReactKeyboardEvent) => {
@@ -311,7 +333,10 @@ export function List<T extends ListItemData = ListItemData>({
       }
       if (event.key === "Home" || event.key === "End") {
         event.preventDefault();
-        const target = event.key === "Home" ? focusableIndices[0] : focusableIndices[focusableIndices.length - 1];
+        const target =
+          event.key === "Home"
+            ? focusableIndices[0]
+            : focusableIndices[focusableIndices.length - 1];
         if (target !== undefined) focusRow(target);
         return;
       }
@@ -406,7 +431,10 @@ export function List<T extends ListItemData = ListItemData>({
           const measuredHeight = node.getBoundingClientRect().height ?? 0;
           if (measuredHeight > 0) next.set(rowHeightKey(row), measuredHeight);
         }
-        if (next.size === previous.size && [...next].every(([key, value]) => previous.get(key) === value)) {
+        if (
+          next.size === previous.size &&
+          [...next].every(([key, value]) => previous.get(key) === value)
+        ) {
           return previous;
         }
         return next;
@@ -430,7 +458,14 @@ export function List<T extends ListItemData = ListItemData>({
       // no radius, so the line stays straight unlike a `border-t` on the
       // rounded row.
       if (!windowed) {
-        return <hr key={row.key} role="presentation" data-slot="separator" className="mx-2 border-primary border-t" />;
+        return (
+          <hr
+            key={row.key}
+            role="presentation"
+            data-slot="separator"
+            className="mx-2 border-primary border-t"
+          />
+        );
       }
       return (
         <div
@@ -493,7 +528,8 @@ export function List<T extends ListItemData = ListItemData>({
     // Every enabled row is tabbable so Tab walks row-to-row in DOM order;
     // disabled rows (and dividers/headers) stay out of the tab order.
     let tabIndex: number | undefined;
-    if (focusableIndices.includes(flatIndex)) tabIndex = roving && flatIndex !== tabbableIndex ? -1 : 0;
+    if (focusableIndices.includes(flatIndex))
+      tabIndex = roving && flatIndex !== tabbableIndex ? -1 : 0;
 
     // Custom rows draw their own divider via `context.separator`; default
     // rows rely on the standalone divider rows above.
@@ -593,7 +629,9 @@ export function List<T extends ListItemData = ListItemData>({
   } else if (windowed) {
     body = (
       <div data-slot="virtual-spacer" style={{ position: "relative", height: totalHeight }}>
-        {displayRows.slice(visible.start, visible.end).map((row, index) => renderRow(row, visible.start + index))}
+        {displayRows
+          .slice(visible.start, visible.end)
+          .map((row, index) => renderRow(row, visible.start + index))}
       </div>
     );
   } else {

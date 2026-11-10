@@ -1,4 +1,10 @@
-export { Carousel, CarouselControl, CarouselIndicator, CarouselItem, CarouselTrack } from "./carousel";
+export {
+  Carousel,
+  CarouselControl,
+  CarouselIndicator,
+  CarouselItem,
+  CarouselTrack,
+} from "./carousel";
 export type {
   CarouselControlProps,
   CarouselIndicatorProps,
@@ -6,5 +12,9 @@ export type {
   CarouselProps,
   CarouselTrackProps,
 } from "./carousel.type";
-export type { CarouselColor, CarouselIndicatorVariant, CarouselOrientation } from "./carousel.variants";
+export type {
+  CarouselColor,
+  CarouselIndicatorVariant,
+  CarouselOrientation,
+} from "./carousel.variants";
 export { useCarousel, useCarouselContext } from "./carousel-context";

@@ -1,7 +1,6 @@
-import { Children, forwardRef, useContext, useState } from "react";
-
 import { cn, getInitials } from "@kdo/utils";
 import { UserRound } from "lucide-react";
+import { Children, forwardRef, useContext, useState } from "react";
 
 import type { AvatarGroupProps, AvatarProps } from "./avatar.type";
 import {
@@ -24,7 +23,20 @@ const STATUS_LABELS: Record<AvatarStatus, string> = {
 };
 
 const AvatarRoot = forwardRef<HTMLSpanElement, AvatarProps>(function AvatarRoot(
-  { src, alt, name = "", fallback, size, shape = "circle", color, status, statusLabel, className, children, ...props },
+  {
+    src,
+    alt,
+    name = "",
+    fallback,
+    size,
+    shape = "circle",
+    color,
+    status,
+    statusLabel,
+    className,
+    children,
+    ...props
+  },
   ref,
 ) {
   const groupSize = useContext(AvatarGroupContext);

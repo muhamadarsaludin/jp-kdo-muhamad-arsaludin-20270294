@@ -1,3 +1,5 @@
+import { cn } from "@kdo/utils";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import {
   forwardRef,
   type KeyboardEvent as ReactKeyboardEvent,
@@ -8,9 +10,6 @@ import {
   useRef,
   useState,
 } from "react";
-
-import { cn } from "@kdo/utils";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import { Button } from "../button";
 import { useIsomorphicLayoutEffect } from "../lib/floating-tray";
@@ -109,7 +108,9 @@ const TabsRoot = forwardRef<HTMLDivElement, TabsProps>(function TabsRoot(
         data-variant={variant}
         className={cn(
           "flex min-w-0",
-          orientation === "horizontal" ? cn("flex-col", variant === "fluid" ? "gap-0" : "gap-3") : "flex-row gap-6",
+          orientation === "horizontal"
+            ? cn("flex-col", variant === "fluid" ? "gap-0" : "gap-3")
+            : "flex-row gap-6",
           className,
         )}
         {...props}
@@ -141,9 +142,11 @@ function useScrollEdges(viewportRef: RefObject<HTMLDivElement | null>, enabled: 
     if (el === null) return;
     measure();
     el.addEventListener("scroll", measure, { passive: true });
-    const resizeObserver = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(measure);
+    const resizeObserver =
+      typeof ResizeObserver === "undefined" ? null : new ResizeObserver(measure);
     resizeObserver?.observe(el);
-    const mutationObserver = typeof MutationObserver === "undefined" ? null : new MutationObserver(() => measure());
+    const mutationObserver =
+      typeof MutationObserver === "undefined" ? null : new MutationObserver(() => measure());
     mutationObserver?.observe(el, { childList: true, subtree: true });
     window.addEventListener("resize", measure);
     return () => {
@@ -187,7 +190,10 @@ export const TabsList = forwardRef<HTMLDivElement, TabsListProps>(function TabsL
     <div
       ref={ref}
       data-slot="tabs-list"
-      className={cn(tabsListClass(variant, orientation, { noBackground, noBorder, width, shape }), className)}
+      className={cn(
+        tabsListClass(variant, orientation, { noBackground, noBorder, width, shape }),
+        className,
+      )}
       {...props}
     >
       <div
@@ -234,7 +240,17 @@ export const TabsList = forwardRef<HTMLDivElement, TabsListProps>(function TabsL
 TabsList.displayName = "Tabs.List";
 
 export const TabsTab = forwardRef<HTMLButtonElement, TabsTabProps>(function TabsTab(
-  { value, disabled = false, startContent, endContent, className, children, onClick, onKeyDown, ...props },
+  {
+    value,
+    disabled = false,
+    startContent,
+    endContent,
+    className,
+    children,
+    onClick,
+    onKeyDown,
+    ...props
+  },
   ref,
 ) {
   const {
@@ -253,7 +269,8 @@ export const TabsTab = forwardRef<HTMLButtonElement, TabsTabProps>(function Tabs
   const selected = activeValue === value;
   const isDisabled = disabled || rootDisabled;
   const horizontal = orientation === "horizontal";
-  const hasLabel = children !== undefined && children !== null && children !== "" && children !== false;
+  const hasLabel =
+    children !== undefined && children !== null && children !== "" && children !== false;
 
   const handleClick = (event: ReactMouseEvent<HTMLButtonElement>) => {
     onClick?.(event);

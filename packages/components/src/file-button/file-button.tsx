@@ -18,7 +18,14 @@ export function FileButton({
   onError,
   ...buttonProps
 }: FileButtonProps) {
-  const { getInputProps, open } = useFileSelect({ accept, maxBytes, multiple, disabled, onFiles, onError });
+  const { getInputProps, open } = useFileSelect({
+    accept,
+    maxBytes,
+    multiple,
+    disabled,
+    onFiles,
+    onError,
+  });
 
   return (
     <>

@@ -1,6 +1,5 @@
-import { forwardRef, useCallback, useContext, useEffect, useId, useRef, useState } from "react";
-
 import { cn } from "@kdo/utils";
+import { forwardRef, useCallback, useContext, useEffect, useId, useRef, useState } from "react";
 
 import type {
   FieldContentProps,
@@ -61,7 +60,11 @@ const FieldRoot = forwardRef<HTMLDivElement, FieldProps>(function FieldRoot(
         separator,
       }}
     >
-      <div ref={ref} className={cn(fieldVariants({ orientation, alignment }), className)} {...props}>
+      <div
+        ref={ref}
+        className={cn(fieldVariants({ orientation, alignment }), className)}
+        {...props}
+      >
         {children}
       </div>
     </FieldContext.Provider>
@@ -113,31 +116,29 @@ FieldLabel.displayName = "Field.Label";
 // -----------------------------------------------------------------------------
 // Field.StartContent
 // -----------------------------------------------------------------------------
-const FieldStartContent = forwardRef<HTMLDivElement, FieldStartContentProps>(function FieldStartContent(
-  { className, children, ...props },
-  ref,
-) {
-  return (
-    <div ref={ref} className={cn("flex shrink-0 items-center gap-1", className)} {...props}>
-      {children}
-    </div>
-  );
-});
+const FieldStartContent = forwardRef<HTMLDivElement, FieldStartContentProps>(
+  function FieldStartContent({ className, children, ...props }, ref) {
+    return (
+      <div ref={ref} className={cn("flex shrink-0 items-center gap-1", className)} {...props}>
+        {children}
+      </div>
+    );
+  },
+);
 FieldStartContent.displayName = "Field.StartContent";
 
 // -----------------------------------------------------------------------------
 // Field.EndAddOnContent
 // -----------------------------------------------------------------------------
-const FieldEndAddOnContent = forwardRef<HTMLDivElement, FieldEndAddOnContentProps>(function FieldEndAddOnContent(
-  { className, children, ...props },
-  ref,
-) {
-  return (
-    <div ref={ref} className={cn("flex shrink-0 items-center gap-1", className)} {...props}>
-      {children}
-    </div>
-  );
-});
+const FieldEndAddOnContent = forwardRef<HTMLDivElement, FieldEndAddOnContentProps>(
+  function FieldEndAddOnContent({ className, children, ...props }, ref) {
+    return (
+      <div ref={ref} className={cn("flex shrink-0 items-center gap-1", className)} {...props}>
+        {children}
+      </div>
+    );
+  },
+);
 FieldEndAddOnContent.displayName = "Field.EndAddOnContent";
 
 // -----------------------------------------------------------------------------
@@ -191,7 +192,11 @@ const FieldHelperText = forwardRef<HTMLDivElement, FieldHelperTextProps>(functio
     <div
       ref={ref}
       id={id ?? ctx?.descriptionId}
-      className={cn("flex-1 text-xs transition-colors", fieldTextColor[effectiveColor][effectiveStatus], className)}
+      className={cn(
+        "flex-1 text-xs transition-colors",
+        fieldTextColor[effectiveColor][effectiveStatus],
+        className,
+      )}
       {...props}
     >
       {children}

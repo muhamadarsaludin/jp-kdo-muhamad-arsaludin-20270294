@@ -1,3 +1,4 @@
+import { cn } from "@kdo/utils";
 import {
   forwardRef,
   isValidElement,
@@ -8,11 +9,13 @@ import {
   useRef,
   useState,
 } from "react";
-
-import { cn } from "@kdo/utils";
 import { createPortal } from "react-dom";
 
-import { floatingArrowPlacementClasses, floatingArrowStyle, useFloatingTray } from "../lib/floating-tray";
+import {
+  floatingArrowPlacementClasses,
+  floatingArrowStyle,
+  useFloatingTray,
+} from "../lib/floating-tray";
 import { mergeTriggerProps } from "../lib/merge-trigger-props";
 import { isTopOverlayLayer, useOverlayLayer } from "../lib/overlay-stack";
 import type { TooltipProps, TooltipSide } from "./tooltip.type";

@@ -17,7 +17,8 @@ export const OverlayContext = createContext<OverlayContextValue | null>(null);
 
 export function useOverlayContext(): OverlayContextValue {
   const context = useContext(OverlayContext);
-  if (context === null) throw new Error("Overlay compound parts must be used inside <Modal> or <Drawer>");
+  if (context === null)
+    throw new Error("Overlay compound parts must be used inside <Modal> or <Drawer>");
   return context;
 }
 

@@ -102,9 +102,15 @@ export function fileTypeKind(type?: string, name?: string): FileTypeIconKind {
     if (mime.startsWith("audio/")) return "audio";
     if (mime === "application/pdf") return "pdf";
     if (mime.includes("word") || mime.includes("opendocument.text")) return "word";
-    if (mime.includes("excel") || mime.includes("spreadsheet") || mime === "text/csv") return "sheet";
+    if (mime.includes("excel") || mime.includes("spreadsheet") || mime === "text/csv")
+      return "sheet";
     if (mime.includes("powerpoint") || mime.includes("presentation")) return "slides";
-    if (mime.includes("zip") || mime.includes("compressed") || mime.includes("tar") || mime.includes("rar")) {
+    if (
+      mime.includes("zip") ||
+      mime.includes("compressed") ||
+      mime.includes("tar") ||
+      mime.includes("rar")
+    ) {
       return "archive";
     }
     if (mime.startsWith("text/")) return "text";
@@ -175,7 +181,13 @@ function Glyph({ kind, body }: { kind: FileTypeIconKind; body: string }) {
       );
     case "code":
       return (
-        <g fill="none" stroke="white" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+        <g
+          fill="none"
+          stroke="white"
+          strokeWidth="1.4"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
           <path d="M9.6 11.7 7.4 14.5 9.6 17.3" />
           <path d="M12.8 11.7 15 14.5 12.8 17.3" />
           <path d="M12 11.3 10.9 17.7" />
@@ -214,7 +226,13 @@ function Glyph({ kind, body }: { kind: FileTypeIconKind; body: string }) {
   }
 }
 
-function CorruptIcon({ className, colors }: { className?: string; colors: { body: string; fold: string } }) {
+function CorruptIcon({
+  className,
+  colors,
+}: {
+  className?: string;
+  colors: { body: string; fold: string };
+}) {
   return (
     <svg
       viewBox="0 0 24 24"

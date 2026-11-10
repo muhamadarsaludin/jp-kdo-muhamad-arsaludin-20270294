@@ -18,9 +18,13 @@ export function dayButtonClass(params: {
   if (params.isDisabled) {
     classes.push("cursor-not-allowed text-quinary opacity-50");
   } else if (params.isSelected) {
-    classes.push("cursor-pointer bg-brand-primary text-primary-inverse hover:bg-brand-primary-hover");
+    classes.push(
+      "cursor-pointer bg-brand-primary text-primary-inverse hover:bg-brand-primary-hover",
+    );
   } else if (params.isInRange) {
-    classes.push("cursor-pointer bg-brand-muted-primary text-brand-primary hover:bg-brand-muted-primary-hover");
+    classes.push(
+      "cursor-pointer bg-brand-muted-primary text-brand-primary hover:bg-brand-muted-primary-hover",
+    );
   } else if (params.isOutsideMonth) {
     classes.push("cursor-pointer text-quinary hover:bg-primary-hover hover:text-primary");
   } else if (params.isToday) {
@@ -34,7 +38,8 @@ export function dayButtonClass(params: {
   if (params.rounding === "all") classes.push("rounded-md");
   else if (params.rounding === "start") classes.push("rounded-l-md");
   else if (params.rounding === "end") classes.push("rounded-r-md");
-  else if (!params.isSelected && !params.isInRange && !params.isDisabled) classes.push("rounded-md");
+  else if (!params.isSelected && !params.isInRange && !params.isDisabled)
+    classes.push("rounded-md");
 
   return cn(classes);
 }
@@ -44,6 +49,7 @@ export function monthYearButtonClass(params: { isActive: boolean; isDisabled: bo
     "flex cursor-pointer items-center justify-center rounded-md font-medium text-sm outline-0 -outline-offset-1 transition-colors focus-visible:outline-1 focus-visible:outline-brand-primary focus-visible:ring-3 focus-visible:ring-brand-primary/50";
 
   if (params.isDisabled) return cn(base, "cursor-not-allowed text-quinary opacity-50");
-  if (params.isActive) return cn(base, "bg-brand-primary text-primary-inverse hover:bg-brand-primary-hover");
+  if (params.isActive)
+    return cn(base, "bg-brand-primary text-primary-inverse hover:bg-brand-primary-hover");
   return cn(base, "text-primary hover:bg-primary-hover");
 }

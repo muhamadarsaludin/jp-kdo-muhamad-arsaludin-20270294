@@ -1,7 +1,11 @@
 import { createContext, useContext } from "react";
 
 import type { Shape } from "../type";
-import type { TabsActivationMode, TabsScrollButtonIcons, TabsScrollButtonLabels } from "./tabs.type";
+import type {
+  TabsActivationMode,
+  TabsScrollButtonIcons,
+  TabsScrollButtonLabels,
+} from "./tabs.type";
 import type { TabsColor, TabsOrientation, TabsSize, TabsVariant, TabsWidth } from "./tabs.variants";
 
 export type TabsContextValue = {

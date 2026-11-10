@@ -15,7 +15,9 @@ export const otpTextSizes: Record<Size, string> = {
 } as const;
 
 export const otpCellVariants = cva(
-  ["flex aspect-square items-center justify-center outline-1 -outline-offset-1 focus-within:ring-3"],
+  [
+    "flex aspect-square items-center justify-center outline-1 -outline-offset-1 focus-within:ring-3",
+  ],
   {
     variants: {
       variant: {
@@ -28,9 +30,12 @@ export const otpCellVariants = cva(
       },
       status: {
         default: "focus-within:outline-brand-primary focus-within:ring-brand-primary/50",
-        error: "outline-error-primary focus-within:outline-error-primary focus-within:ring-error-primary/50",
-        warning: "outline-warning-primary focus-within:outline-warning-primary focus-within:ring-warning-primary/50",
-        success: "outline-success-primary focus-within:outline-success-primary focus-within:ring-success-primary/50",
+        error:
+          "outline-error-primary focus-within:outline-error-primary focus-within:ring-error-primary/50",
+        warning:
+          "outline-warning-primary focus-within:outline-warning-primary focus-within:ring-warning-primary/50",
+        success:
+          "outline-success-primary focus-within:outline-success-primary focus-within:ring-success-primary/50",
       },
       size: {
         sm: otpHeights.sm,

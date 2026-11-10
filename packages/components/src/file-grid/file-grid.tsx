@@ -1,7 +1,6 @@
-import { forwardRef, type HTMLAttributes, type ReactNode, useRef, useState } from "react";
-
 import { cn } from "@kdo/utils";
 import { ImagePlus, Play, X } from "lucide-react";
+import { forwardRef, type HTMLAttributes, type ReactNode, useRef, useState } from "react";
 
 import { FileTypeIcon } from "../lib/file-type-icon";
 import { type FileSelectError, useFileSelect } from "../lib/use-file-select";
@@ -106,7 +105,12 @@ export const FileGrid = forwardRef<HTMLDivElement, FileGridProps>(function FileG
   const tileSize = fileGridSizes[size];
 
   return (
-    <div {...props} ref={ref} data-slot="file-grid" className={cn("flex flex-wrap gap-3", className)}>
+    <div
+      {...props}
+      ref={ref}
+      data-slot="file-grid"
+      className={cn("flex flex-wrap gap-3", className)}
+    >
       {items.map((item) => {
         const isImage = item.type?.startsWith("image/");
         const isVideo = item.type?.startsWith("video/");
@@ -130,7 +134,9 @@ export const FileGrid = forwardRef<HTMLDivElement, FileGridProps>(function FileG
                 aria-hidden="true"
                 className="pointer-events-none absolute inset-0 flex items-center justify-center"
               >
-                <Play className={cn("fill-white text-white drop-shadow-sm", fileGridPlaySizes[size])} />
+                <Play
+                  className={cn("fill-white text-white drop-shadow-sm", fileGridPlaySizes[size])}
+                />
               </span>
             </>
           );
@@ -145,7 +151,9 @@ export const FileGrid = forwardRef<HTMLDivElement, FileGridProps>(function FileG
             />
           );
         } else {
-          tileContent = <FileTypeIcon type={item.type} name={item.name} className={fileGridIconSizes[size]} />;
+          tileContent = (
+            <FileTypeIcon type={item.type} name={item.name} className={fileGridIconSizes[size]} />
+          );
         }
 
         return (
@@ -220,7 +228,9 @@ export const FileGrid = forwardRef<HTMLDivElement, FileGridProps>(function FileG
                 <X aria-hidden className="size-3" />
               </button>
             ) : null}
-            {item.badge ? <span className="pointer-events-none absolute top-1 left-1 z-10">{item.badge}</span> : null}
+            {item.badge ? (
+              <span className="pointer-events-none absolute top-1 left-1 z-10">{item.badge}</span>
+            ) : null}
           </div>
         );
       })}

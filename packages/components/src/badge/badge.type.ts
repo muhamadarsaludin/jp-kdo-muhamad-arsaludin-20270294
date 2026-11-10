@@ -15,4 +15,7 @@ export type BadgeProps = ComponentPropsWithoutRef<"span"> & {
   children?: ReactNode;
 };
 
-export type BadgeDotProps = Omit<BadgeProps, "shape" | "size" | "startContent" | "endContent" | "children">;
+export type BadgeDotProps = Omit<
+  BadgeProps,
+  "shape" | "size" | "startContent" | "endContent" | "children"
+>;

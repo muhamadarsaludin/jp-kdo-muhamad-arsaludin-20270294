@@ -44,7 +44,8 @@ export const linkVariants = cva(
       color: {
         default:
           "text-link-primary visited:text-link-visited hover:text-link-hover focus-visible:outline-brand-primary focus-visible:ring-brand-primary/50",
-        brand: "text-brand-primary focus-visible:outline-brand-primary focus-visible:ring-brand-primary/50",
+        brand:
+          "text-brand-primary focus-visible:outline-brand-primary focus-visible:ring-brand-primary/50",
         neutral:
           "text-primary hover:text-brand-primary focus-visible:outline-brand-primary focus-visible:ring-brand-primary/50",
         inverse:

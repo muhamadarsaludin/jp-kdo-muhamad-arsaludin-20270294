@@ -4,6 +4,7 @@ import { ProtectedRoute } from "@/auth/ProtectedRoute";
 import { AppLayout } from "@/components/AppLayout";
 import { ComingSoonPage } from "@/pages/ComingSoonPage";
 import { DashboardPage } from "@/pages/DashboardPage";
+import { KendaraanPage } from "@/pages/KendaraanPage";
 import { LoginPage } from "@/pages/LoginPage";
 
 export function App() {
@@ -14,25 +15,36 @@ export function App() {
       <Route element={<ProtectedRoute />}>
         <Route element={<AppLayout />}>
           <Route index element={<DashboardPage />} />
-          <Route
-            path="kendaraan"
-            element={<ComingSoonPage title="Kendaraan Dinas" description="Kelola data kendaraan operasional." />}
-          />
+          <Route path="kendaraan" element={<KendaraanPage />} />
           <Route
             path="pegawai"
-            element={<ComingSoonPage title="Pegawai" description="Kelola data PNS dan penanggung jawab." />}
+            element={
+              <ComingSoonPage title="Pegawai" description="Kelola data PNS dan penanggung jawab." />
+            }
           />
           <Route
             path="perangkat-daerah"
-            element={<ComingSoonPage title="Perangkat Daerah" description="Kelola data instansi/OPD." />}
+            element={
+              <ComingSoonPage title="Perangkat Daerah" description="Kelola data instansi/OPD." />
+            }
           />
           <Route
             path="peminjaman"
-            element={<ComingSoonPage title="Peminjaman" description="Ajukan dan setujui peminjaman kendaraan." />}
+            element={
+              <ComingSoonPage
+                title="Peminjaman"
+                description="Ajukan dan setujui peminjaman kendaraan."
+              />
+            }
           />
           <Route
             path="servis"
-            element={<ComingSoonPage title="Riwayat Servis" description="Catat perawatan dan biaya kendaraan." />}
+            element={
+              <ComingSoonPage
+                title="Riwayat Servis"
+                description="Catat perawatan dan biaya kendaraan."
+              />
+            }
           />
         </Route>
       </Route>

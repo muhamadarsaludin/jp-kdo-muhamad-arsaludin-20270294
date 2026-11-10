@@ -24,27 +24,30 @@ export const avatarColors = [
 
 export type AvatarColor = (typeof avatarColors)[number];
 
-export const avatarVariants = cva("relative inline-flex shrink-0 select-none items-center justify-center font-medium", {
-  variants: {
-    size: {
-      "2xs": "size-5 text-2xs",
-      xs: "size-6 text-xs",
-      sm: "size-8 text-xs",
-      md: "size-10 text-sm",
-      lg: "size-12 text-base",
-      xl: "size-16 text-lg",
-      "2xl": "size-24 text-2xl",
+export const avatarVariants = cva(
+  "relative inline-flex shrink-0 select-none items-center justify-center font-medium",
+  {
+    variants: {
+      size: {
+        "2xs": "size-5 text-2xs",
+        xs: "size-6 text-xs",
+        sm: "size-8 text-xs",
+        md: "size-10 text-sm",
+        lg: "size-12 text-base",
+        xl: "size-16 text-lg",
+        "2xl": "size-24 text-2xl",
+      },
+      shape: {
+        circle: "rounded-full",
+        rounded: "rounded-lg",
+      },
     },
-    shape: {
-      circle: "rounded-full",
-      rounded: "rounded-lg",
+    defaultVariants: {
+      size: "md",
+      shape: "circle",
     },
   },
-  defaultVariants: {
-    size: "md",
-    shape: "circle",
-  },
-});
+);
 
 export type AvatarSize = NonNullable<VariantProps<typeof avatarVariants>["size"]>;
 export type AvatarShape = NonNullable<VariantProps<typeof avatarVariants>["shape"]>;

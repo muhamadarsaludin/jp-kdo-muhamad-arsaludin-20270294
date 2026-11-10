@@ -1,6 +1,5 @@
-import { forwardRef, useId } from "react";
-
 import { cn } from "@kdo/utils";
+import { forwardRef, useId } from "react";
 
 import { buildAreaPath, buildSeriesPath, type Point, scaleX, scaleY } from "../chart/chart.utils";
 import { chartColorClasses, chartColorVars } from "../chart/chart.variants";
@@ -102,7 +101,11 @@ export const Sparkline = forwardRef<HTMLSpanElement, SparklineProps>(function Sp
               })
             : null}
           {type === "area" ? (
-            <path d={buildAreaPath(points, baselineY, curve)} fill={`url(#${gradientId})`} stroke="none" />
+            <path
+              d={buildAreaPath(points, baselineY, curve)}
+              fill={`url(#${gradientId})`}
+              stroke="none"
+            />
           ) : null}
           {type === "line" || type === "area" ? (
             <path

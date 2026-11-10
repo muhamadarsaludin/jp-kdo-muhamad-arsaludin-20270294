@@ -1,4 +1,10 @@
-export type { InputBaseProps, InputProps, InputSize, InputStepperVariant, InputValue } from "./input";
+export type {
+  InputBaseProps,
+  InputProps,
+  InputSize,
+  InputStepperVariant,
+  InputValue,
+} from "./input";
 export {
   Input,
   inputAddOnVariants,

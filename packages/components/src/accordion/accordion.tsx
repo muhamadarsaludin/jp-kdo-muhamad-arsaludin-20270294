@@ -1,3 +1,5 @@
+import { cn } from "@kdo/utils";
+import { ChevronDown } from "lucide-react";
 import {
   forwardRef,
   type KeyboardEvent as ReactKeyboardEvent,
@@ -6,9 +8,6 @@ import {
   useId,
   useState,
 } from "react";
-
-import { cn } from "@kdo/utils";
-import { ChevronDown } from "lucide-react";
 
 import type {
   AccordionContentProps,
@@ -43,11 +42,16 @@ const AccordionRoot = forwardRef<HTMLDivElement, AccordionProps>(function Accord
   },
   ref,
 ) {
-  const [internalValues, setInternalValues] = useState<string[]>(() => normalizeValues(defaultValue));
+  const [internalValues, setInternalValues] = useState<string[]>(() =>
+    normalizeValues(defaultValue),
+  );
   const isControlled = value !== undefined;
   const expandedValues = isControlled ? normalizeValues(value) : internalValues;
 
-  const isExpanded = useCallback((itemValue: string) => expandedValues.includes(itemValue), [expandedValues]);
+  const isExpanded = useCallback(
+    (itemValue: string) => expandedValues.includes(itemValue),
+    [expandedValues],
+  );
 
   const toggle = useCallback(
     (itemValue: string) => {
@@ -110,7 +114,14 @@ export const AccordionItem = forwardRef<HTMLDivElement, AccordionItemProps>(func
 
   return (
     <AccordionItemContext.Provider
-      value={{ value, expanded, disabled: effectiveDisabled, triggerId, contentId, toggle: handleToggle }}
+      value={{
+        value,
+        expanded,
+        disabled: effectiveDisabled,
+        triggerId,
+        contentId,
+        toggle: handleToggle,
+      }}
     >
       <div
         ref={ref}
@@ -130,7 +141,9 @@ AccordionItem.displayName = "Accordion.Item";
 function focusTrigger(direction: 1 | -1 | "first" | "last", scope: HTMLElement | null): void {
   const root = scope?.closest('[data-slot="accordion"]');
   if (root === null || root === undefined) return;
-  const triggers = Array.from(root.querySelectorAll<HTMLElement>('[data-slot="trigger"]:not([disabled])'));
+  const triggers = Array.from(
+    root.querySelectorAll<HTMLElement>('[data-slot="trigger"]:not([disabled])'),
+  );
   if (triggers.length === 0) return;
   if (direction === "first" || direction === "last") {
     const edge = direction === "first" ? triggers[0] : triggers[triggers.length - 1];
@@ -143,120 +156,121 @@ function focusTrigger(direction: 1 | -1 | "first" | "last", scope: HTMLElement |
   next?.focus();
 }
 
-export const AccordionTrigger = forwardRef<HTMLButtonElement, AccordionTriggerProps>(function AccordionTrigger(
-  { startContent, endContent, action, className, children, onClick, onKeyDown, ...props },
-  ref,
-) {
-  const { expanded, disabled, triggerId, contentId, toggle } = useAccordionItemContext();
+export const AccordionTrigger = forwardRef<HTMLButtonElement, AccordionTriggerProps>(
+  function AccordionTrigger(
+    { startContent, endContent, action, className, children, onClick, onKeyDown, ...props },
+    ref,
+  ) {
+    const { expanded, disabled, triggerId, contentId, toggle } = useAccordionItemContext();
 
-  const handleClick = (event: ReactMouseEvent<HTMLButtonElement>) => {
-    onClick?.(event);
-    if (event.defaultPrevented) return;
-    toggle();
-  };
+    const handleClick = (event: ReactMouseEvent<HTMLButtonElement>) => {
+      onClick?.(event);
+      if (event.defaultPrevented) return;
+      toggle();
+    };
 
-  const handleKeyDown = (event: ReactKeyboardEvent<HTMLButtonElement>) => {
-    onKeyDown?.(event);
-    if (event.defaultPrevented) return;
-    switch (event.key) {
-      case "ArrowDown":
-        event.preventDefault();
-        focusTrigger(1, event.currentTarget);
-        break;
-      case "ArrowUp":
-        event.preventDefault();
-        focusTrigger(-1, event.currentTarget);
-        break;
-      case "Home":
-        event.preventDefault();
-        focusTrigger("first", event.currentTarget);
-        break;
-      case "End":
-        event.preventDefault();
-        focusTrigger("last", event.currentTarget);
-        break;
-      default:
-        break;
-    }
-  };
+    const handleKeyDown = (event: ReactKeyboardEvent<HTMLButtonElement>) => {
+      onKeyDown?.(event);
+      if (event.defaultPrevented) return;
+      switch (event.key) {
+        case "ArrowDown":
+          event.preventDefault();
+          focusTrigger(1, event.currentTarget);
+          break;
+        case "ArrowUp":
+          event.preventDefault();
+          focusTrigger(-1, event.currentTarget);
+          break;
+        case "Home":
+          event.preventDefault();
+          focusTrigger("first", event.currentTarget);
+          break;
+        case "End":
+          event.preventDefault();
+          focusTrigger("last", event.currentTarget);
+          break;
+        default:
+          break;
+      }
+    };
 
-  return (
-    <div data-slot="header" className="flex items-center">
-      <button
+    return (
+      <div data-slot="header" className="flex items-center">
+        <button
+          ref={ref}
+          type="button"
+          id={triggerId}
+          aria-expanded={expanded}
+          aria-controls={contentId}
+          disabled={disabled || undefined}
+          onClick={handleClick}
+          onKeyDown={handleKeyDown}
+          data-slot="trigger"
+          data-state={expanded ? "open" : "closed"}
+          className={cn(
+            "flex min-w-0 flex-1 cursor-pointer items-center gap-2 px-4 py-3 text-left text-sm font-medium outline-1 -outline-offset-1 outline-transparent transition-colors hover:bg-secondary focus-visible:outline-brand-primary focus-visible:ring-3 focus-visible:ring-brand-primary/50 disabled:cursor-not-allowed",
+            className,
+          )}
+          {...props}
+        >
+          {startContent ? (
+            <span data-slot="start" className="flex shrink-0 items-center [&>svg]:size-4">
+              {startContent}
+            </span>
+          ) : null}
+          <span className="min-w-0 flex-1">{children}</span>
+          {endContent ? (
+            <span data-slot="end" className="flex shrink-0 items-center">
+              {endContent}
+            </span>
+          ) : null}
+          <ChevronDown
+            aria-hidden="true"
+            data-slot="chevron"
+            className={cn(
+              "size-4 shrink-0 text-tertiary transition-transform motion-safe:duration-200",
+              expanded && "-rotate-180",
+            )}
+          />
+        </button>
+        {action ? (
+          <span data-slot="action" className="flex shrink-0 items-center pr-4">
+            {action}
+          </span>
+        ) : null}
+      </div>
+    );
+  },
+);
+
+AccordionTrigger.displayName = "Accordion.Trigger";
+
+export const AccordionContent = forwardRef<HTMLElement, AccordionContentProps>(
+  function AccordionContent({ className, children, ...props }, ref) {
+    const { expanded, triggerId, contentId } = useAccordionItemContext();
+
+    return (
+      <section
         ref={ref}
-        type="button"
-        id={triggerId}
-        aria-expanded={expanded}
-        aria-controls={contentId}
-        disabled={disabled || undefined}
-        onClick={handleClick}
-        onKeyDown={handleKeyDown}
-        data-slot="trigger"
+        id={contentId}
+        aria-labelledby={triggerId}
+        data-slot="content"
         data-state={expanded ? "open" : "closed"}
+        inert={!expanded}
         className={cn(
-          "flex min-w-0 flex-1 cursor-pointer items-center gap-2 px-4 py-3 text-left text-sm font-medium outline-1 -outline-offset-1 outline-transparent transition-colors hover:bg-secondary focus-visible:outline-brand-primary focus-visible:ring-3 focus-visible:ring-brand-primary/50 disabled:cursor-not-allowed",
+          "grid transition-[grid-template-rows] motion-safe:duration-200 motion-safe:ease-out",
+          expanded ? "[grid-template-rows:1fr]" : "[grid-template-rows:0fr]",
           className,
         )}
         {...props}
       >
-        {startContent ? (
-          <span data-slot="start" className="flex shrink-0 items-center [&>svg]:size-4">
-            {startContent}
-          </span>
-        ) : null}
-        <span className="min-w-0 flex-1">{children}</span>
-        {endContent ? (
-          <span data-slot="end" className="flex shrink-0 items-center">
-            {endContent}
-          </span>
-        ) : null}
-        <ChevronDown
-          aria-hidden="true"
-          data-slot="chevron"
-          className={cn(
-            "size-4 shrink-0 text-tertiary transition-transform motion-safe:duration-200",
-            expanded && "-rotate-180",
-          )}
-        />
-      </button>
-      {action ? (
-        <span data-slot="action" className="flex shrink-0 items-center pr-4">
-          {action}
-        </span>
-      ) : null}
-    </div>
-  );
-});
-
-AccordionTrigger.displayName = "Accordion.Trigger";
-
-export const AccordionContent = forwardRef<HTMLElement, AccordionContentProps>(function AccordionContent(
-  { className, children, ...props },
-  ref,
-) {
-  const { expanded, triggerId, contentId } = useAccordionItemContext();
-
-  return (
-    <section
-      ref={ref}
-      id={contentId}
-      aria-labelledby={triggerId}
-      data-slot="content"
-      data-state={expanded ? "open" : "closed"}
-      inert={!expanded}
-      className={cn(
-        "grid transition-[grid-template-rows] motion-safe:duration-200 motion-safe:ease-out",
-        expanded ? "[grid-template-rows:1fr]" : "[grid-template-rows:0fr]",
-        className,
-      )}
-      {...props}
-    >
-      <div className="min-h-0 overflow-hidden">
-        <div className="p-4 text-sm text-tertiary">{children}</div>
-      </div>
-    </section>
-  );
-});
+        <div className="min-h-0 overflow-hidden">
+          <div className="p-4 text-sm text-tertiary">{children}</div>
+        </div>
+      </section>
+    );
+  },
+);
 
 AccordionContent.displayName = "Accordion.Content";
 

@@ -1,3 +1,5 @@
+import { cn } from "@kdo/utils";
+import { X } from "lucide-react";
 import {
   type ComponentPropsWithoutRef,
   forwardRef,
@@ -7,12 +9,13 @@ import {
   useEffect,
 } from "react";
 
-import { cn } from "@kdo/utils";
-import { X } from "lucide-react";
-
 import { Button } from "../button/button";
 import type { ButtonIconProps } from "../button/button.type";
-import { type OverlayCloseDefaults, OverlayCloseDefaultsContext, useOverlayContext } from "./overlay-context";
+import {
+  type OverlayCloseDefaults,
+  OverlayCloseDefaultsContext,
+  useOverlayContext,
+} from "./overlay-context";
 
 export type OverlayHeaderProps = ComponentPropsWithoutRef<"div"> & {
   title?: ReactNode;
@@ -30,7 +33,10 @@ export type OverlayFooterProps = ComponentPropsWithoutRef<"div"> & {
   separator?: boolean;
 };
 
-export type OverlayCloseProps = Omit<ButtonIconProps<"button">, "children" | "aria-label" | "onClick"> & {
+export type OverlayCloseProps = Omit<
+  ButtonIconProps<"button">,
+  "children" | "aria-label" | "onClick"
+> & {
   children?: ReactNode;
   "aria-label"?: string;
   onClick?: (event: ReactMouseEvent<HTMLButtonElement>) => void;
@@ -77,7 +83,12 @@ export const OverlayHeader = forwardRef<HTMLDivElement, OverlayHeaderProps>(func
         )}
         {...props}
       >
-        <div className={cn("flex min-w-0 items-start gap-3", iconOrientation === "vertical" && "flex-col")}>
+        <div
+          className={cn(
+            "flex min-w-0 items-start gap-3",
+            iconOrientation === "vertical" && "flex-col",
+          )}
+        >
           {icon ? (
             <span
               data-slot="icon"
@@ -88,12 +99,20 @@ export const OverlayHeader = forwardRef<HTMLDivElement, OverlayHeaderProps>(func
           ) : null}
           <div className="flex min-w-0 flex-col gap-1">
             {title ? (
-              <h2 id={context.titleId} data-slot="title" className="font-medium text-base text-primary leading-tight">
+              <h2
+                id={context.titleId}
+                data-slot="title"
+                className="font-medium text-base text-primary leading-tight"
+              >
                 {title}
               </h2>
             ) : null}
             {description ? (
-              <p id={context.descriptionId} data-slot="description" className="text-sm text-tertiary">
+              <p
+                id={context.descriptionId}
+                data-slot="description"
+                className="text-sm text-tertiary"
+              >
                 {description}
               </p>
             ) : null}
@@ -111,7 +130,12 @@ export const OverlayBody = forwardRef<HTMLDivElement, OverlayBodyProps>(function
   ref,
 ) {
   return (
-    <div ref={ref} data-slot="body" className={cn("min-h-0 flex-1 overflow-y-auto px-4 py-4", className)} {...props}>
+    <div
+      ref={ref}
+      data-slot="body"
+      className={cn("min-h-0 flex-1 overflow-y-auto px-4 py-4", className)}
+      {...props}
+    >
       {children}
     </div>
   );

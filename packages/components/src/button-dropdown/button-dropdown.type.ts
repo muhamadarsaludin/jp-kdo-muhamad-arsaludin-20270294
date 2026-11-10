@@ -14,13 +14,19 @@ export type ButtonDropdownProps = Omit<ComponentPropsWithoutRef<"div">, "childre
   children?: ReactNode;
 };
 
-export type ButtonDropdownActionProps = Omit<ComponentPropsWithoutRef<"button">, "color" | "size"> & {
+export type ButtonDropdownActionProps = Omit<
+  ComponentPropsWithoutRef<"button">,
+  "color" | "size"
+> & {
   children?: ReactNode;
   startContent?: ReactNode;
   endContent?: ReactNode;
 };
 
-export type ButtonDropdownTriggerProps = Omit<ComponentPropsWithoutRef<"button">, "color" | "size"> & {
+export type ButtonDropdownTriggerProps = Omit<
+  ComponentPropsWithoutRef<"button">,
+  "color" | "size"
+> & {
   "aria-label": string;
   children?: ReactNode;
   /** Menu content rendered in the floating Dropdown tray. Omitting it turns the trigger into a plain icon button. */

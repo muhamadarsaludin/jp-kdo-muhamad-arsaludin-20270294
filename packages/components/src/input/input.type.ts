@@ -3,7 +3,10 @@ import type { ComponentPropsWithoutRef, ReactNode } from "react";
 import type { Shape, Status } from "../type";
 import type { InputVariant } from "./input-variants";
 
-type NativeInputProps = Omit<ComponentPropsWithoutRef<"input">, "size" | "aria-invalid" | "value" | "defaultValue">;
+type NativeInputProps = Omit<
+  ComponentPropsWithoutRef<"input">,
+  "size" | "aria-invalid" | "value" | "defaultValue"
+>;
 
 export type InputSize = "xs" | "sm" | "md" | "lg" | "xl";
 

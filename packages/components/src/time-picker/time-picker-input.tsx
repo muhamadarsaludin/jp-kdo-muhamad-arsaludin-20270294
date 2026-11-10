@@ -1,3 +1,4 @@
+import { cn } from "@kdo/utils";
 import {
   type FocusEvent as ReactFocusEvent,
   type KeyboardEvent as ReactKeyboardEvent,
@@ -5,8 +6,6 @@ import {
   useRef,
   useState,
 } from "react";
-
-import { cn } from "@kdo/utils";
 
 import type { TimeFormat, TimePickerLabels } from "./time-picker.type";
 import {
@@ -147,7 +146,11 @@ export function TimePickerInput({
 
     for (let step = 1; step <= 60; step += 1) {
       const candidate = (minute + delta * step + 60) % 60;
-      const result = buildTime(hourText === "" ? defaultHourText : hourText, String(candidate), period);
+      const result = buildTime(
+        hourText === "" ? defaultHourText : hourText,
+        String(candidate),
+        period,
+      );
       if (result !== null) {
         applyResult(result);
         return;
@@ -199,7 +202,11 @@ export function TimePickerInput({
   };
 
   return (
-    <div ref={groupRef} data-slot="time-input" className="flex items-center justify-center gap-1.5 py-3">
+    <div
+      ref={groupRef}
+      data-slot="time-input"
+      className="flex items-center justify-center gap-1.5 py-3"
+    >
       <input
         ref={hourRef}
         type="text"

@@ -98,7 +98,10 @@ export function getMinuteOptions(step: number | undefined, currentMinute?: numbe
 }
 
 /** Generates every hour at the given minute step (default 30 for generated lists). */
-export function generateTimeOptions(step: number | undefined, defaultStep = 30): TimePickerOption[] {
+export function generateTimeOptions(
+  step: number | undefined,
+  defaultStep = 30,
+): TimePickerOption[] {
   const safeStep = sanitizeMinuteStep(step ?? defaultStep);
   const options: TimePickerOption[] = [];
 
@@ -136,11 +139,17 @@ export function isTimeAllowed(value: string, constraints: TimeConstraints): bool
   return true;
 }
 
-export function isHourAllowed(hour: number, constraints: TimeConstraints, step: number | undefined): boolean {
+export function isHourAllowed(
+  hour: number,
+  constraints: TimeConstraints,
+  step: number | undefined,
+): boolean {
   if (constraints.disabled === true) return false;
   if (constraints.disabledHours?.includes(hour) === true) return false;
 
-  return getMinuteOptions(step).some((minute) => isTimeAllowed(toTimeString(hour, minute), constraints));
+  return getMinuteOptions(step).some((minute) =>
+    isTimeAllowed(toTimeString(hour, minute), constraints),
+  );
 }
 
 export function firstAllowedMinute(
@@ -149,7 +158,8 @@ export function firstAllowedMinute(
   step: number | undefined,
   preferred?: number,
 ): number | null {
-  if (preferred !== undefined && isTimeAllowed(toTimeString(hour, preferred), constraints)) return preferred;
+  if (preferred !== undefined && isTimeAllowed(toTimeString(hour, preferred), constraints))
+    return preferred;
 
   for (const minute of getMinuteOptions(step)) {
     if (isTimeAllowed(toTimeString(hour, minute), constraints)) return minute;

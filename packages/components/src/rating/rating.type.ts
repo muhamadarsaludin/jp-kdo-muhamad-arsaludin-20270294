@@ -6,7 +6,10 @@ import type { RatingColor } from "./rating.variants";
 /** Step between selectable values. `0.5` enables half-star precision. */
 export type RatingPrecision = 0.5 | 1;
 
-export type RatingProps = Omit<ComponentPropsWithoutRef<"div">, "onChange" | "defaultValue" | "children" | "role"> & {
+export type RatingProps = Omit<
+  ComponentPropsWithoutRef<"div">,
+  "onChange" | "defaultValue" | "children" | "role"
+> & {
   value?: number;
   defaultValue?: number;
   onValueChange?: (value: number) => void;

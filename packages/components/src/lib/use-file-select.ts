@@ -74,7 +74,16 @@ function matchesAccept(file: File, accept?: string): boolean {
 }
 
 export function useFileSelect(options: UseFileSelectOptions = {}): UseFileSelectResult {
-  const { accept, maxBytes, maxFiles, maxTotalBytes, multiple = false, disabled = false, onFiles, onError } = options;
+  const {
+    accept,
+    maxBytes,
+    maxFiles,
+    maxTotalBytes,
+    multiple = false,
+    disabled = false,
+    onFiles,
+    onError,
+  } = options;
 
   const inputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);

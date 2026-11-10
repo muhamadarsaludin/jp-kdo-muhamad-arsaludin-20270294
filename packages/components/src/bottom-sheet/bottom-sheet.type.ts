@@ -1,6 +1,11 @@
 import type { ComponentPropsWithoutRef, ReactNode } from "react";
 
-import type { OverlayBodyProps, OverlayCloseProps, OverlayFooterProps, OverlayHeaderProps } from "../lib/overlay-parts";
+import type {
+  OverlayBodyProps,
+  OverlayCloseProps,
+  OverlayFooterProps,
+  OverlayHeaderProps,
+} from "../lib/overlay-parts";
 
 export type BottomSheetSnapPoint = number | string;
 

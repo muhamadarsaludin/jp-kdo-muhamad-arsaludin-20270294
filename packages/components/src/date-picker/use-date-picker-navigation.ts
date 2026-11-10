@@ -27,7 +27,11 @@ type UseDatePickerNavigationArgs = {
   focusRequest: FocusRequest;
 };
 
-function initialViewFocus(autoFocus: boolean, initialView: DatePickerView, anchor: Date): string | null {
+function initialViewFocus(
+  autoFocus: boolean,
+  initialView: DatePickerView,
+  anchor: Date,
+): string | null {
   if (!autoFocus) return null;
   if (initialView === "months") return `[data-month-index="${anchor.getMonth()}"]`;
   if (initialView === "years") return `[data-year="${anchor.getFullYear()}"]`;
@@ -54,18 +58,22 @@ export function useDatePickerNavigation({
   const [yearPageStart, setYearPageStart] = useState(
     () => Math.floor(initialAnchor.getFullYear() / YEARS_PER_PAGE) * YEARS_PER_PAGE,
   );
-  const viewFocusSelector = useRef<string | null>(initialViewFocus(autoFocus, initialView, initialAnchor));
+  const viewFocusSelector = useRef<string | null>(
+    initialViewFocus(autoFocus, initialView, initialAnchor),
+  );
 
   const year = viewMonth.getFullYear();
   const minYear = minDate?.getFullYear();
   const maxYear = maxDate?.getFullYear();
 
-  const canGoPreviousMonth = !disabled && (minDate === undefined || isAfterMonth(viewMonth, minDate));
+  const canGoPreviousMonth =
+    !disabled && (minDate === undefined || isAfterMonth(viewMonth, minDate));
   const canGoNextMonth = !disabled && (maxDate === undefined || isBeforeMonth(viewMonth, maxDate));
   const canGoPreviousYear = !disabled && (minYear === undefined || year > minYear);
   const canGoNextYear = !disabled && (maxYear === undefined || year < maxYear);
   const canGoPreviousYearPage = !disabled && (minYear === undefined || yearPageStart > minYear);
-  const canGoNextYearPage = !disabled && (maxYear === undefined || yearPageStart + YEARS_PER_PAGE <= maxYear);
+  const canGoNextYearPage =
+    !disabled && (maxYear === undefined || yearPageStart + YEARS_PER_PAGE <= maxYear);
 
   const changeMonth = useCallback(
     (amount: number, focusGrid: boolean) => {
@@ -140,7 +148,8 @@ export function useDatePickerNavigation({
   );
 
   const isMonthDisabled = useCallback(
-    (month: number): boolean => disabled || isMonthOutsideBounds(viewMonth.getFullYear(), month, minDate, maxDate),
+    (month: number): boolean =>
+      disabled || isMonthOutsideBounds(viewMonth.getFullYear(), month, minDate, maxDate),
     [disabled, viewMonth, minDate, maxDate],
   );
 

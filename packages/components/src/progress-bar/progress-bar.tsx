@@ -1,6 +1,5 @@
-import { forwardRef, type HTMLAttributes, type ReactNode } from "react";
-
 import { cn } from "@kdo/utils";
+import { forwardRef, type HTMLAttributes, type ReactNode } from "react";
 
 import styles from "./progress-bar.module.css";
 
@@ -113,7 +112,14 @@ function ProgressRing({
     return (
       <div className={cn("relative inline-flex items-center justify-center", sizeClass)}>
         <svg viewBox="0 0 100 100" className="size-full -rotate-90" aria-hidden="true">
-          <circle cx="50" cy="50" r={radius} fill="none" strokeWidth={stroke} className="stroke-secondary" />
+          <circle
+            cx="50"
+            cy="50"
+            r={radius}
+            fill="none"
+            strokeWidth={stroke}
+            className="stroke-secondary"
+          />
           <circle
             data-slot="progress-bar-fill"
             cx="50"
@@ -139,7 +145,13 @@ function ProgressRing({
   return (
     <div className={cn("relative inline-flex items-end justify-center", sizeClass)}>
       <svg viewBox="0 0 100 50" className="size-full" aria-hidden="true">
-        <path d={arc} fill="none" strokeWidth={stroke} strokeLinecap="round" className="stroke-secondary" />
+        <path
+          d={arc}
+          fill="none"
+          strokeWidth={stroke}
+          strokeLinecap="round"
+          className="stroke-secondary"
+        />
         <path
           data-slot="progress-bar-fill"
           d={arc}
@@ -179,7 +191,9 @@ export const ProgressBar = forwardRef<HTMLDivElement, ProgressBarProps>(function
   // A custom formatter ("2 of 6") is meaningful to screen readers too; a bare
   // ReactNode (icon + text) is left to the visible label.
   const valueTextString =
-    valueFormat && (typeof valueText === "string" || typeof valueText === "number") ? String(valueText) : undefined;
+    valueFormat && (typeof valueText === "string" || typeof valueText === "number")
+      ? String(valueText)
+      : undefined;
   const compact = (shape === "circle" || shape === "semi") && COMPACT_SIZES.has(size);
 
   if (shape === "bar") {
@@ -197,17 +211,30 @@ export const ProgressBar = forwardRef<HTMLDivElement, ProgressBarProps>(function
       >
         {(label != null || showValue) && (
           <div className="flex items-center justify-between gap-3">
-            {label != null ? <span className="min-w-0 truncate text-primary text-sm">{label}</span> : <span />}
-            {showValue ? <span className="shrink-0 text-sm text-tertiary tabular-nums">{valueText}</span> : null}
+            {label != null ? (
+              <span className="min-w-0 truncate text-primary text-sm">{label}</span>
+            ) : (
+              <span />
+            )}
+            {showValue ? (
+              <span className="shrink-0 text-sm text-tertiary tabular-nums">{valueText}</span>
+            ) : null}
           </div>
         )}
-        <div className={cn("w-full overflow-hidden rounded-full bg-quaternary", progressBarTrackSizes[size])}>
+        <div
+          className={cn(
+            "w-full overflow-hidden rounded-full bg-quaternary",
+            progressBarTrackSizes[size],
+          )}
+        >
           <div
             data-slot="progress-bar-fill"
             className={cn(
               "h-full rounded-full",
               progressBarColors[color],
-              isIndeterminate ? styles.indeterminate : "transition-[width] motion-reduce:transition-none",
+              isIndeterminate
+                ? styles.indeterminate
+                : "transition-[width] motion-reduce:transition-none",
             )}
             style={isIndeterminate ? undefined : { width: `${percent}%` }}
           />
@@ -241,19 +268,27 @@ export const ProgressBar = forwardRef<HTMLDivElement, ProgressBarProps>(function
         colorClass={progressBarStrokeColors[color]}
         stroke={ringGeometry[size].stroke}
         radius={
-          shape === "circle" ? ringGeometry[size].radius : semiGeometry({ stroke: ringGeometry[size].stroke }).radius
+          shape === "circle"
+            ? ringGeometry[size].radius
+            : semiGeometry({ stroke: ringGeometry[size].stroke }).radius
         }
       >
         {showValue && !compact ? (
           <span
-            className={cn("font-medium text-primary tabular-nums", progressBarValueTextSizes[size], centerClassName)}
+            className={cn(
+              "font-medium text-primary tabular-nums",
+              progressBarValueTextSizes[size],
+              centerClassName,
+            )}
           >
             {valueText}
           </span>
         ) : null}
       </ProgressRing>
       {showValue && compact ? (
-        <span className={cn("font-medium text-tertiary tabular-nums", progressBarValueTextSizes[size])}>
+        <span
+          className={cn("font-medium text-tertiary tabular-nums", progressBarValueTextSizes[size])}
+        >
           {valueText}
         </span>
       ) : null}

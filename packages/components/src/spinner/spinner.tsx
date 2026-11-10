@@ -1,6 +1,5 @@
-import type { SVGProps } from "react";
-
 import { cn } from "@kdo/utils";
+import type { SVGProps } from "react";
 
 import type { Size } from "../type";
 import styles from "./spinner.module.css";
@@ -25,7 +24,13 @@ const spinnerHighlight: Record<SpinnerColor, string> = {
   inverse: "stroke-tertiary",
 };
 
-export function Spinner({ className, size = "md", color = "brand", strokeWidth = 12, ...props }: SpinnerProps) {
+export function Spinner({
+  className,
+  size = "md",
+  color = "brand",
+  strokeWidth = 12,
+  ...props
+}: SpinnerProps) {
   const circleProps = {
     fill: "transparent",
     cx: "50%",

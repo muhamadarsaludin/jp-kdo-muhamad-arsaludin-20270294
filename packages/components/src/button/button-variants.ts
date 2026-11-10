@@ -48,11 +48,41 @@ export const buttonVariants = cva(
   {
     variants: {
       size: {
-        xs: [buttonHeight.xs, buttonTextSize.xs, buttonPadding.xs, buttonIconAndSpinnerSize.xs, buttonGap.xs],
-        sm: [buttonHeight.sm, buttonTextSize.sm, buttonPadding.sm, buttonIconAndSpinnerSize.sm, buttonGap.sm],
-        md: [buttonHeight.md, buttonTextSize.md, buttonPadding.md, buttonIconAndSpinnerSize.md, buttonGap.md],
-        lg: [buttonHeight.lg, buttonTextSize.lg, buttonPadding.lg, buttonIconAndSpinnerSize.lg, buttonGap.lg],
-        xl: [buttonHeight.xl, buttonTextSize.xl, buttonPadding.xl, buttonIconAndSpinnerSize.xl, buttonGap.xl],
+        xs: [
+          buttonHeight.xs,
+          buttonTextSize.xs,
+          buttonPadding.xs,
+          buttonIconAndSpinnerSize.xs,
+          buttonGap.xs,
+        ],
+        sm: [
+          buttonHeight.sm,
+          buttonTextSize.sm,
+          buttonPadding.sm,
+          buttonIconAndSpinnerSize.sm,
+          buttonGap.sm,
+        ],
+        md: [
+          buttonHeight.md,
+          buttonTextSize.md,
+          buttonPadding.md,
+          buttonIconAndSpinnerSize.md,
+          buttonGap.md,
+        ],
+        lg: [
+          buttonHeight.lg,
+          buttonTextSize.lg,
+          buttonPadding.lg,
+          buttonIconAndSpinnerSize.lg,
+          buttonGap.lg,
+        ],
+        xl: [
+          buttonHeight.xl,
+          buttonTextSize.xl,
+          buttonPadding.xl,
+          buttonIconAndSpinnerSize.xl,
+          buttonGap.xl,
+        ],
       },
       shape: {
         rounded: "rounded-lg",

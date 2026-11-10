@@ -41,7 +41,8 @@
 
   100% {
     opacity: 0;
-    transform: translate(var(--burst-x, 0), var(--burst-y, -16px)) scale(0.9) rotate(var(--burst-rotate, 0deg));
+    transform: translate(var(--burst-x, 0), var(--burst-y, -16px)) scale(0.9)
+      rotate(var(--burst-rotate, 0deg));
   }
 }
 

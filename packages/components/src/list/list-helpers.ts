@@ -64,11 +64,15 @@ function appendBranch<T extends ListItemData>(
   for (const node of nodes) {
     rows.push({ type: "item", key: node.key, item: node, depth });
     const children = (node.children ?? []) as T[];
-    if (children.length > 0 && expanded.has(node.key)) appendBranch(rows, children, expanded, depth + 1);
+    if (children.length > 0 && expanded.has(node.key))
+      appendBranch(rows, children, expanded, depth + 1);
   }
 }
 
-export function flattenListItems<T extends ListItemData>(items: T[], options: FlattenOptions<T>): FlatListRow<T>[] {
+export function flattenListItems<T extends ListItemData>(
+  items: T[],
+  options: FlattenOptions<T>,
+): FlatListRow<T>[] {
   const rows: FlatListRow<T>[] = [];
   if (!options.groupBy) {
     appendBranch(rows, items, options.expanded, 0);
@@ -130,7 +134,10 @@ export function resolveVisibleRange(
  * consistent no matter which click order produced it, and drops stale parent
  * keys left behind when a single child is deselected.
  */
-export function canonicalizeSelectedKeys(items: ListItemData[], keys: ReadonlySet<ListKey>): ListKey[] {
+export function canonicalizeSelectedKeys(
+  items: ListItemData[],
+  keys: ReadonlySet<ListKey>,
+): ListKey[] {
   const next = new Set(keys);
   // Post-order (deepest parents first) so an outer branch observes the
   // already-canonicalized state of nested branches.

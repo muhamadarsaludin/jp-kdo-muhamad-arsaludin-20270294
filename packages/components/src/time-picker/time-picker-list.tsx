@@ -1,6 +1,5 @@
-import { type KeyboardEvent as ReactKeyboardEvent, useCallback, useEffect, useRef } from "react";
-
 import { cn } from "@kdo/utils";
+import { type KeyboardEvent as ReactKeyboardEvent, useCallback, useEffect, useRef } from "react";
 
 import type { TimePickerListAlign } from "./time-picker.type";
 import type { TimePickerColumnOption } from "./time-picker-option";
@@ -23,7 +22,11 @@ function rowClass(option: TimePickerColumnOption, align: TimePickerListAlign): s
   else if (align === "end") alignment = "justify-end text-right";
 
   if (option.disabled) {
-    return cn(rowBase, alignment, "cursor-not-allowed text-quinary opacity-50 hover:bg-transparent");
+    return cn(
+      rowBase,
+      alignment,
+      "cursor-not-allowed text-quinary opacity-50 hover:bg-transparent",
+    );
   }
   if (option.selected) {
     return cn(rowBase, alignment, "bg-brand-muted-primary font-medium text-brand-primary");
@@ -31,7 +34,14 @@ function rowClass(option: TimePickerColumnOption, align: TimePickerListAlign): s
   return cn(rowBase, alignment, "text-secondary hover:bg-primary-hover hover:text-primary");
 }
 
-export function TimeList({ options, ariaLabel, align, onSelect, autoFocus = false, className }: TimeListProps) {
+export function TimeList({
+  options,
+  ariaLabel,
+  align,
+  onSelect,
+  autoFocus = false,
+  className,
+}: TimeListProps) {
   const listRef = useRef<HTMLDivElement | null>(null);
   const didAutoFocus = useRef(false);
   const selectedKey = options.find((option) => option.selected && !option.disabled)?.key ?? null;
@@ -59,9 +69,12 @@ export function TimeList({ options, ariaLabel, align, onSelect, autoFocus = fals
   const handleKeyDown = (event: ReactKeyboardEvent<HTMLDivElement>) => {
     if (options.length === 0) return;
 
-    const nodes = Array.from(listRef.current?.querySelectorAll<HTMLElement>('[role="option"]') ?? []);
+    const nodes = Array.from(
+      listRef.current?.querySelectorAll<HTMLElement>('[role="option"]') ?? [],
+    );
     const activeIndex = nodes.indexOf(document.activeElement as HTMLElement);
-    const currentIndex = activeIndex === -1 ? nodes.findIndex((node) => node.tabIndex === 0) : activeIndex;
+    const currentIndex =
+      activeIndex === -1 ? nodes.findIndex((node) => node.tabIndex === 0) : activeIndex;
     let nextIndex: number | null = null;
 
     switch (event.key) {
@@ -85,10 +98,13 @@ export function TimeList({ options, ariaLabel, align, onSelect, autoFocus = fals
 
     const backwards = event.key === "ArrowUp" || event.key === "End";
     for (let step = 0; step < nodes.length; step += 1) {
-      const index = backwards ? (nextIndex - step + nodes.length) % nodes.length : (nextIndex + step) % nodes.length;
+      const index = backwards
+        ? (nextIndex - step + nodes.length) % nodes.length
+        : (nextIndex + step) % nodes.length;
       const node = nodes[index];
       const key = node?.dataset.timeOption;
-      if (node === undefined || key === undefined || node.getAttribute("aria-disabled") === "true") continue;
+      if (node === undefined || key === undefined || node.getAttribute("aria-disabled") === "true")
+        continue;
       onSelect(key);
       node.focus({ preventScroll: true });
       node.scrollIntoView?.({ block: "nearest" });

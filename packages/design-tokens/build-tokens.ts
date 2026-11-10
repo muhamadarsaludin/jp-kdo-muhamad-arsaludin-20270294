@@ -8,12 +8,12 @@
  *
  * Run directly with `node build-tokens.ts` (package script: `generate`).
  */
-import StyleDictionary from "style-dictionary";
-import type { Config, FormatFnArguments, TransformedToken } from "style-dictionary/types";
 
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
+import StyleDictionary from "style-dictionary";
+import type { Config, FormatFnArguments, TransformedToken } from "style-dictionary/types";
 
 const TOKENS_DIR = "tokens";
 
@@ -29,17 +29,24 @@ export type TokenNode = { [key: string]: RawToken | TokenNode };
 type FlatToken = { path: string[]; value: TokenValue; type?: string };
 
 export function loadTokenFile(file: string): TokenNode {
-  const source = JSON.parse(readFileSync(join(TOKENS_DIR, file), "utf8")) as Record<string, unknown>;
+  const source = JSON.parse(readFileSync(join(TOKENS_DIR, file), "utf8")) as Record<
+    string,
+    unknown
+  >;
   return normalizeNode(source);
 }
 
 function normalizeNode(source: Record<string, unknown>): TokenNode {
   const result: TokenNode = {};
   for (const [key, value] of Object.entries(source)) {
-    if (key.startsWith("$") || typeof value !== "object" || value === null || Array.isArray(value)) continue;
+    if (key.startsWith("$") || typeof value !== "object" || value === null || Array.isArray(value))
+      continue;
     const record = value as Record<string, unknown>;
     if ("$value" in record) {
-      result[key] = { value: record.$value as TokenValue, type: record.$type as string | undefined };
+      result[key] = {
+        value: record.$value as TokenValue,
+        type: record.$type as string | undefined,
+      };
     } else {
       result[key] = normalizeNode(record);
     }
@@ -148,7 +155,8 @@ function cssValue(value: TokenValue): string {
 export function webValue(token: { path: string[]; value: TokenValue }): string {
   const group = token.path[0];
   if (group === "opacity" && typeof token.value === "number") return `${token.value * 100}%`;
-  if (group === "spacing" || group === "radius" || group === "fontSize") return `${cssValue(token.value)}px`;
+  if (group === "spacing" || group === "radius" || group === "fontSize")
+    return `${cssValue(token.value)}px`;
   if (group === "letterSpacing") return `${cssValue(token.value)}em`;
   if (group === "duration") return `${cssValue(token.value)}ms`;
   if (group === "text" && typeof token.value === "number") return `${token.value}px`;
@@ -197,13 +205,21 @@ export function webDeclarations(token: { path: string[]; value: TokenValue }): s
   return declarations;
 }
 
-function registerThemeFormat(name: string, include: (token: TransformedToken) => boolean, header = "@theme"): void {
+function registerThemeFormat(
+  name: string,
+  include: (token: TransformedToken) => boolean,
+  header = "@theme",
+): void {
   StyleDictionary.registerFormat({
     name,
     format: ({ dictionary }: FormatFnArguments) => {
       const lines = dictionary.allTokens
         .filter((token) => include(token) && token.path[0] !== "fontSize")
-        .flatMap((token) => webDeclarations({ path: token.path, value: token.value ?? "" }).map((line) => `  ${line}`))
+        .flatMap((token) =>
+          webDeclarations({ path: token.path, value: token.value ?? "" }).map(
+            (line) => `  ${line}`,
+          ),
+        )
         .filter((line) => !line.endsWith(": ;"));
       return `${header} {\n${lines.join("\n")}\n}\n`;
     },
@@ -217,7 +233,9 @@ function colorRootName(name: string): string {
 }
 
 function modeVarBlock(selector: string, tokens: FlatToken[]): string {
-  const lines = tokens.map((token) => `  --${colorRootName(cssName(token.path))}: ${cssValue(token.value)};`);
+  const lines = tokens.map(
+    (token) => `  --${colorRootName(cssName(token.path))}: ${cssValue(token.value)};`,
+  );
   return `${selector} {\n${lines.join("\n")}\n}`;
 }
 
@@ -225,7 +243,9 @@ function generateModeCss(light: TokenNode, dark: TokenNode): string {
   const lightTokens = collectTokens(light);
   const darkTokens = collectTokens(dark);
   const names = [...new Set([...lightTokens, ...darkTokens].map((token) => cssName(token.path)))];
-  const theme = names.map((name) => `  --${colorRootName(name)}: var(--${colorRootName(name)});`).join("\n");
+  const theme = names
+    .map((name) => `  --${colorRootName(name)}: var(--${colorRootName(name)});`)
+    .join("\n");
   return `${modeVarBlock(":root", lightTokens)}\n\n${modeVarBlock(".dark", darkTokens)}\n\n@theme inline {\n${theme}\n}\n`;
 }
 
@@ -246,7 +266,8 @@ export function generateSemanticCss(light: TokenNode, dark: TokenNode): string {
   const names = [...new Set([...lightTokens, ...darkTokens].map((token) => cssName(token.path)))];
   const root = (name: string) => colorRootName(name);
   const strip = (name: string, prefix: string) => name.slice(prefix.length);
-  const section = (title: string, lines: string[]) => (lines.length > 0 ? `  /* ${title} */\n${lines.join("\n")}` : "");
+  const section = (title: string, lines: string[]) =>
+    lines.length > 0 ? `  /* ${title} */\n${lines.join("\n")}` : "";
 
   const bg = names.filter((name) => name.startsWith("bg-"));
   const text = names.filter((name) => name.startsWith("text-"));
@@ -287,7 +308,9 @@ export function generateSemanticCss(light: TokenNode, dark: TokenNode): string {
     border.map((name) => `  --outline-color-${strip(name, "border-")}: var(--${root(name)});`),
   );
 
-  const inlineBody = [background, textSection, borderSection, stroke, fill, ring, outline].filter(Boolean).join("\n");
+  const inlineBody = [background, textSection, borderSection, stroke, fill, ring, outline]
+    .filter(Boolean)
+    .join("\n");
   return `${modeVarBlock(":root", lightTokens)}\n\n${modeVarBlock(".dark", darkTokens)}\n\n@theme inline {\n${inlineBody}\n}\n`;
 }
 
@@ -295,11 +318,17 @@ function toCssVar(path: string[]): string {
   return cssName(path);
 }
 
-export function oklchToSrgb(_value: string): { hex: string; r: number; g: number; b: number } | null {
+export function oklchToSrgb(
+  _value: string,
+): { hex: string; r: number; g: number; b: number } | null {
   return null;
 }
 
-function resolveTokenValue(value: TokenValue, primitives: TokenNode, seen = new Set<string>()): string {
+function resolveTokenValue(
+  value: TokenValue,
+  primitives: TokenNode,
+  seen = new Set<string>(),
+): string {
   if (typeof value !== "string") return cssValue(value);
   const reference = value.match(/^\{([^}]+)\}(.*)$/);
   if (!reference) return value;
@@ -326,7 +355,9 @@ function docsTable(tokens: FlatToken[], primitives: TokenNode, mode?: string): s
   const lines = [
     mode ? `### ${mode}` : "",
     "",
-    showPreview ? "| Token | Type | Value | Preview | CSS variable |" : "| Token | Type | Value | CSS variable |",
+    showPreview
+      ? "| Token | Type | Value | Preview | CSS variable |"
+      : "| Token | Type | Value | CSS variable |",
     showPreview ? "| --- | --- | --- | --- | --- |" : "| --- | --- | --- | --- |",
   ];
   for (const token of tokens) {
@@ -340,9 +371,15 @@ function docsTable(tokens: FlatToken[], primitives: TokenNode, mode?: string): s
   return lines;
 }
 
-function docsModeTable(light: FlatToken[], dark: FlatToken[], primitives: TokenNode, title: string): string[] {
+function docsModeTable(
+  light: FlatToken[],
+  dark: FlatToken[],
+  primitives: TokenNode,
+  title: string,
+): string[] {
   const paths = [...new Set([...light, ...dark].map((token) => token.path.join(".")))];
-  const byPath = (tokens: FlatToken[], path: string) => tokens.find((token) => token.path.join(".") === path);
+  const byPath = (tokens: FlatToken[], path: string) =>
+    tokens.find((token) => token.path.join(".") === path);
   const lines = [
     `## ${title}`,
     "",
@@ -419,11 +456,21 @@ export function generateTokenDocs(
     lines.push(`### ${group}`, "", ...docsTable(tokens, primitives).slice(2), "");
   }
   lines.push(
-    ...docsModeTable(collectTokens(semanticsLight), collectTokens(semanticsDark), primitives, "Semantics"),
+    ...docsModeTable(
+      collectTokens(semanticsLight),
+      collectTokens(semanticsDark),
+      primitives,
+      "Semantics",
+    ),
     "",
   );
   lines.push(
-    ...docsModeTable(collectTokens(utilitiesLight), collectTokens(utilitiesDark), primitives, "Utilities"),
+    ...docsModeTable(
+      collectTokens(utilitiesLight),
+      collectTokens(utilitiesDark),
+      primitives,
+      "Utilities",
+    ),
     "",
   );
   return `${lines.join("\n").trimEnd()}\n`;
@@ -457,8 +504,14 @@ export async function generateTokens(): Promise<void> {
 
   mkdirSync(join("output", "web"), { recursive: true });
   writeFileSync(join("output", "web", "semantics.css"), generateSemanticCss(light, dark));
-  writeFileSync(join("output", "web", "utilities.css"), generateModeCss(utilitiesLight, utilitiesDark));
-  writeFileSync(join("output", "tokens.md"), generateTokenDocs(primitives, light, dark, utilitiesLight, utilitiesDark));
+  writeFileSync(
+    join("output", "web", "utilities.css"),
+    generateModeCss(utilitiesLight, utilitiesDark),
+  );
+  writeFileSync(
+    join("output", "tokens.md"),
+    generateTokenDocs(primitives, light, dark, utilitiesLight, utilitiesDark),
+  );
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {

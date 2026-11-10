@@ -1,6 +1,5 @@
-import type { ReactNode } from "react";
-
 import { cn } from "@kdo/utils";
+import type { ReactNode } from "react";
 
 export type ItemRowVariant = "list" | "menu";
 export type ItemRowAlignment = "start" | "center" | "end";
@@ -161,12 +160,20 @@ export function ItemRowContent({
       {startContent && (
         <span
           data-slot="start-content"
-          className={cn("flex shrink-0 items-center", itemRowSlotIconSize, slotOffset, textClassName)}
+          className={cn(
+            "flex shrink-0 items-center",
+            itemRowSlotIconSize,
+            slotOffset,
+            textClassName,
+          )}
         >
           {startContent}
         </span>
       )}
-      <span data-slot="main" className={cn("flex min-w-0 flex-1 flex-col", variant === "menu" && "text-left")}>
+      <span
+        data-slot="main"
+        className={cn("flex min-w-0 flex-1 flex-col", variant === "menu" && "text-left")}
+      >
         <span data-slot="label" className={labelClassName}>
           {label}
         </span>
@@ -179,7 +186,12 @@ export function ItemRowContent({
       {endContent && (
         <span
           data-slot="end-content"
-          className={cn("flex shrink-0 items-center", itemRowSlotIconSize, slotOffset, textClassName)}
+          className={cn(
+            "flex shrink-0 items-center",
+            itemRowSlotIconSize,
+            slotOffset,
+            textClassName,
+          )}
         >
           {endContent}
         </span>

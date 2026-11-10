@@ -1,7 +1,14 @@
-import { Children, cloneElement, forwardRef, isValidElement, type ReactElement, type ReactNode, useState } from "react";
-
 import { cn } from "@kdo/utils";
 import { Check, X } from "lucide-react";
+import {
+  Children,
+  cloneElement,
+  forwardRef,
+  isValidElement,
+  type ReactElement,
+  type ReactNode,
+  useState,
+} from "react";
 
 import type { StepperProps, StepperStepProps } from "./stepper.type";
 import {
@@ -50,7 +57,18 @@ const StepperRoot = forwardRef<HTMLElement, StepperProps>(function StepperRoot(
 
   return (
     <StepperContext.Provider
-      value={{ activeStep: current, orientation, size, color, indicator, align, dashed, interactive, linear, goTo }}
+      value={{
+        activeStep: current,
+        orientation,
+        size,
+        color,
+        indicator,
+        align,
+        dashed,
+        interactive,
+        linear,
+        goTo,
+      }}
     >
       <nav
         ref={ref}
@@ -85,11 +103,32 @@ const StepperRoot = forwardRef<HTMLElement, StepperProps>(function StepperRoot(
 StepperRoot.displayName = "Stepper";
 
 export const StepperStep = forwardRef<HTMLLIElement, StepperStepProps>(function StepperStep(
-  { title, description, endContent, icon, status, disabled = false, index = 0, first = false, last = false, className },
+  {
+    title,
+    description,
+    endContent,
+    icon,
+    status,
+    disabled = false,
+    index = 0,
+    first = false,
+    last = false,
+    className,
+  },
   ref,
 ) {
-  const { activeStep, orientation, size, color, indicator, align, dashed, interactive, linear, goTo } =
-    useStepperContext();
+  const {
+    activeStep,
+    orientation,
+    size,
+    color,
+    indicator,
+    align,
+    dashed,
+    interactive,
+    linear,
+    goTo,
+  } = useStepperContext();
   const horizontal = orientation === "horizontal";
   let resolved: StepStatus;
   if (status !== undefined) resolved = status;
@@ -116,7 +155,11 @@ export const StepperStep = forwardRef<HTMLLIElement, StepperStepProps>(function 
   let content: ReactNode;
   if (isDot) {
     content = (
-      <span data-slot="dot" aria-hidden="true" className={cn("rounded-full bg-current", stepperDotSizes[size])} />
+      <span
+        data-slot="dot"
+        aria-hidden="true"
+        className={cn("rounded-full bg-current", stepperDotSizes[size])}
+      />
     );
   } else if (icon != null) {
     content = icon;
@@ -163,7 +206,11 @@ export const StepperStep = forwardRef<HTMLLIElement, StepperStepProps>(function 
           {title != null ? (
             <span
               data-slot="title"
-              className={cn("truncate font-medium", stepperTitleSizes[size], stepperTitleColors[resolved])}
+              className={cn(
+                "truncate font-medium",
+                stepperTitleSizes[size],
+                stepperTitleColors[resolved],
+              )}
             >
               {title}
             </span>
@@ -176,7 +223,10 @@ export const StepperStep = forwardRef<HTMLLIElement, StepperStepProps>(function 
         </span>
       ) : null}
       {description != null ? (
-        <span data-slot="description" className={cn("truncate text-tertiary", stepperDescriptionSizes[size])}>
+        <span
+          data-slot="description"
+          className={cn("truncate text-tertiary", stepperDescriptionSizes[size])}
+        >
           {description}
         </span>
       ) : null}

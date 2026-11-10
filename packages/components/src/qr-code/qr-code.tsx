@@ -1,7 +1,6 @@
-import { forwardRef, useCallback, useImperativeHandle, useRef } from "react";
-
 import { cn } from "@kdo/utils";
 import { QRCodeSVG } from "qrcode.react";
+import { forwardRef, useCallback, useImperativeHandle, useRef } from "react";
 
 import type { QrCodeHandle, QrCodeProps } from "./qr-code.type";
 
@@ -97,11 +96,11 @@ export const QrCode = forwardRef<QrCodeHandle, QrCodeProps>(function QrCode(
     [size, toSvgDataURL],
   );
 
-  useImperativeHandle(ref, () => ({ getSvg: () => svgRef.current, toSvgString, toSvgDataURL, toPngDataURL }), [
-    toSvgString,
-    toSvgDataURL,
-    toPngDataURL,
-  ]);
+  useImperativeHandle(
+    ref,
+    () => ({ getSvg: () => svgRef.current, toSvgString, toSvgDataURL, toPngDataURL }),
+    [toSvgString, toSvgDataURL, toPngDataURL],
+  );
 
   return (
     <QRCodeSVG
@@ -113,7 +112,9 @@ export const QrCode = forwardRef<QrCodeHandle, QrCodeProps>(function QrCode(
       fgColor={fgColor}
       bgColor={bgColor}
       title={title}
-      imageSettings={imageSettings ? { ...imageSettings, excavate: imageSettings.excavate ?? true } : undefined}
+      imageSettings={
+        imageSettings ? { ...imageSettings, excavate: imageSettings.excavate ?? true } : undefined
+      }
       className={cn("text-primary", className)}
       {...props}
     />

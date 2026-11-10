@@ -1,10 +1,13 @@
-import { forwardRef, type MouseEvent, type ReactNode, useState } from "react";
-
 import { cn } from "@kdo/utils";
 import { ChevronLeft, ChevronRight, Ellipsis } from "lucide-react";
+import { forwardRef, type MouseEvent, type ReactNode, useState } from "react";
 
 import type { PaginationProps } from "./pagination.type";
-import { paginationActiveColors, paginationFocus, paginationItemSizes } from "./pagination.variants";
+import {
+  paginationActiveColors,
+  paginationFocus,
+  paginationItemSizes,
+} from "./pagination.variants";
 
 function range(start: number, end: number): number[] {
   return Array.from({ length: Math.max(end - start + 1, 0) }, (_, index) => start + index);
@@ -110,10 +113,23 @@ export const Pagination = forwardRef<HTMLElement, PaginationProps>(function Pagi
   const items = paginationItems(current, totalPages, siblingCount, boundaryCount);
 
   return (
-    <nav ref={ref} aria-label={resolvedLabels.nav} data-slot="pagination" className={cn("w-fit", className)} {...props}>
+    <nav
+      ref={ref}
+      aria-label={resolvedLabels.nav}
+      data-slot="pagination"
+      className={cn("w-fit", className)}
+      {...props}
+    >
       <ul data-slot="pagination-list" className="flex list-none items-center gap-1 p-0">
-        {showEdges ? control(resolvedLabels.first, <ChevronLeft aria-hidden="true" />, 1, current === 1) : null}
-        {control(resolvedLabels.previous, <ChevronLeft aria-hidden="true" />, current - 1, current === 1)}
+        {showEdges
+          ? control(resolvedLabels.first, <ChevronLeft aria-hidden="true" />, 1, current === 1)
+          : null}
+        {control(
+          resolvedLabels.previous,
+          <ChevronLeft aria-hidden="true" />,
+          current - 1,
+          current === 1,
+        )}
         {items.map((item, index) =>
           item === "ellipsis" ? (
             // biome-ignore lint/suspicious/noArrayIndexKey: ellipsis markers are positional.
@@ -121,7 +137,10 @@ export const Pagination = forwardRef<HTMLElement, PaginationProps>(function Pagi
               <span
                 data-slot="ellipsis"
                 aria-hidden="true"
-                className={cn("inline-flex items-center justify-center text-tertiary", paginationItemSizes[size])}
+                className={cn(
+                  "inline-flex items-center justify-center text-tertiary",
+                  paginationItemSizes[size],
+                )}
               >
                 <Ellipsis aria-hidden="true" />
               </span>
@@ -135,16 +154,29 @@ export const Pagination = forwardRef<HTMLElement, PaginationProps>(function Pagi
                 disabled={disabled}
                 data-active={item === current || undefined}
                 onClick={(event) => handlePageClick(event, item)}
-                className={cn(itemClass, item === current ? paginationActiveColors[color] : idleClass)}
+                className={cn(
+                  itemClass,
+                  item === current ? paginationActiveColors[color] : idleClass,
+                )}
               >
                 {item}
               </button>
             </li>
           ),
         )}
-        {control(resolvedLabels.next, <ChevronRight aria-hidden="true" />, current + 1, current === totalPages)}
+        {control(
+          resolvedLabels.next,
+          <ChevronRight aria-hidden="true" />,
+          current + 1,
+          current === totalPages,
+        )}
         {showEdges
-          ? control(resolvedLabels.last, <ChevronRight aria-hidden="true" />, totalPages, current === totalPages)
+          ? control(
+              resolvedLabels.last,
+              <ChevronRight aria-hidden="true" />,
+              totalPages,
+              current === totalPages,
+            )
           : null}
       </ul>
     </nav>

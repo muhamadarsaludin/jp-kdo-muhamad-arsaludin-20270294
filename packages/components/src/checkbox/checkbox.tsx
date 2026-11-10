@@ -1,3 +1,5 @@
+import { cn } from "@kdo/utils";
+import { Check, Minus } from "lucide-react";
 import {
   type ChangeEvent,
   forwardRef,
@@ -9,9 +11,6 @@ import {
   useRef,
   useState,
 } from "react";
-
-import { cn } from "@kdo/utils";
-import { Check, Minus } from "lucide-react";
 
 import { FieldContext } from "../field/field-context";
 import type { CheckboxProps } from "./checkbox.type";
@@ -53,7 +52,10 @@ const CheckboxRoot = forwardRef<HTMLInputElement, CheckboxProps>(function Checkb
   const labelId = useId();
   const descriptionId = useId();
   const describedBy =
-    [description ? descriptionId : undefined, fieldCtx?.descriptionPresent ? fieldCtx.descriptionId : undefined]
+    [
+      description ? descriptionId : undefined,
+      fieldCtx?.descriptionPresent ? fieldCtx.descriptionId : undefined,
+    ]
       .filter(Boolean)
       .join(" ") || undefined;
 
@@ -81,9 +83,13 @@ const CheckboxRoot = forwardRef<HTMLInputElement, CheckboxProps>(function Checkb
 
   let boxIcon: ReactNode = null;
   if (showIndeterminate) {
-    boxIcon = <Minus data-slot="minus" className={cn(checkboxIconSizes[size], "text-primary-inverse")} />;
+    boxIcon = (
+      <Minus data-slot="minus" className={cn(checkboxIconSizes[size], "text-primary-inverse")} />
+    );
   } else if (currentChecked) {
-    boxIcon = <Check data-slot="check" className={cn(checkboxIconSizes[size], "text-primary-inverse")} />;
+    boxIcon = (
+      <Check data-slot="check" className={cn(checkboxIconSizes[size], "text-primary-inverse")} />
+    );
   }
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {

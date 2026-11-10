@@ -1,3 +1,4 @@
+import { cn } from "@kdo/utils";
 import {
   type CSSProperties,
   forwardRef,
@@ -8,8 +9,6 @@ import {
   useRef,
   useState,
 } from "react";
-
-import { cn } from "@kdo/utils";
 
 import type { SliderProps, SliderValue } from "./slider.type";
 import {
@@ -33,7 +32,12 @@ function snapValue(raw: number, min: number, max: number, step: number): number 
   return Number(clamp(snapped, min, max).toFixed(10));
 }
 
-function toValues(input: SliderValue | undefined, count: number, min: number, max: number): number[] {
+function toValues(
+  input: SliderValue | undefined,
+  count: number,
+  min: number,
+  max: number,
+): number[] {
   let entries: number[];
   if (Array.isArray(input)) entries = input;
   else if (input === undefined) entries = [];
@@ -222,7 +226,11 @@ export const Slider = forwardRef<HTMLDivElement, SliderProps>(function Slider(
     >
       {label != null || showValue ? (
         <div className="flex w-full items-center justify-between gap-3">
-          {label != null ? <span className="min-w-0 truncate text-primary text-sm">{label}</span> : <span />}
+          {label != null ? (
+            <span className="min-w-0 truncate text-primary text-sm">{label}</span>
+          ) : (
+            <span />
+          )}
           {showValue ? (
             <span data-slot="value" className="shrink-0 text-sm text-tertiary tabular-nums">
               {valueText}
@@ -289,7 +297,9 @@ export const Slider = forwardRef<HTMLDivElement, SliderProps>(function Slider(
                 sliderThumbSize[size],
                 sliderThumbColors[color],
                 sliderFocus[color],
-                horizontal ? "top-1/2 -translate-x-1/2 -translate-y-1/2" : "left-1/2 -translate-x-1/2 translate-y-1/2",
+                horizontal
+                  ? "top-1/2 -translate-x-1/2 -translate-y-1/2"
+                  : "left-1/2 -translate-x-1/2 translate-y-1/2",
               )}
               style={style}
             />

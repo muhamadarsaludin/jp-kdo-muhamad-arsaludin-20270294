@@ -106,7 +106,8 @@ export type TabsListOptions = {
   shape?: Shape;
 };
 
-const tabsScrollClass = "flex-nowrap overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden";
+const tabsScrollClass =
+  "flex-nowrap overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden";
 
 export const tabsListClass = (
   variant: TabsVariant,
@@ -138,7 +139,8 @@ export const tabsViewportClass = (
   const { noBorder = false } = options;
   // Pull the horizontal line row down over the track border so the active
   // indicator paints on top of it instead of stacking above it.
-  const overlapsTrack = variant === "line" && orientation === "horizontal" && !noBorder ? "-mb-px" : "";
+  const overlapsTrack =
+    variant === "line" && orientation === "horizontal" && !noBorder ? "-mb-px" : "";
   return cn(
     "flex gap-1",
     orientation === "horizontal"
@@ -176,7 +178,10 @@ export const tabsTabClass = (
       orientation === "horizontal"
         ? `after:absolute after:inset-x-0 after:bottom-0 after:h-0.5 after:rounded-full ${tabsLineIndicatorColor[color]} after:opacity-0 after:content-[''] data-[state=active]:after:opacity-100`
         : `after:absolute after:inset-y-0 after:-left-px after:w-0.5 after:rounded-full ${tabsLineIndicatorColor[color]} after:opacity-0 after:content-[''] data-[state=active]:after:opacity-100`;
-    const textPadding = orientation === "horizontal" ? tabsLinePaddingHorizontal[size] : tabsLinePaddingVertical[size];
+    const textPadding =
+      orientation === "horizontal"
+        ? tabsLinePaddingHorizontal[size]
+        : tabsLinePaddingVertical[size];
     const justify = orientation === "horizontal" ? "justify-center" : "justify-start";
     return `${tabsTabBase} ${focus} ${widthClass} ${justify} ${sizing} ${iconOnly ? padding : textPadding} font-normal text-secondary transition-colors duration-200 ease-out data-[state=inactive]:enabled:hover:text-primary data-[state=active]:font-medium ${tabsLineActiveText[color]} ${indicator}`;
   }

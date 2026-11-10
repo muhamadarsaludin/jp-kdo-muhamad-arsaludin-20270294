@@ -1,9 +1,16 @@
 import type { ComponentPropsWithoutRef, ReactNode } from "react";
 
 import type { Size } from "../type";
-import type { CarouselColor, CarouselIndicatorVariant, CarouselOrientation } from "./carousel.variants";
+import type {
+  CarouselColor,
+  CarouselIndicatorVariant,
+  CarouselOrientation,
+} from "./carousel.variants";
 
-export type CarouselProps = Omit<ComponentPropsWithoutRef<"div">, "onChange" | "defaultValue" | "color"> & {
+export type CarouselProps = Omit<
+  ComponentPropsWithoutRef<"div">,
+  "onChange" | "defaultValue" | "color"
+> & {
   value?: number;
   defaultValue?: number;
   onValueChange?: (index: number) => void;

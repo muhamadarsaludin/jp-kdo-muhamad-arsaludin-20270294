@@ -1,7 +1,6 @@
-import { useId } from "react";
-
 import { cn } from "@kdo/utils";
 import { ChevronDown } from "lucide-react";
+import { useId } from "react";
 
 import type { DatePickerLabels, DatePickerLocale } from "./date-picker.type";
 import { formatShortDate } from "./date-picker-locale";
@@ -15,7 +14,13 @@ type DatePickerHolidayListProps = {
   onToggle: () => void;
 };
 
-export function DatePickerHolidayList({ items, locale, labels, open, onToggle }: DatePickerHolidayListProps) {
+export function DatePickerHolidayList({
+  items,
+  locale,
+  labels,
+  open,
+  onToggle,
+}: DatePickerHolidayListProps) {
   const listId = useId();
 
   return (
@@ -38,10 +43,16 @@ export function DatePickerHolidayList({ items, locale, labels, open, onToggle }:
       <ul id={listId} hidden={!open} className="mt-1 space-y-1">
         {items.map(({ date, label }) => (
           <li key={dateKey(date)} className="flex items-start gap-1.5 text-tertiary text-xs">
-            <span data-slot="holiday-bullet" aria-hidden="true" className="mt-px text-error-primary">
+            <span
+              data-slot="holiday-bullet"
+              aria-hidden="true"
+              className="mt-px text-error-primary"
+            >
               •
             </span>
-            <span className="shrink-0 font-medium text-primary">{formatShortDate(date, locale)}</span>
+            <span className="shrink-0 font-medium text-primary">
+              {formatShortDate(date, locale)}
+            </span>
             <span className="min-w-0 flex-1">{label}</span>
           </li>
         ))}

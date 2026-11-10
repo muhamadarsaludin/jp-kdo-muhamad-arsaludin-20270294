@@ -1,6 +1,10 @@
 import type { ComponentPropsWithoutRef, ReactNode } from "react";
 
-import type { PopoverLabelProps, PopoverPosition, PopoverSeparatorProps } from "../popover/popover.type";
+import type {
+  PopoverLabelProps,
+  PopoverPosition,
+  PopoverSeparatorProps,
+} from "../popover/popover.type";
 
 export type DropdownSelectionMode = "none" | "single";
 

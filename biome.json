@@ -15,7 +15,11 @@
       "!**/coverage",
       "!**/pnpm-lock.yaml",
       "!**/apps/backend/docs",
-      "!**/*.md"
+      "!**/*.md",
+      "!**/packages/components",
+      "!**/packages/design-tokens/output",
+      "!**/packages/design-tokens/tokens",
+      "!**/apps/web/src/styles.css"
     ]
   },
   "formatter": {

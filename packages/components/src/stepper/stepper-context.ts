@@ -1,7 +1,12 @@
 import { createContext, useContext } from "react";
 
 import type { Size } from "../type";
-import type { StepperAlign, StepperColor, StepperIndicator, StepperOrientation } from "./stepper.variants";
+import type {
+  StepperAlign,
+  StepperColor,
+  StepperIndicator,
+  StepperOrientation,
+} from "./stepper.variants";
 
 export type StepperContextValue = {
   activeStep: number;

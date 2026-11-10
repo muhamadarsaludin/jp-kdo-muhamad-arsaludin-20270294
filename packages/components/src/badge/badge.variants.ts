@@ -117,119 +117,122 @@ const textColors: Record<BadgeColor, string> = {
   olive: "text-utility-olive-600",
 };
 
-export const badgeVariants = cva("inline-flex items-center justify-center overflow-hidden whitespace-nowrap", {
-  variants: {
-    size: {
-      sm: "h-5 gap-1 text-xs px-1.5 py-0.5 min-w-5 [&>[data-slot]>svg]:size-3",
-      md: "h-6 gap-1 text-xs px-2 py-1 min-w-6 [&>[data-slot]>svg]:size-3",
-      lg: "h-7 gap-1.5 text-sm px-2 py-1 min-w-7 [&>[data-slot]>svg]:size-3.5",
+export const badgeVariants = cva(
+  "inline-flex items-center justify-center overflow-hidden whitespace-nowrap",
+  {
+    variants: {
+      size: {
+        sm: "h-5 gap-1 text-xs px-1.5 py-0.5 min-w-5 [&>[data-slot]>svg]:size-3",
+        md: "h-6 gap-1 text-xs px-2 py-1 min-w-6 [&>[data-slot]>svg]:size-3",
+        lg: "h-7 gap-1.5 text-sm px-2 py-1 min-w-7 [&>[data-slot]>svg]:size-3.5",
+      },
+      shape: {
+        rounded: "rounded-sm",
+        pill: "rounded-full",
+      },
+      variant: {
+        solid: "",
+        subtle: "",
+        outline: "",
+      },
+      color: {
+        brand: "",
+        neutral: "",
+        inverse: "",
+        red: "",
+        blue: "",
+        yellow: "",
+        green: "",
+        orange: "",
+        amber: "",
+        lime: "",
+        teal: "",
+        cyan: "",
+        sky: "",
+        indigo: "",
+        violet: "",
+        purple: "",
+        lavender: "",
+        pink: "",
+        rose: "",
+        olive: "",
+      },
+      borderless: {
+        true: "",
+        false: "",
+      },
+      transparent: {
+        true: "",
+        false: "",
+      },
     },
-    shape: {
-      rounded: "rounded-sm",
-      pill: "rounded-full",
-    },
-    variant: {
-      solid: "",
-      subtle: "",
-      outline: "",
-    },
-    color: {
-      brand: "",
-      neutral: "",
-      inverse: "",
-      red: "",
-      blue: "",
-      yellow: "",
-      green: "",
-      orange: "",
-      amber: "",
-      lime: "",
-      teal: "",
-      cyan: "",
-      sky: "",
-      indigo: "",
-      violet: "",
-      purple: "",
-      lavender: "",
-      pink: "",
-      rose: "",
-      olive: "",
-    },
-    borderless: {
-      true: "",
-      false: "",
-    },
-    transparent: {
-      true: "",
-      false: "",
+    compoundVariants: [
+      // Solid
+      ...badgeColors.map((color) => ({
+        variant: "solid" as const,
+        borderless: false as const,
+        color,
+        className: `${solidBackgrounds[color]} ${color === "inverse" ? "text-primary outline-1 -outline-offset-1 outline-utility-black" : "text-primary-inverse outline-1 -outline-offset-1 outline-utility-white"}`,
+      })),
+      ...badgeColors.map((color) => ({
+        variant: "solid" as const,
+        borderless: true as const,
+        color,
+        className: `${solidBackgrounds[color]} ${color === "inverse" ? "text-primary" : "text-primary-inverse"}`,
+      })),
+      // Subtle
+      ...badgeColors.map((color) => ({
+        variant: "subtle" as const,
+        borderless: false as const,
+        color,
+        className: `${subtleBackgrounds[color]} ${textColors[color]} outline-1 -outline-offset-1 ${outlineColors[color]}`,
+      })),
+      ...badgeColors.map((color) => ({
+        variant: "subtle" as const,
+        borderless: true as const,
+        color,
+        className: `${subtleBackgrounds[color]} ${textColors[color]}`,
+      })),
+      // Outline
+      ...badgeColors.map((color) => ({
+        variant: "outline" as const,
+        borderless: false as const,
+        transparent: false as const,
+        color,
+        className: `${color === "inverse" ? "bg-primary-inverse" : "bg-primary"} outline-1 -outline-offset-1 ${outlineColors[color]} ${textColors[color]}`,
+      })),
+      ...badgeColors.map((color) => ({
+        variant: "outline" as const,
+        borderless: false as const,
+        transparent: true as const,
+        color,
+        className: `outline-1 -outline-offset-1 ${outlineColors[color]} ${textColors[color]}`,
+      })),
+      ...badgeColors.map((color) => ({
+        variant: "outline" as const,
+        borderless: true as const,
+        transparent: false as const,
+        color,
+        className: `${textColors[color]} ${color === "inverse" ? "bg-primary-inverse" : "bg-primary"}`,
+      })),
+      ...badgeColors.map((color) => ({
+        variant: "outline" as const,
+        borderless: true as const,
+        transparent: true as const,
+        color,
+        className: textColors[color],
+      })),
+    ],
+    defaultVariants: {
+      shape: "rounded",
+      size: "md",
+      variant: "solid",
+      color: "brand",
+      borderless: false,
+      transparent: false,
     },
   },
-  compoundVariants: [
-    // Solid
-    ...badgeColors.map((color) => ({
-      variant: "solid" as const,
-      borderless: false as const,
-      color,
-      className: `${solidBackgrounds[color]} ${color === "inverse" ? "text-primary outline-1 -outline-offset-1 outline-utility-black" : "text-primary-inverse outline-1 -outline-offset-1 outline-utility-white"}`,
-    })),
-    ...badgeColors.map((color) => ({
-      variant: "solid" as const,
-      borderless: true as const,
-      color,
-      className: `${solidBackgrounds[color]} ${color === "inverse" ? "text-primary" : "text-primary-inverse"}`,
-    })),
-    // Subtle
-    ...badgeColors.map((color) => ({
-      variant: "subtle" as const,
-      borderless: false as const,
-      color,
-      className: `${subtleBackgrounds[color]} ${textColors[color]} outline-1 -outline-offset-1 ${outlineColors[color]}`,
-    })),
-    ...badgeColors.map((color) => ({
-      variant: "subtle" as const,
-      borderless: true as const,
-      color,
-      className: `${subtleBackgrounds[color]} ${textColors[color]}`,
-    })),
-    // Outline
-    ...badgeColors.map((color) => ({
-      variant: "outline" as const,
-      borderless: false as const,
-      transparent: false as const,
-      color,
-      className: `${color === "inverse" ? "bg-primary-inverse" : "bg-primary"} outline-1 -outline-offset-1 ${outlineColors[color]} ${textColors[color]}`,
-    })),
-    ...badgeColors.map((color) => ({
-      variant: "outline" as const,
-      borderless: false as const,
-      transparent: true as const,
-      color,
-      className: `outline-1 -outline-offset-1 ${outlineColors[color]} ${textColors[color]}`,
-    })),
-    ...badgeColors.map((color) => ({
-      variant: "outline" as const,
-      borderless: true as const,
-      transparent: false as const,
-      color,
-      className: `${textColors[color]} ${color === "inverse" ? "bg-primary-inverse" : "bg-primary"}`,
-    })),
-    ...badgeColors.map((color) => ({
-      variant: "outline" as const,
-      borderless: true as const,
-      transparent: true as const,
-      color,
-      className: textColors[color],
-    })),
-  ],
-  defaultVariants: {
-    shape: "rounded",
-    size: "md",
-    variant: "solid",
-    color: "brand",
-    borderless: false,
-    transparent: false,
-  },
-});
+);
 
 export const badgeDotVariants = cva("size-2.5 rounded-full", {
   variants: {

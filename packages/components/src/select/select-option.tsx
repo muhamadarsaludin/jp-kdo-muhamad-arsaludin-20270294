@@ -9,8 +9,14 @@ export const SelectOption = forwardRef<HTMLButtonElement, SelectOptionProps>(fun
   { value, startContent, endContent, description, className, children, onClick, ...props },
   ref,
 ) {
-  const { selectionMode, selectedValues, activeValue, selectionIndicator, selectionPosition, selectOption } =
-    useSelectContext();
+  const {
+    selectionMode,
+    selectedValues,
+    activeValue,
+    selectionIndicator,
+    selectionPosition,
+    selectOption,
+  } = useSelectContext();
   const multiple = selectionMode === "multiple";
   const selected = selectedValues.includes(value);
   const active = activeValue === value;

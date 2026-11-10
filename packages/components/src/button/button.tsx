@@ -1,6 +1,5 @@
-import type { ElementType, MouseEvent } from "react";
-
 import { cn } from "@kdo/utils";
+import type { ElementType, MouseEvent } from "react";
 
 import { Spinner } from "../spinner/spinner";
 import type { ButtonIconProps, ButtonProps } from "./button.type";

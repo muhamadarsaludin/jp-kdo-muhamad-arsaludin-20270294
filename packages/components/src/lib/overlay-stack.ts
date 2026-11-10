@@ -14,13 +14,16 @@ export function useOverlayLayer(active: boolean): number {
   const orderRef = useRef(0);
   const wasActive = useRef(false);
 
-  if (active && !wasActive.current && typeof window !== "undefined") orderRef.current = createOrder();
+  if (active && !wasActive.current && typeof window !== "undefined")
+    orderRef.current = createOrder();
   wasActive.current = active;
 
   useEffect(() => {
     if (!active) return;
     const order = orderRef.current;
-    activeLayers = [...activeLayers.filter((entry) => entry !== order), order].sort((a, b) => a - b);
+    activeLayers = [...activeLayers.filter((entry) => entry !== order), order].sort(
+      (a, b) => a - b,
+    );
     return () => {
       activeLayers = activeLayers.filter((entry) => entry !== order);
     };

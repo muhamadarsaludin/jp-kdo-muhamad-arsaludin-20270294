@@ -1,10 +1,13 @@
-import { forwardRef } from "react";
-
 import { cn } from "@kdo/utils";
 import { ArrowDown, ArrowUp } from "lucide-react";
+import { forwardRef } from "react";
 
 import type { StatCardProps } from "./stat-card.type";
-import { type StatCardTrendDirection, statCardIconFrames, statCardTrendStyles } from "./stat-card.variants";
+import {
+  type StatCardTrendDirection,
+  statCardIconFrames,
+  statCardTrendStyles,
+} from "./stat-card.variants";
 
 function trendDirection(trend: NonNullable<StatCardProps["trend"]>): StatCardTrendDirection {
   if (trend.direction !== undefined) return trend.direction;
@@ -22,7 +25,10 @@ export const StatCard = forwardRef<HTMLDivElement, StatCardProps>(function StatC
     <div
       ref={ref}
       data-slot="stat-card"
-      className={cn("flex flex-col gap-3 rounded-xl border border-secondary bg-primary p-5", className)}
+      className={cn(
+        "flex flex-col gap-3 rounded-xl border border-secondary bg-primary p-5",
+        className,
+      )}
       {...props}
     >
       <div className="flex items-start justify-between gap-3">
@@ -30,7 +36,10 @@ export const StatCard = forwardRef<HTMLDivElement, StatCardProps>(function StatC
           <p data-slot="stat-label" className="text-sm text-tertiary">
             {label}
           </p>
-          <p data-slot="stat-value" className="mt-1 font-semibold text-2xl text-primary tabular-nums">
+          <p
+            data-slot="stat-value"
+            className="mt-1 font-semibold text-2xl text-primary tabular-nums"
+          >
             {value}
           </p>
         </div>

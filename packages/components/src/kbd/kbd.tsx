@@ -1,6 +1,5 @@
-import { forwardRef } from "react";
-
 import { cn } from "@kdo/utils";
+import { forwardRef } from "react";
 
 import type { KbdGroupProps, KbdProps } from "./kbd.type";
 
@@ -20,7 +19,10 @@ const KbdRoot = forwardRef<HTMLElement, KbdProps>(function KbdRoot({ className, 
 
 KbdRoot.displayName = "Kbd";
 
-const KbdGroup = forwardRef<HTMLElement, KbdGroupProps>(function KbdGroup({ className, ...props }, ref) {
+const KbdGroup = forwardRef<HTMLElement, KbdGroupProps>(function KbdGroup(
+  { className, ...props },
+  ref,
+) {
   return (
     <kbd
       ref={ref}

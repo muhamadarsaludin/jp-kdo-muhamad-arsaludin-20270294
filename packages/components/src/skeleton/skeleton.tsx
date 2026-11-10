@@ -1,6 +1,5 @@
-import type { HTMLAttributes } from "react";
-
 import { cn } from "@kdo/utils";
+import type { HTMLAttributes } from "react";
 
 import type { Shape } from "../type";
 

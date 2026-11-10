@@ -1,3 +1,4 @@
+import { cn } from "@kdo/utils";
 import {
   forwardRef,
   type KeyboardEvent as ReactKeyboardEvent,
@@ -7,8 +8,6 @@ import {
   useRef,
   useState,
 } from "react";
-
-import { cn } from "@kdo/utils";
 import { createPortal } from "react-dom";
 
 import { OverlayContext } from "../lib/overlay-context";

@@ -1,6 +1,5 @@
-import { forwardRef, useId } from "react";
-
 import { cn } from "@kdo/utils";
+import { forwardRef, useId } from "react";
 
 import { useElementWidth } from "../lib/use-element-width";
 import type { ChartDatum, ChartProps } from "./chart.type";
@@ -16,7 +15,12 @@ import {
   scaleX,
   scaleY,
 } from "./chart.utils";
-import { type ChartColor, chartColorClasses, chartColorVars, chartDefaultPalette } from "./chart.variants";
+import {
+  type ChartColor,
+  chartColorClasses,
+  chartColorVars,
+  chartDefaultPalette,
+} from "./chart.variants";
 
 const DEFAULT_HEIGHT = 240;
 const AXIS_PADDING = { top: 8, right: 8, bottom: 24, left: 44 };
@@ -76,10 +80,19 @@ function renderCartesian({
     y: scaleY(datum.value, scale.min, scale.max, plot.top, plot.height),
   }));
   const linePath = buildSeriesPath(points, curve);
-  const baselineY = scaleY(Math.min(Math.max(0, scale.min), scale.max), scale.min, scale.max, plot.top, plot.height);
+  const baselineY = scaleY(
+    Math.min(Math.max(0, scale.min), scale.max),
+    scale.min,
+    scale.max,
+    plot.top,
+    plot.height,
+  );
   const areaPath = buildAreaPath(points, baselineY, curve);
 
-  const labelStep = Math.max(1, Math.ceil(data.length / Math.max(1, Math.floor(plot.width / MIN_LABEL_GAP))));
+  const labelStep = Math.max(
+    1,
+    Math.ceil(data.length / Math.max(1, Math.floor(plot.width / MIN_LABEL_GAP))),
+  );
 
   return (
     <svg
@@ -135,7 +148,14 @@ function renderCartesian({
       <g data-slot="chart-series" className={colorClass}>
         {type === "bar"
           ? data.map((datum, index) => {
-              const rect = buildBarRect(index, data.length, datum.value, scale.min, scale.max, plot);
+              const rect = buildBarRect(
+                index,
+                data.length,
+                datum.value,
+                scale.min,
+                scale.max,
+                plot,
+              );
               return (
                 <rect
                   // biome-ignore lint/suspicious/noArrayIndexKey: ordered series; position is the identity
@@ -203,7 +223,15 @@ type CircularArgs = {
   ariaLabel: string;
 };
 
-function renderCircular({ type, data, colors, width, height, showLegend, ariaLabel }: CircularArgs) {
+function renderCircular({
+  type,
+  data,
+  colors,
+  width,
+  height,
+  showLegend,
+  ariaLabel,
+}: CircularArgs) {
   const palette = colors && colors.length > 0 ? colors : chartDefaultPalette;
   const reserve = showLegend ? LEGEND_RESERVE : 0;
   const size = Math.max(80, Math.min(height, width - reserve));
@@ -252,7 +280,10 @@ function renderCircular({ type, data, colors, width, height, showLegend, ariaLab
               // biome-ignore lint/suspicious/noArrayIndexKey: ordered series; position is the identity
               <li key={`${datum.label}-${index}`} className="flex items-center gap-2">
                 <span
-                  className={cn("size-2.5 shrink-0 rounded-full bg-current", chartColorClasses[color])}
+                  className={cn(
+                    "size-2.5 shrink-0 rounded-full bg-current",
+                    chartColorClasses[color],
+                  )}
                   aria-hidden="true"
                 />
                 <span className="min-w-0 flex-1 truncate text-primary">{datum.label}</span>
@@ -296,7 +327,13 @@ export const Chart = forwardRef<HTMLDivElement, ChartProps>(function Chart(
   };
 
   return (
-    <div ref={setRef} data-slot="chart" data-type={type} className={cn("w-full", className)} {...props}>
+    <div
+      ref={setRef}
+      data-slot="chart"
+      data-type={type}
+      className={cn("w-full", className)}
+      {...props}
+    >
       {type === "pie" || type === "donut"
         ? renderCircular({ type, data, colors, width, height, showLegend, ariaLabel })
         : renderCartesian({

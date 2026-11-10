@@ -28,6 +28,7 @@ export const AccordionItemContext = createContext<AccordionItemContextValue | nu
 
 export function useAccordionItemContext(): AccordionItemContextValue {
   const context = useContext(AccordionItemContext);
-  if (context === null) throw new Error("Accordion.Trigger and Accordion.Content must be used inside <Accordion.Item>");
+  if (context === null)
+    throw new Error("Accordion.Trigger and Accordion.Content must be used inside <Accordion.Item>");
   return context;
 }

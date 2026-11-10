@@ -1,4 +1,9 @@
-import type { ComponentPropsWithoutRef, ComponentPropsWithRef, ElementType, ReactNode } from "react";
+import type {
+  ComponentPropsWithoutRef,
+  ComponentPropsWithRef,
+  ElementType,
+  ReactNode,
+} from "react";
 
 import type { LinkColor, LinkSize, LinkUnderline } from "./link-variants";
 

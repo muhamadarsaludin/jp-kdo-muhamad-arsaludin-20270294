@@ -1,3 +1,4 @@
+import { Badge, Card, EmptyState, Skeleton, StatCard } from "@kdo/components";
 import { useQuery } from "@tanstack/react-query";
 import {
   Activity,
@@ -12,17 +13,9 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
-import { Badge, Card, EmptyState, Skeleton, StatCard } from "@kdo/components";
-
 import { api } from "@/lib/api";
 import { rupiah, tanggalWaktu } from "@/lib/format";
-import type {
-  BiayaBulananItem,
-  DashboardStats,
-  Envelope,
-  KondisiItem,
-  Peminjaman,
-} from "@/types";
+import type { BiayaBulananItem, DashboardStats, Envelope, KondisiItem, Peminjaman } from "@/types";
 
 async function ambil<T>(url: string): Promise<T> {
   const res = await api.get<Envelope<T>>(url);
@@ -56,7 +49,10 @@ function namaBulan(bulan: string): string {
 }
 
 export function DashboardPage() {
-  const stats = useQuery({ queryKey: ["dashboard", "stats"], queryFn: () => ambil<DashboardStats>("/dashboard/stats") });
+  const stats = useQuery({
+    queryKey: ["dashboard", "stats"],
+    queryFn: () => ambil<DashboardStats>("/dashboard/stats"),
+  });
   const kondisi = useQuery({
     queryKey: ["dashboard", "kondisi"],
     queryFn: () => ambil<KondisiItem[]>("/dashboard/kendaraan-per-kondisi"),
@@ -168,7 +164,10 @@ export function DashboardPage() {
                       <span className="flex items-center gap-2 text-secondary">
                         <span
                           className="size-2 rounded-full"
-                          style={{ backgroundColor: warnaKondisi[item.kondisi] ?? "var(--color-neutral-400)" }}
+                          style={{
+                            backgroundColor:
+                              warnaKondisi[item.kondisi] ?? "var(--color-neutral-400)",
+                          }}
                         />
                         {labelKondisi[item.kondisi] ?? item.kondisi}
                       </span>
@@ -199,7 +198,9 @@ export function DashboardPage() {
             </span>
             <div>
               <p className="text-tertiary text-xs">Pegawai aktif</p>
-              <p className="font-semibold text-xl text-primary tabular-nums">{data?.total_pegawai ?? 0}</p>
+              <p className="font-semibold text-xl text-primary tabular-nums">
+                {data?.total_pegawai ?? 0}
+              </p>
             </div>
           </Card.Content>
         </Card>
@@ -210,7 +211,9 @@ export function DashboardPage() {
             </span>
             <div>
               <p className="text-tertiary text-xs">Perangkat daerah</p>
-              <p className="font-semibold text-xl text-primary tabular-nums">{data?.total_opd ?? 0}</p>
+              <p className="font-semibold text-xl text-primary tabular-nums">
+                {data?.total_opd ?? 0}
+              </p>
             </div>
           </Card.Content>
         </Card>
@@ -252,7 +255,10 @@ export function DashboardPage() {
           ) : (
             <div className="divide-y divide-[var(--color-border-secondary)]">
               {(menunggu.data ?? []).map((item) => (
-                <div key={item.id} className="flex flex-wrap items-center justify-between gap-3 py-3">
+                <div
+                  key={item.id}
+                  className="flex flex-wrap items-center justify-between gap-3 py-3"
+                >
                   <div className="min-w-0">
                     <p className="truncate font-medium text-primary text-sm">
                       {item.kendaraan_nomor_polisi} · {item.pegawai_nama}

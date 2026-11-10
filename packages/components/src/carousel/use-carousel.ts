@@ -32,7 +32,9 @@ export function useCarouselState({
   const goTo = useCallback(
     (next: number) => {
       if (count <= 0) return;
-      const target = loop ? ((next % count) + count) % count : Math.min(Math.max(next, 0), count - 1);
+      const target = loop
+        ? ((next % count) + count) % count
+        : Math.min(Math.max(next, 0), count - 1);
       if (target === index) return;
       if (!isControlled) setInternalIndex(target);
       onValueChange?.(target);

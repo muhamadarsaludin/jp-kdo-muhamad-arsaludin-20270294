@@ -53,7 +53,12 @@ type DatePickerYearGridProps = {
   onSelect: (year: number) => void;
 };
 
-export function DatePickerYearGrid({ pageStart, activeYear, isYearDisabled, onSelect }: DatePickerYearGridProps) {
+export function DatePickerYearGrid({
+  pageStart,
+  activeYear,
+  isYearDisabled,
+  onSelect,
+}: DatePickerYearGridProps) {
   const years = Array.from({ length: YEARS_PER_PAGE }, (_, index) => pageStart + index);
 
   return (

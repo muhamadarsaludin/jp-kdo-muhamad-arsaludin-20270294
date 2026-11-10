@@ -1,4 +1,8 @@
-import type { DatePickerLabels, DatePickerLocale, DatePickerWeekStartsOn } from "./date-picker.type";
+import type {
+  DatePickerLabels,
+  DatePickerLocale,
+  DatePickerWeekStartsOn,
+} from "./date-picker.type";
 
 const INTL_LOCALES: Record<DatePickerLocale, string> = {
   en: "en-US",

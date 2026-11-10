@@ -1,3 +1,14 @@
+import { cn } from "@kdo/utils";
+import {
+  ChevronDown,
+  ChevronUp,
+  CircleCheck,
+  CircleX,
+  Eye,
+  EyeOff,
+  TriangleAlert,
+  X,
+} from "lucide-react";
 import {
   type ChangeEvent,
   cloneElement,
@@ -11,9 +22,6 @@ import {
   useRef,
   useState,
 } from "react";
-
-import { cn } from "@kdo/utils";
-import { ChevronDown, ChevronUp, CircleCheck, CircleX, Eye, EyeOff, TriangleAlert, X } from "lucide-react";
 
 import { FieldContext } from "../field/field-context";
 import { Spinner } from "../spinner/spinner";
@@ -84,8 +92,9 @@ const InputRoot = forwardRef<HTMLInputElement, InputProps>(function InputRoot(
   const effectiveMaxLength = maxLength ?? fieldCtx?.max;
   const effectiveStatus = status ?? fieldCtx?.status ?? "default";
   const describedBy =
-    [ariaDescribedBy, fieldCtx?.descriptionPresent ? fieldCtx.descriptionId : undefined].filter(Boolean).join(" ") ||
-    undefined;
+    [ariaDescribedBy, fieldCtx?.descriptionPresent ? fieldCtx.descriptionId : undefined]
+      .filter(Boolean)
+      .join(" ") || undefined;
 
   const inputBaseRef = useRef<HTMLInputElement | null>(null);
   const setInputRef = useCallback(
@@ -112,7 +121,12 @@ const InputRoot = forwardRef<HTMLInputElement, InputProps>(function InputRoot(
   const [focused, setFocused] = useState(false);
   const hasValue = currentValue.length > 0;
   const showClearButton =
-    clearable && hasValue && !readOnly && !disabled && !loading && (focused || effectiveStatus === "default");
+    clearable &&
+    hasValue &&
+    !readOnly &&
+    !disabled &&
+    !loading &&
+    (focused || effectiveStatus === "default");
 
   let DefaultStatusIcon: typeof CircleX | undefined;
   switch (effectiveStatus) {
@@ -129,7 +143,10 @@ const InputRoot = forwardRef<HTMLInputElement, InputProps>(function InputRoot(
       DefaultStatusIcon = undefined;
   }
 
-  const statusIconClassName = cn(inputIconAndLoadingSizes[size], inputIconStatusColors[effectiveStatus]);
+  const statusIconClassName = cn(
+    inputIconAndLoadingSizes[size],
+    inputIconStatusColors[effectiveStatus],
+  );
   const resolvedStatusIcon = isValidElement<{ className?: string }>(statusIcon)
     ? cloneElement(statusIcon, { className: cn(statusIconClassName, statusIcon.props.className) })
     : statusIcon;
@@ -154,7 +171,10 @@ const InputRoot = forwardRef<HTMLInputElement, InputProps>(function InputRoot(
   };
 
   const commitValue = (node: HTMLInputElement, nextValue: string) => {
-    const prototypeSetter = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(node), "value")?.set;
+    const prototypeSetter = Object.getOwnPropertyDescriptor(
+      Object.getPrototypeOf(node),
+      "value",
+    )?.set;
     if (prototypeSetter) prototypeSetter.call(node, nextValue);
     /* v8 ignore start -- fallback for non-DOM environments; browsers and jsdom always provide the setter */ else
       node.value = nextValue;
@@ -190,7 +210,12 @@ const InputRoot = forwardRef<HTMLInputElement, InputProps>(function InputRoot(
     node.focus();
   };
 
-  const contentStyles = cn(inputContentBase, inputContentButtonBase, inputTextSizes[size], inputContentIconSizes[size]);
+  const contentStyles = cn(
+    inputContentBase,
+    inputContentButtonBase,
+    inputTextSizes[size],
+    inputContentIconSizes[size],
+  );
   const stepperBorder = variant === "filled" ? "border-transparent" : "border-primary";
 
   return (
@@ -205,7 +230,9 @@ const InputRoot = forwardRef<HTMLInputElement, InputProps>(function InputRoot(
       )}
     >
       {startAddOnContent && (
-        <div className={cn(inputAddOnVariants({ side: "start", shape, variant, size }))}>{startAddOnContent}</div>
+        <div className={cn(inputAddOnVariants({ side: "start", shape, variant, size }))}>
+          {startAddOnContent}
+        </div>
       )}
       <div
         className={cn(
@@ -240,7 +267,9 @@ const InputRoot = forwardRef<HTMLInputElement, InputProps>(function InputRoot(
           value={currentValue}
         />
 
-        {loading && <Spinner className={cn(inputIconAndLoadingSizes[size])} aria-label={loadingLabel} />}
+        {loading && (
+          <Spinner className={cn(inputIconAndLoadingSizes[size])} aria-label={loadingLabel} />
+        )}
 
         {showClearButton ? (
           <button
@@ -255,7 +284,9 @@ const InputRoot = forwardRef<HTMLInputElement, InputProps>(function InputRoot(
         ) : (
           <>
             {resolvedStatusIcon ??
-              (DefaultStatusIcon && <DefaultStatusIcon aria-hidden="true" className={statusIconClassName} />)}
+              (DefaultStatusIcon && (
+                <DefaultStatusIcon aria-hidden="true" className={statusIconClassName} />
+              ))}
             {clearable && !resolvedStatusIcon && !DefaultStatusIcon && !showPasswordToggle ? (
               <span className={cn(inputIconButtonBase, "invisible")} aria-hidden="true">
                 <X className={cn(inputIconAndLoadingSizes[size])} />
@@ -310,7 +341,10 @@ const InputRoot = forwardRef<HTMLInputElement, InputProps>(function InputRoot(
               onMouseDown={(event) => event.preventDefault()}
               onClick={() => handleStep(-1)}
               disabled={stepperDisabled || undefined}
-              className={cn(inputStepperButtonBase, stepperVariant === "bordered" && cn("border-t", stepperBorder))}
+              className={cn(
+                inputStepperButtonBase,
+                stepperVariant === "bordered" && cn("border-t", stepperBorder),
+              )}
               aria-label={decreaseLabel}
             >
               <ChevronDown className={cn(inputStepperIconSizes[size])} />
@@ -319,7 +353,9 @@ const InputRoot = forwardRef<HTMLInputElement, InputProps>(function InputRoot(
         )}
       </div>
       {endAddOnContent && (
-        <div className={cn(inputAddOnVariants({ side: "end", shape, variant, size }))}>{endAddOnContent}</div>
+        <div className={cn(inputAddOnVariants({ side: "end", shape, variant, size }))}>
+          {endAddOnContent}
+        </div>
       )}
     </div>
   );
@@ -329,7 +365,13 @@ InputRoot.displayName = "Input";
 
 export const Input = InputRoot;
 
-export type { InputBaseProps, InputProps, InputSize, InputStepperVariant, InputValue } from "./input.type";
+export type {
+  InputBaseProps,
+  InputProps,
+  InputSize,
+  InputStepperVariant,
+  InputValue,
+} from "./input.type";
 export {
   inputAddOnVariants,
   inputBaseVariants,

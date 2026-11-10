@@ -31,4 +31,11 @@ export const chartColorVars: Record<ChartColor, string> = {
 };
 
 /** Ordered palette used by multi-color charts (pie/donut) when `colors` is not set. */
-export const chartDefaultPalette: ChartColor[] = ["brand", "info", "success", "warning", "error", "neutral"];
+export const chartDefaultPalette: ChartColor[] = [
+  "brand",
+  "info",
+  "success",
+  "warning",
+  "error",
+  "neutral",
+];

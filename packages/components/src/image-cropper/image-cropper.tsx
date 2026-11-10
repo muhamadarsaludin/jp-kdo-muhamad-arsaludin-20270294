@@ -1,3 +1,5 @@
+import { cn } from "@kdo/utils";
+import { RotateCcw } from "lucide-react";
 import {
   forwardRef,
   type KeyboardEvent as ReactKeyboardEvent,
@@ -8,9 +10,6 @@ import {
   useRef,
   useState,
 } from "react";
-
-import { cn } from "@kdo/utils";
-import { RotateCcw } from "lucide-react";
 
 import { Button } from "../button/button";
 import { NumberInput } from "../number-input/number-input";
@@ -84,7 +83,9 @@ export const ImageCropper = forwardRef<ImageCropperHandle, ImageCropperProps>(fu
   }, []);
 
   const baseScale =
-    natural.width > 0 && view.width > 0 ? Math.max(view.width / natural.width, view.height / natural.height) : 0;
+    natural.width > 0 && view.width > 0
+      ? Math.max(view.width / natural.width, view.height / natural.height)
+      : 0;
   const displayedWidth = natural.width * baseScale * scale;
   const displayedHeight = natural.height * baseScale * scale;
 
@@ -126,7 +127,12 @@ export const ImageCropper = forwardRef<ImageCropperHandle, ImageCropperProps>(fu
   const handleZoomChange = useCallback(
     (next: string) => {
       const parsed = Number.parseInt(next, 10);
-      if (next.trim() !== "" && !Number.isNaN(parsed) && parsed >= minPercent && parsed <= maxPercent) {
+      if (
+        next.trim() !== "" &&
+        !Number.isNaN(parsed) &&
+        parsed >= minPercent &&
+        parsed <= maxPercent
+      ) {
         setZoomDraft(null);
         zoomTo(parsed / 100);
       } else {
@@ -165,7 +171,9 @@ export const ImageCropper = forwardRef<ImageCropperHandle, ImageCropperProps>(fu
       offsetX: offset.x,
       offsetY: offset.y,
     });
-    cropImageToBlob(image, rect, outputSize, mimeType, quality).then(onApply, (error: unknown) => onError?.(error));
+    cropImageToBlob(image, rect, outputSize, mimeType, quality).then(onApply, (error: unknown) =>
+      onError?.(error),
+    );
   }, [natural, view, scale, offset, outputSize, mimeType, quality, onApply, onError]);
 
   useImperativeHandle(ref, () => ({ apply }), [apply]);
@@ -197,7 +205,8 @@ export const ImageCropper = forwardRef<ImageCropperHandle, ImageCropperProps>(fu
     if (drag === null || event.pointerId !== drag.pointerId) return;
     dragRef.current = null;
     const target = event.currentTarget;
-    if (typeof target.releasePointerCapture === "function") target.releasePointerCapture(event.pointerId);
+    if (typeof target.releasePointerCapture === "function")
+      target.releasePointerCapture(event.pointerId);
   };
 
   const onViewportKeyDown = (event: ReactKeyboardEvent<HTMLDivElement>) => {
@@ -276,7 +285,9 @@ export const ImageCropper = forwardRef<ImageCropperHandle, ImageCropperProps>(fu
             onError?.(new Error("The image could not be loaded"));
           }}
           className={cn(
-            natural.width > 0 ? "absolute top-1/2 left-1/2 max-w-none cursor-grab active:cursor-grabbing" : "hidden",
+            natural.width > 0
+              ? "absolute top-1/2 left-1/2 max-w-none cursor-grab active:cursor-grabbing"
+              : "hidden",
           )}
           style={
             natural.width > 0
@@ -311,7 +322,13 @@ export const ImageCropper = forwardRef<ImageCropperHandle, ImageCropperProps>(fu
             </div>
           ) : null}
           {showReset ? (
-            <Button.Icon aria-label={resetLabel} variant="text" color="neutral" size="sm" onClick={resetZoom}>
+            <Button.Icon
+              aria-label={resetLabel}
+              variant="text"
+              color="neutral"
+              size="sm"
+              onClick={resetZoom}
+            >
               <RotateCcw />
             </Button.Icon>
           ) : null}

@@ -55,7 +55,13 @@ export function niceScale(min: number, max: number, count = 5): Scale {
 }
 
 /** Maps a value to a y pixel position (top-origin SVG coordinates). */
-export function scaleY(value: number, domainMin: number, domainMax: number, top: number, height: number): number {
+export function scaleY(
+  value: number,
+  domainMin: number,
+  domainMax: number,
+  top: number,
+  height: number,
+): number {
   if (domainMax === domainMin) return top + height / 2;
   const ratio = (value - domainMin) / (domainMax - domainMin);
   return top + (1 - ratio) * height;
@@ -69,7 +75,9 @@ export function scaleX(index: number, count: number, left: number, width: number
 
 export function buildLinePath(points: Point[]): string {
   if (points.length === 0) return "";
-  return points.map((point, index) => `${index === 0 ? "M" : "L"} ${round(point.x)} ${round(point.y)}`).join(" ");
+  return points
+    .map((point, index) => `${index === 0 ? "M" : "L"} ${round(point.x)} ${round(point.y)}`)
+    .join(" ");
 }
 
 /** Smooth (monotone cubic) path that passes through every point without overshooting. */
@@ -161,7 +169,13 @@ export function buildBarRect(
   const band = plot.width / count;
   const barWidth = band * bandRatio;
   const x = plot.left + band * (index + 0.5) - barWidth / 2;
-  const zeroY = scaleY(Math.min(Math.max(0, domainMin), domainMax), domainMin, domainMax, plot.top, plot.height);
+  const zeroY = scaleY(
+    Math.min(Math.max(0, domainMin), domainMax),
+    domainMin,
+    domainMax,
+    plot.top,
+    plot.height,
+  );
   const valueY = scaleY(value, domainMin, domainMax, plot.top, plot.height);
   const y = Math.min(zeroY, valueY);
   const height = Math.max(Math.abs(valueY - zeroY), 0);

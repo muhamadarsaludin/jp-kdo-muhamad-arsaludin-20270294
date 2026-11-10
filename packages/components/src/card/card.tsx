@@ -1,6 +1,5 @@
-import { forwardRef } from "react";
-
 import { cn } from "@kdo/utils";
+import { forwardRef } from "react";
 
 import type {
   CardActionProps,
@@ -37,7 +36,11 @@ export const CardHeader = forwardRef<HTMLDivElement, CardHeaderProps>(function C
     <div
       ref={ref}
       data-slot="card-header"
-      className={cn("grid items-start gap-1 px-5", "has-data-[slot=card-action]:grid-cols-[1fr_auto]", className)}
+      className={cn(
+        "grid items-start gap-1 px-5",
+        "has-data-[slot=card-action]:grid-cols-[1fr_auto]",
+        className,
+      )}
       {...props}
     />
   );
@@ -45,20 +48,34 @@ export const CardHeader = forwardRef<HTMLDivElement, CardHeaderProps>(function C
 
 CardHeader.displayName = "Card.Header";
 
-export const CardTitle = forwardRef<HTMLDivElement, CardTitleProps>(function CardTitle({ className, ...props }, ref) {
+export const CardTitle = forwardRef<HTMLDivElement, CardTitleProps>(function CardTitle(
+  { className, ...props },
+  ref,
+) {
   return (
-    <div ref={ref} data-slot="card-title" className={cn("font-medium text-base text-primary", className)} {...props} />
+    <div
+      ref={ref}
+      data-slot="card-title"
+      className={cn("font-medium text-base text-primary", className)}
+      {...props}
+    />
   );
 });
 
 CardTitle.displayName = "Card.Title";
 
-export const CardDescription = forwardRef<HTMLDivElement, CardDescriptionProps>(function CardDescription(
-  { className, ...props },
-  ref,
-) {
-  return <div ref={ref} data-slot="card-description" className={cn("text-sm text-tertiary", className)} {...props} />;
-});
+export const CardDescription = forwardRef<HTMLDivElement, CardDescriptionProps>(
+  function CardDescription({ className, ...props }, ref) {
+    return (
+      <div
+        ref={ref}
+        data-slot="card-description"
+        className={cn("text-sm text-tertiary", className)}
+        {...props}
+      />
+    );
+  },
+);
 
 CardDescription.displayName = "Card.Description";
 

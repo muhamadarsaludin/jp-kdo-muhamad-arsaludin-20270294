@@ -1,3 +1,4 @@
+import { cn } from "@kdo/utils";
 import {
   forwardRef,
   type KeyboardEvent as ReactKeyboardEvent,
@@ -10,8 +11,6 @@ import {
   useRef,
   useState,
 } from "react";
-
-import { cn } from "@kdo/utils";
 import { createPortal } from "react-dom";
 
 import { OverlayContext } from "../lib/overlay-context";
@@ -81,7 +80,9 @@ const BottomSheetRoot = forwardRef<HTMLDivElement, BottomSheetProps>(function Bo
     [ref],
   );
 
-  const [viewportHeight, setViewportHeight] = useState(() => (typeof window === "undefined" ? 0 : window.innerHeight));
+  const [viewportHeight, setViewportHeight] = useState(() =>
+    typeof window === "undefined" ? 0 : window.innerHeight,
+  );
 
   useEffect(() => {
     const update = () => setViewportHeight(window.innerHeight);
@@ -181,7 +182,9 @@ const BottomSheetRoot = forwardRef<HTMLDivElement, BottomSheetProps>(function Bo
     drag.lastY = event.clientY;
     drag.lastTime = event.timeStamp;
     const maxHeight = snapHeights[snapHeights.length - 1] ?? 0;
-    setDragHeight(Math.min(Math.max(drag.startHeight + (drag.startY - event.clientY), 0), maxHeight));
+    setDragHeight(
+      Math.min(Math.max(drag.startHeight + (drag.startY - event.clientY), 0), maxHeight),
+    );
   };
 
   const endDrag = (event: ReactPointerEvent<HTMLDivElement>) => {
@@ -189,7 +192,8 @@ const BottomSheetRoot = forwardRef<HTMLDivElement, BottomSheetProps>(function Bo
     if (drag === null || event.pointerId !== drag.pointerId) return;
     dragState.current = null;
     const target = event.currentTarget;
-    if (typeof target.releasePointerCapture === "function") target.releasePointerCapture(event.pointerId);
+    if (typeof target.releasePointerCapture === "function")
+      target.releasePointerCapture(event.pointerId);
 
     const releasedHeight = drag.startHeight + (drag.startY - event.clientY);
     const lowest = snapHeights[0] ?? 0;
@@ -254,7 +258,11 @@ const BottomSheetRoot = forwardRef<HTMLDivElement, BottomSheetProps>(function Bo
             aria-describedby={hasDescription ? descriptionId : undefined}
             tabIndex={-1}
             onKeyDown={handlePanelKeyDown}
-            style={{ ...style, height: handleHeight, ...(dragHeight !== null ? { transition: "none" } : null) }}
+            style={{
+              ...style,
+              height: handleHeight,
+              ...(dragHeight !== null ? { transition: "none" } : null),
+            }}
             className={cn(
               "absolute inset-x-0 bottom-0 flex max-h-dvh flex-col overflow-hidden rounded-t-2xl border-secondary border-t bg-primary text-primary shadow-2xl outline-none motion-safe:transition-[height,transform] motion-safe:duration-300 motion-safe:ease-out",
               visible ? "translate-y-0" : "translate-y-full",

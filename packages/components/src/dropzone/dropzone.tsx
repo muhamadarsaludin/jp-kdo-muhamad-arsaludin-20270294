@@ -1,7 +1,6 @@
-import { forwardRef, type HTMLAttributes, type ReactNode } from "react";
-
 import { cn } from "@kdo/utils";
 import { Upload } from "lucide-react";
+import { forwardRef, type HTMLAttributes, type ReactNode } from "react";
 
 import { type FileSelectError, useFileSelect } from "../lib/use-file-select";
 
@@ -71,13 +70,18 @@ export const Dropzone = forwardRef<HTMLDivElement, DropzoneProps>(function Dropz
         <>
           <span
             data-slot="dropzone-icon"
-            className={cn("inline-flex items-center justify-center text-tertiary [&_svg]:size-5", iconClassName)}
+            className={cn(
+              "inline-flex items-center justify-center text-tertiary [&_svg]:size-5",
+              iconClassName,
+            )}
           >
             {icon ?? <Upload aria-hidden />}
           </span>
           <span data-slot="dropzone-content" className="flex flex-col items-center gap-1">
             {label && (
-              <p className="font-medium text-secondary text-sm transition-colors group-hover:text-primary">{label}</p>
+              <p className="font-medium text-secondary text-sm transition-colors group-hover:text-primary">
+                {label}
+              </p>
             )}
             {description && <p className="text-tertiary text-xs">{description}</p>}
           </span>

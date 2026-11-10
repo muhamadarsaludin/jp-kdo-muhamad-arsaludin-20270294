@@ -20,7 +20,10 @@ export function SelectionMark({
 }) {
   if (kind === "checkmark") {
     return (
-      <span data-slot="selection" className={cn("flex size-4 shrink-0 items-center justify-center", className)}>
+      <span
+        data-slot="selection"
+        className={cn("flex size-4 shrink-0 items-center justify-center", className)}
+      >
         {selected && <Check aria-hidden="true" className="size-4 text-brand-primary" />}
       </span>
     );
@@ -28,7 +31,10 @@ export function SelectionMark({
 
   if (kind === "checkbox") {
     return (
-      <span data-slot="selection" className={cn("flex size-4 shrink-0 items-center justify-center", className)}>
+      <span
+        data-slot="selection"
+        className={cn("flex size-4 shrink-0 items-center justify-center", className)}
+      >
         <span
           aria-hidden="true"
           data-state={selected ? "checked" : "unchecked"}
@@ -44,7 +50,10 @@ export function SelectionMark({
   }
 
   return (
-    <span data-slot="selection" className={cn("flex size-4 shrink-0 items-center justify-center", className)}>
+    <span
+      data-slot="selection"
+      className={cn("flex size-4 shrink-0 items-center justify-center", className)}
+    >
       <span
         aria-hidden="true"
         className={cn(

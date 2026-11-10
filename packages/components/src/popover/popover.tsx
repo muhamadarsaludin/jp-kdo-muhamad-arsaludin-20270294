@@ -1,3 +1,4 @@
+import { cn } from "@kdo/utils";
 import {
   forwardRef,
   isValidElement,
@@ -9,8 +10,6 @@ import {
   useRef,
   useState,
 } from "react";
-
-import { cn } from "@kdo/utils";
 import { createPortal } from "react-dom";
 
 import {
@@ -217,7 +216,8 @@ const PopoverRoot = forwardRef<HTMLDivElement, PopoverProps>(function PopoverRoo
   let contentAria: Record<string, string | undefined> = {};
   if (contentRole === "dialog") {
     if (contentLabel !== undefined) contentAria = { "aria-label": contentLabel };
-    else if (ariaLabel !== undefined && triggerElement === null) contentAria = { "aria-label": ariaLabel };
+    else if (ariaLabel !== undefined && triggerElement === null)
+      contentAria = { "aria-label": ariaLabel };
     else contentAria = { "aria-labelledby": labelHostId };
   }
   const enhancedTrigger =

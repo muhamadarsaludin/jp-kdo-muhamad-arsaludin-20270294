@@ -9,7 +9,13 @@ type DatePickerFooterProps = {
   onClear: () => void;
 };
 
-export function DatePickerFooter({ labels, todayDisabled, clearDisabled, onToday, onClear }: DatePickerFooterProps) {
+export function DatePickerFooter({
+  labels,
+  todayDisabled,
+  clearDisabled,
+  onToday,
+  onClear,
+}: DatePickerFooterProps) {
   return (
     <div className="mt-1 flex items-center justify-between border-secondary border-t px-1 pt-2">
       <Button variant="text" color="brand" size="sm" onClick={onToday} disabled={todayDisabled}>

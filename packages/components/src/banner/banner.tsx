@@ -1,7 +1,6 @@
-import { forwardRef, type ReactNode } from "react";
-
 import { cn } from "@kdo/utils";
 import { CircleCheck, CircleX, Info, TriangleAlert, X } from "lucide-react";
+import { forwardRef, type ReactNode } from "react";
 
 import { Button } from "../button/button";
 import type { BannerProps } from "./banner.type";
@@ -46,13 +45,20 @@ export const Banner = forwardRef<HTMLDivElement, BannerProps>(function Banner(
       {...props}
     >
       {resolvedIcon != null ? (
-        <span data-slot="icon" aria-hidden="true" className="flex shrink-0 items-center [&>svg]:size-5">
+        <span
+          data-slot="icon"
+          aria-hidden="true"
+          className="flex shrink-0 items-center [&>svg]:size-5"
+        >
           {resolvedIcon}
         </span>
       ) : null}
       <div data-slot="content" className="flex min-w-0 flex-1 flex-col gap-1">
         {title != null ? (
-          <p data-slot="title" className={cn("font-medium", titleColor === "primary" && "text-primary")}>
+          <p
+            data-slot="title"
+            className={cn("font-medium", titleColor === "primary" && "text-primary")}
+          >
             {title}
           </p>
         ) : null}

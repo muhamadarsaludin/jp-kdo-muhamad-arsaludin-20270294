@@ -1,7 +1,6 @@
-import type { ElementType, ReactNode } from "react";
-
 import { cn } from "@kdo/utils";
 import { ChevronRight, Ellipsis } from "lucide-react";
+import type { ElementType, ReactNode } from "react";
 
 import { Popover } from "../popover";
 import type { BreadcrumbItem, BreadcrumbsProps } from "./breadcrumbs.type";
@@ -46,7 +45,11 @@ export function Breadcrumbs({
   const renderLabel = (item: BreadcrumbItem): ReactNode =>
     item.icon ? (
       <>
-        <span data-slot="icon" aria-hidden="true" className="flex shrink-0 items-center [&>svg]:size-3.5">
+        <span
+          data-slot="icon"
+          aria-hidden="true"
+          className="flex shrink-0 items-center [&>svg]:size-3.5"
+        >
           {item.icon}
         </span>
         <span className="truncate">{item.label}</span>
@@ -70,7 +73,10 @@ export function Breadcrumbs({
       return (
         <LinkComp
           {...destination(item)}
-          className={layout(item, cn(linkFocus, "text-tertiary transition-colors hover:text-primary"))}
+          className={layout(
+            item,
+            cn(linkFocus, "text-tertiary transition-colors hover:text-primary"),
+          )}
         >
           {renderLabel(item)}
         </LinkComp>
@@ -80,7 +86,11 @@ export function Breadcrumbs({
   };
 
   return (
-    <nav aria-label="Breadcrumb" className={cn("flex min-w-0 items-center gap-1 text-sm", className)} {...props}>
+    <nav
+      aria-label="Breadcrumb"
+      className={cn("flex min-w-0 items-center gap-1 text-sm", className)}
+      {...props}
+    >
       <ol className="flex min-w-0 items-center gap-1">
         {steps.map((step, index) => {
           const isLast = index === steps.length - 1;
@@ -88,7 +98,9 @@ export function Breadcrumbs({
             // biome-ignore lint/suspicious/noArrayIndexKey: breadcrumb steps are positional and have no stable id.
             <li key={index} className="flex min-w-0 items-center gap-1">
               {index > 0 ? (
-                <span className="flex shrink-0 items-center">{separator ?? <DefaultSeparator />}</span>
+                <span className="flex shrink-0 items-center">
+                  {separator ?? <DefaultSeparator />}
+                </span>
               ) : null}
               {step.kind === "ellipsis" ? (
                 <Popover

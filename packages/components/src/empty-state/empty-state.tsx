@@ -1,6 +1,5 @@
-import { forwardRef } from "react";
-
 import { cn } from "@kdo/utils";
+import { forwardRef } from "react";
 
 import type { EmptyStateProps } from "./empty-state.type";
 import {
@@ -13,7 +12,17 @@ import {
 } from "./empty-state.variants";
 
 export const EmptyState = forwardRef<HTMLDivElement, EmptyStateProps>(function EmptyState(
-  { size = "md", variant = "bordered", icon, title, description, action, className, children, ...props },
+  {
+    size = "md",
+    variant = "bordered",
+    icon,
+    title,
+    description,
+    action,
+    className,
+    children,
+    ...props
+  },
   ref,
 ) {
   return (
@@ -46,7 +55,11 @@ export const EmptyState = forwardRef<HTMLDivElement, EmptyStateProps>(function E
       {description != null ? (
         <p
           data-slot="description"
-          className={cn("text-tertiary", emptyStateDescriptionSizes[size], emptyStateDescriptionWidths[size])}
+          className={cn(
+            "text-tertiary",
+            emptyStateDescriptionSizes[size],
+            emptyStateDescriptionWidths[size],
+          )}
         >
           {description}
         </p>

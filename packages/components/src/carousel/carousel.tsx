@@ -1,3 +1,5 @@
+import { cn } from "@kdo/utils";
+import { ChevronDown, ChevronLeft, ChevronRight, ChevronUp } from "lucide-react";
 import {
   Children,
   cloneElement,
@@ -12,9 +14,6 @@ import {
   useRef,
   useState,
 } from "react";
-
-import { cn } from "@kdo/utils";
-import { ChevronDown, ChevronLeft, ChevronRight, ChevronUp } from "lucide-react";
 
 import { useIsomorphicLayoutEffect } from "../lib/floating-tray";
 import styles from "./carousel.module.css";
@@ -96,16 +95,18 @@ const CarouselRoot = forwardRef<HTMLDivElement, CarouselProps>(function Carousel
   }, [countProp]);
 
   const count = countProp ?? measuredCount;
-  const { index, isPaused, progressKey, goTo, next, prev, setInteractionPaused } = useCarouselState({
-    count,
-    value,
-    defaultValue,
-    onValueChange,
-    loop,
-    autoplay: autoplayEnabled,
-    interval,
-    paused,
-  });
+  const { index, isPaused, progressKey, goTo, next, prev, setInteractionPaused } = useCarouselState(
+    {
+      count,
+      value,
+      defaultValue,
+      onValueChange,
+      loop,
+      autoplay: autoplayEnabled,
+      interval,
+      paused,
+    },
+  );
 
   const contextValue: CarouselContextValue = {
     index,
@@ -176,7 +177,12 @@ export const CarouselTrack = forwardRef<HTMLDivElement, CarouselTrackProps>(func
   const horizontal = orientation === "horizontal";
 
   return (
-    <div ref={ref} data-slot="carousel-viewport" className={cn("relative overflow-hidden", className)} {...props}>
+    <div
+      ref={ref}
+      data-slot="carousel-viewport"
+      className={cn("relative overflow-hidden", className)}
+      {...props}
+    >
       <div
         ref={trackRef}
         data-slot="carousel-track"
@@ -186,7 +192,9 @@ export const CarouselTrack = forwardRef<HTMLDivElement, CarouselTrackProps>(func
           horizontal ? "flex-row" : "flex-col",
         )}
         style={{
-          transform: horizontal ? `translate3d(-${index * 100}%, 0, 0)` : `translate3d(0, -${index * 100}%, 0)`,
+          transform: horizontal
+            ? `translate3d(-${index * 100}%, 0, 0)`
+            : `translate3d(0, -${index * 100}%, 0)`,
         }}
       >
         {Children.map(children, (child, childIndex) => {
@@ -227,137 +235,150 @@ export const CarouselItem = forwardRef<HTMLDivElement, CarouselItemProps>(functi
 
 CarouselItem.displayName = "Carousel.Item";
 
-export const CarouselIndicator = forwardRef<HTMLDivElement, CarouselIndicatorProps>(function CarouselIndicator(
-  {
-    variant = "static",
-    orientation,
-    size = "md",
-    color = "brand",
-    count,
-    value,
-    onValueChange,
-    interval,
-    paused,
-    label = "Slides",
-    slideLabel,
-    className,
-    ...props
+export const CarouselIndicator = forwardRef<HTMLDivElement, CarouselIndicatorProps>(
+  function CarouselIndicator(
+    {
+      variant = "static",
+      orientation,
+      size = "md",
+      color = "brand",
+      count,
+      value,
+      onValueChange,
+      interval,
+      paused,
+      label = "Slides",
+      slideLabel,
+      className,
+      ...props
+    },
+    ref,
+  ) {
+    const context = useContext(CarouselContext);
+    const resolvedCount = count ?? context?.count ?? 0;
+    const resolvedIndex = value ?? context?.index ?? 0;
+    const resolvedOrientation = orientation ?? context?.orientation ?? "horizontal";
+    const resolvedInterval = interval ?? context?.interval ?? 5000;
+    const goTo = onValueChange ?? context?.goTo;
+    const isPaused = paused ?? (context === null ? false : context.isPaused || !context.autoplay);
+    const progressKey = context?.progressKey ?? resolvedIndex;
+    const vertical = resolvedOrientation === "vertical";
+    const dynamic = variant === "dynamic";
+
+    if (resolvedCount <= 0) return null;
+
+    return (
+      // biome-ignore lint/a11y/useSemanticElements: the indicator is a group of navigation buttons (role="group"), which has no dedicated semantic element.
+      <div
+        ref={ref}
+        role="group"
+        aria-label={label}
+        data-slot="carousel-indicator"
+        data-orientation={resolvedOrientation}
+        data-variant={variant}
+        className={cn(
+          "flex items-center",
+          vertical ? "flex-col" : "flex-row",
+          carouselIndicatorGap,
+          className,
+        )}
+        {...props}
+      >
+        {Array.from({ length: resolvedCount }, (_, i) => {
+          const active = i === resolvedIndex;
+          const showProgress = active && dynamic && !isPaused;
+          const lengthClass = vertical
+            ? carouselIndicatorActiveHeight[size]
+            : carouselIndicatorActiveWidth[size];
+          let colorClass: string;
+          if (!active) {
+            colorClass = cn(carouselIndicatorInactive[color], "enabled:hover:opacity-70");
+          } else if (showProgress) {
+            colorClass = carouselIndicatorTrack[color];
+          } else {
+            colorClass = carouselIndicatorActive[color];
+          }
+          return (
+            <button
+              // biome-ignore lint/suspicious/noArrayIndexKey: dots are a fixed-length positional list
+              key={i}
+              type="button"
+              data-slot="carousel-indicator-dot"
+              data-state={active ? "active" : "inactive"}
+              aria-label={slideLabel ? slideLabel(i) : `Go to slide ${i + 1}`}
+              aria-current={active ? "true" : undefined}
+              onClick={() => goTo?.(i)}
+              className={cn(
+                "relative shrink-0 overflow-hidden rounded-full outline-none transition-[width,height,background-color,opacity] duration-300 ease-out motion-reduce:transition-none",
+                "focus-visible:outline-2 focus-visible:outline-offset-2",
+                carouselIndicatorFocus[color],
+                carouselIndicatorDotSize[size],
+                active ? lengthClass : null,
+                colorClass,
+              )}
+            >
+              {showProgress ? (
+                <span
+                  key={progressKey}
+                  data-slot="carousel-indicator-progress"
+                  aria-hidden="true"
+                  className={cn(
+                    "absolute inset-0",
+                    vertical ? styles.progressY : styles.progressX,
+                    carouselIndicatorProgress[color],
+                  )}
+                  style={{ animationDuration: `${resolvedInterval}ms` }}
+                />
+              ) : null}
+            </button>
+          );
+        })}
+      </div>
+    );
   },
-  ref,
-) {
-  const context = useContext(CarouselContext);
-  const resolvedCount = count ?? context?.count ?? 0;
-  const resolvedIndex = value ?? context?.index ?? 0;
-  const resolvedOrientation = orientation ?? context?.orientation ?? "horizontal";
-  const resolvedInterval = interval ?? context?.interval ?? 5000;
-  const goTo = onValueChange ?? context?.goTo;
-  const isPaused = paused ?? (context === null ? false : context.isPaused || !context.autoplay);
-  const progressKey = context?.progressKey ?? resolvedIndex;
-  const vertical = resolvedOrientation === "vertical";
-  const dynamic = variant === "dynamic";
-
-  if (resolvedCount <= 0) return null;
-
-  return (
-    // biome-ignore lint/a11y/useSemanticElements: the indicator is a group of navigation buttons (role="group"), which has no dedicated semantic element.
-    <div
-      ref={ref}
-      role="group"
-      aria-label={label}
-      data-slot="carousel-indicator"
-      data-orientation={resolvedOrientation}
-      data-variant={variant}
-      className={cn("flex items-center", vertical ? "flex-col" : "flex-row", carouselIndicatorGap, className)}
-      {...props}
-    >
-      {Array.from({ length: resolvedCount }, (_, i) => {
-        const active = i === resolvedIndex;
-        const showProgress = active && dynamic && !isPaused;
-        const lengthClass = vertical ? carouselIndicatorActiveHeight[size] : carouselIndicatorActiveWidth[size];
-        let colorClass: string;
-        if (!active) {
-          colorClass = cn(carouselIndicatorInactive[color], "enabled:hover:opacity-70");
-        } else if (showProgress) {
-          colorClass = carouselIndicatorTrack[color];
-        } else {
-          colorClass = carouselIndicatorActive[color];
-        }
-        return (
-          <button
-            // biome-ignore lint/suspicious/noArrayIndexKey: dots are a fixed-length positional list
-            key={i}
-            type="button"
-            data-slot="carousel-indicator-dot"
-            data-state={active ? "active" : "inactive"}
-            aria-label={slideLabel ? slideLabel(i) : `Go to slide ${i + 1}`}
-            aria-current={active ? "true" : undefined}
-            onClick={() => goTo?.(i)}
-            className={cn(
-              "relative shrink-0 overflow-hidden rounded-full outline-none transition-[width,height,background-color,opacity] duration-300 ease-out motion-reduce:transition-none",
-              "focus-visible:outline-2 focus-visible:outline-offset-2",
-              carouselIndicatorFocus[color],
-              carouselIndicatorDotSize[size],
-              active ? lengthClass : null,
-              colorClass,
-            )}
-          >
-            {showProgress ? (
-              <span
-                key={progressKey}
-                data-slot="carousel-indicator-progress"
-                aria-hidden="true"
-                className={cn(
-                  "absolute inset-0",
-                  vertical ? styles.progressY : styles.progressX,
-                  carouselIndicatorProgress[color],
-                )}
-                style={{ animationDuration: `${resolvedInterval}ms` }}
-              />
-            ) : null}
-          </button>
-        );
-      })}
-    </div>
-  );
-});
+);
 
 CarouselIndicator.displayName = "Carousel.Indicator";
 
-export const CarouselControl = forwardRef<HTMLButtonElement, CarouselControlProps>(function CarouselControl(
-  { direction = "next", className, children, onClick, "aria-label": ariaLabel, ...props },
-  ref,
-) {
-  const { next, prev, orientation } = useCarouselContext();
-  const horizontal = orientation === "horizontal";
-  const icons = horizontal ? { next: ChevronRight, prev: ChevronLeft } : { next: ChevronDown, prev: ChevronUp };
-  const Icon = icons[direction];
+export const CarouselControl = forwardRef<HTMLButtonElement, CarouselControlProps>(
+  function CarouselControl(
+    { direction = "next", className, children, onClick, "aria-label": ariaLabel, ...props },
+    ref,
+  ) {
+    const { next, prev, orientation } = useCarouselContext();
+    const horizontal = orientation === "horizontal";
+    const icons = horizontal
+      ? { next: ChevronRight, prev: ChevronLeft }
+      : { next: ChevronDown, prev: ChevronUp };
+    const Icon = icons[direction];
 
-  const handleClick = (event: ReactMouseEvent<HTMLButtonElement>) => {
-    onClick?.(event);
-    if (event.defaultPrevented) return;
-    if (direction === "next") next();
-    else prev();
-  };
+    const handleClick = (event: ReactMouseEvent<HTMLButtonElement>) => {
+      onClick?.(event);
+      if (event.defaultPrevented) return;
+      if (direction === "next") next();
+      else prev();
+    };
 
-  return (
-    <button
-      ref={ref}
-      type="button"
-      data-slot="carousel-control"
-      data-direction={direction}
-      aria-label={ariaLabel ?? (direction === "next" ? "Next slide" : "Previous slide")}
-      onClick={handleClick}
-      className={cn(
-        "inline-flex size-9 items-center justify-center rounded-full bg-primary-inverse/70 text-primary-inverse shadow-sm outline-none transition-colors",
-        "hover:bg-primary-inverse focus-visible:outline-2 focus-visible:outline-primary-inverse focus-visible:outline-offset-2",
-        className,
-      )}
-      {...props}
-    >
-      {children ?? <Icon aria-hidden="true" className="size-5" />}
-    </button>
-  );
-});
+    return (
+      <button
+        ref={ref}
+        type="button"
+        data-slot="carousel-control"
+        data-direction={direction}
+        aria-label={ariaLabel ?? (direction === "next" ? "Next slide" : "Previous slide")}
+        onClick={handleClick}
+        className={cn(
+          "inline-flex size-9 items-center justify-center rounded-full bg-primary-inverse/70 text-primary-inverse shadow-sm outline-none transition-colors",
+          "hover:bg-primary-inverse focus-visible:outline-2 focus-visible:outline-primary-inverse focus-visible:outline-offset-2",
+          className,
+        )}
+        {...props}
+      >
+        {children ?? <Icon aria-hidden="true" className="size-5" />}
+      </button>
+    );
+  },
+);
 
 CarouselControl.displayName = "Carousel.Control";
 

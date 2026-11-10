@@ -1,7 +1,6 @@
-import { forwardRef } from "react";
-
 import { cn } from "@kdo/utils";
 import { X } from "lucide-react";
+import { forwardRef } from "react";
 
 import type { ChipProps } from "./chip.type";
 import { chipSelectedColors, chipShapes, chipSizes, chipVariantColors } from "./chip.variants";

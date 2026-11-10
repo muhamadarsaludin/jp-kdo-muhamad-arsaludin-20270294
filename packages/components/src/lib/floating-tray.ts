@@ -11,7 +11,8 @@ import {
 
 import type { PopoverAlign, PopoverPosition, PopoverSide } from "../popover/popover.type";
 
-export const useIsomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
+export const useIsomorphicLayoutEffect =
+  typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
 const nativelyFocusableTags = new Set(["button", "input", "select", "textarea"]);
 
@@ -19,7 +20,8 @@ const nativelyFocusableTags = new Set(["button", "input", "select", "textarea"])
 // become a second tab stop with its own focus ring. Custom components (Button,
 // Input) are trusted to render something interactive.
 export function isTriggerFocusable(trigger: ReactNode): boolean {
-  if (!isValidElement<{ disabled?: boolean; href?: string; tabIndex?: number }>(trigger)) return false;
+  if (!isValidElement<{ disabled?: boolean; href?: string; tabIndex?: number }>(trigger))
+    return false;
   if (typeof trigger.type !== "string") return true;
   if (trigger.props.disabled === true) return false;
   if (nativelyFocusableTags.has(trigger.type)) return true;
@@ -71,9 +73,11 @@ export function resolvePopoverPosition(
   let align = preferredAlign;
 
   if (side === "top" && trigger.top - content.height - safeOffset < 0) side = "bottom";
-  else if (side === "bottom" && trigger.bottom + content.height + safeOffset > viewport.height) side = "top";
+  else if (side === "bottom" && trigger.bottom + content.height + safeOffset > viewport.height)
+    side = "top";
   else if (side === "left" && trigger.left - content.width - safeOffset < 0) side = "right";
-  else if (side === "right" && trigger.right + content.width + safeOffset > viewport.width) side = "left";
+  else if (side === "right" && trigger.right + content.width + safeOffset > viewport.width)
+    side = "left";
 
   if (side === "top" || side === "bottom") {
     const centerX = trigger.left + trigger.width / 2;
@@ -102,8 +106,14 @@ export function resolvePopoverPosition(
 
   // When the tray is larger than the viewport the max bound drops below the
   // margin; Math.max keeps the tray pinned to the margin instead of jittering.
-  left = Math.min(Math.max(left, margin), Math.max(margin, viewport.width - content.width - margin));
-  top = Math.min(Math.max(top, margin), Math.max(margin, viewport.height - content.height - margin));
+  left = Math.min(
+    Math.max(left, margin),
+    Math.max(margin, viewport.width - content.width - margin),
+  );
+  top = Math.min(
+    Math.max(top, margin),
+    Math.max(margin, viewport.height - content.height - margin),
+  );
 
   // Computed after clamping so the arrow follows a tray that was shifted back
   // inside the viewport, and clamped itself when the anchor sits off-tray.
@@ -208,7 +218,8 @@ export function useFloatingTray({
 
     const anchor = anchorRef.current;
     const content = contentRef.current;
-    const resizeObserver = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(updatePosition);
+    const resizeObserver =
+      typeof ResizeObserver === "undefined" ? null : new ResizeObserver(updatePosition);
     if (anchor !== null && resizeObserver !== null) resizeObserver.observe(anchor);
     if (content !== null && resizeObserver !== null) resizeObserver.observe(content);
 

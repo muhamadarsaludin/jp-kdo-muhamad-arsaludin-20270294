@@ -11,7 +11,13 @@ type DatePickerPresetsProps = {
   onSelect: (index: number) => void;
 };
 
-export function DatePickerPresets({ presets, activeIndex, layout, disabled, onSelect }: DatePickerPresetsProps) {
+export function DatePickerPresets({
+  presets,
+  activeIndex,
+  layout,
+  disabled,
+  onSelect,
+}: DatePickerPresetsProps) {
   return (
     <div
       data-slot="presets"

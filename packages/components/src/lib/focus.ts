@@ -19,10 +19,16 @@ function isVisibleWithin(element: HTMLElement, boundary: HTMLElement | null): bo
   let node: HTMLElement | null = element;
 
   while (node !== null) {
-    if (node.hidden || node.hasAttribute("inert") || node.getAttribute("aria-hidden") === "true") return false;
+    if (node.hidden || node.hasAttribute("inert") || node.getAttribute("aria-hidden") === "true")
+      return false;
 
     const style = getComputedStyle(node);
-    if (style.display === "none" || style.visibility === "hidden" || style.visibility === "collapse") return false;
+    if (
+      style.display === "none" ||
+      style.visibility === "hidden" ||
+      style.visibility === "collapse"
+    )
+      return false;
 
     if (boundary !== null && node === boundary) break;
     node = node.parentElement;

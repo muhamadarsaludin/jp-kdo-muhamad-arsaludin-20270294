@@ -1,7 +1,13 @@
 import type { ComponentPropsWithoutRef, ReactNode } from "react";
 
 import type { Size } from "../type";
-import type { StepperAlign, StepperColor, StepperIndicator, StepperOrientation, StepStatus } from "./stepper.variants";
+import type {
+  StepperAlign,
+  StepperColor,
+  StepperIndicator,
+  StepperOrientation,
+  StepStatus,
+} from "./stepper.variants";
 
 export type StepperProps = Omit<ComponentPropsWithoutRef<"nav">, "children" | "onChange"> & {
   children?: ReactNode;

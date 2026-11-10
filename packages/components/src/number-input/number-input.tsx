@@ -1,7 +1,14 @@
-import { type ChangeEvent, forwardRef, useCallback, useContext, useId, useRef, useState } from "react";
-
 import { cn } from "@kdo/utils";
 import { Minus, Plus } from "lucide-react";
+import {
+  type ChangeEvent,
+  forwardRef,
+  useCallback,
+  useContext,
+  useId,
+  useRef,
+  useState,
+} from "react";
 
 import { Button } from "../button/button";
 import { FieldContext } from "../field/field-context";
@@ -48,8 +55,9 @@ const NumberInputRoot = forwardRef<HTMLInputElement, NumberInputProps>(function 
   const effectiveRequired = required ?? fieldCtx?.required ?? false;
   const effectiveStatus = status ?? fieldCtx?.status ?? "default";
   const describedBy =
-    [ariaDescribedBy, fieldCtx?.descriptionPresent ? fieldCtx.descriptionId : undefined].filter(Boolean).join(" ") ||
-    undefined;
+    [ariaDescribedBy, fieldCtx?.descriptionPresent ? fieldCtx.descriptionId : undefined]
+      .filter(Boolean)
+      .join(" ") || undefined;
 
   const inputRef = useRef<HTMLInputElement | null>(null);
   const setInputRef = useCallback(
@@ -114,8 +122,11 @@ const NumberInputRoot = forwardRef<HTMLInputElement, NumberInputProps>(function 
     </button>
   );
   const decreaseButton =
-    variant === "plain" ? stepButton(decreaseLabel, -1, Minus) : addonButton(decreaseLabel, -1, Minus);
-  const increaseButton = variant === "plain" ? stepButton(increaseLabel, 1, Plus) : addonButton(increaseLabel, 1, Plus);
+    variant === "plain"
+      ? stepButton(decreaseLabel, -1, Minus)
+      : addonButton(decreaseLabel, -1, Minus);
+  const increaseButton =
+    variant === "plain" ? stepButton(increaseLabel, 1, Plus) : addonButton(increaseLabel, 1, Plus);
 
   const field = (
     <InputBase
@@ -141,7 +152,13 @@ const NumberInputRoot = forwardRef<HTMLInputElement, NumberInputProps>(function 
 
   if (variant === "plain") {
     return (
-      <div className={cn("flex w-full min-w-0 items-center gap-2", disabled && "opacity-50", className)}>
+      <div
+        className={cn(
+          "flex w-full min-w-0 items-center gap-2",
+          disabled && "opacity-50",
+          className,
+        )}
+      >
         {decreaseButton}
         {field}
         {increaseButton}
@@ -158,7 +175,9 @@ const NumberInputRoot = forwardRef<HTMLInputElement, NumberInputProps>(function 
         className,
       )}
     >
-      <div className={cn(inputAddOnVariants({ side: "start", shape, variant, size }))}>{decreaseButton}</div>
+      <div className={cn(inputAddOnVariants({ side: "start", shape, variant, size }))}>
+        {decreaseButton}
+      </div>
       <div
         className={cn(
           inputInnerVariants({
@@ -172,7 +191,9 @@ const NumberInputRoot = forwardRef<HTMLInputElement, NumberInputProps>(function 
       >
         {field}
       </div>
-      <div className={cn(inputAddOnVariants({ side: "end", shape, variant, size }))}>{increaseButton}</div>
+      <div className={cn(inputAddOnVariants({ side: "end", shape, variant, size }))}>
+        {increaseButton}
+      </div>
     </div>
   );
 });

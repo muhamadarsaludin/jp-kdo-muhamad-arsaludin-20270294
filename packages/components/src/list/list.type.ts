@@ -50,7 +50,10 @@ export type FlatListRow<T extends ListItemData = ListItemData> =
   | { type: "divider"; key: string }
   | { type: "item"; key: ListKey; item: T; depth: number };
 
-export type ListProps<T extends ListItemData = ListItemData> = Omit<ComponentPropsWithoutRef<"div">, "children"> &
+export type ListProps<T extends ListItemData = ListItemData> = Omit<
+  ComponentPropsWithoutRef<"div">,
+  "children"
+> &
   ListLinkProps & {
     items: T[];
     selectionMode?: ListSelectionMode;

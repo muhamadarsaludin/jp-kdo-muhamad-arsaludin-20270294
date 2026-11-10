@@ -1,6 +1,5 @@
-import { forwardRef } from "react";
-
 import { cn } from "@kdo/utils";
+import { forwardRef } from "react";
 
 import type { PopoverLabelProps, PopoverSeparatorProps } from "./popover.type";
 
@@ -23,11 +22,17 @@ export const PopoverLabel = forwardRef<HTMLDivElement, PopoverLabelProps>(functi
 
 PopoverLabel.displayName = "Popover.Label";
 
-export const PopoverSeparator = forwardRef<HTMLHRElement, PopoverSeparatorProps>(function PopoverSeparator(
-  { className, ...props },
-  ref,
-) {
-  return <hr ref={ref} data-slot="separator" className={cn("my-1 border-secondary border-t", className)} {...props} />;
-});
+export const PopoverSeparator = forwardRef<HTMLHRElement, PopoverSeparatorProps>(
+  function PopoverSeparator({ className, ...props }, ref) {
+    return (
+      <hr
+        ref={ref}
+        data-slot="separator"
+        className={cn("my-1 border-secondary border-t", className)}
+        {...props}
+      />
+    );
+  },
+);
 
 PopoverSeparator.displayName = "Popover.Separator";

@@ -1,3 +1,5 @@
+import { cn } from "@kdo/utils";
+import { Check, ChevronRight } from "lucide-react";
 import {
   type ElementType,
   forwardRef,
@@ -7,9 +9,6 @@ import {
   type ReactNode,
   type Ref,
 } from "react";
-
-import { cn } from "@kdo/utils";
-import { Check, ChevronRight } from "lucide-react";
 
 import { Checkbox } from "../checkbox/checkbox";
 import { ItemRowContent, itemRowClassName, itemRowSlotOffset } from "../lib/item-row";
@@ -96,7 +95,10 @@ function SelectionControl({
     return (
       // Fixed `size-4` (16px) keeps the slot reserved when unchecked so labels
       // stay aligned across selected/unselected rows.
-      <span data-slot="selection" className={cn("flex size-4 shrink-0 items-center justify-center", className)}>
+      <span
+        data-slot="selection"
+        className={cn("flex size-4 shrink-0 items-center justify-center", className)}
+      >
         {selected && <Check aria-hidden="true" className="size-4 text-brand-primary" />}
       </span>
     );
@@ -152,7 +154,10 @@ function ExpandChevron({
     // 24px hit area, hover background, and focus ring without changing the
     // footprint — same trick as Input's `inputIconButtonBase`, with the shared
     // tertiary icon-button standard.
-    <span data-slot="chevron-slot" className={cn("flex size-4 shrink-0 items-center justify-center", className)}>
+    <span
+      data-slot="chevron-slot"
+      className={cn("flex size-4 shrink-0 items-center justify-center", className)}
+    >
       <button
         type="button"
         tabIndex={-1}
@@ -166,7 +171,10 @@ function ExpandChevron({
         }}
         className="-m-1 flex shrink-0 cursor-pointer items-center justify-center rounded-md p-1 text-tertiary outline-1 outline-transparent -outline-offset-1 transition-colors hover:bg-primary-hover hover:text-primary focus-visible:outline-brand-primary focus-visible:ring-3 focus-visible:ring-brand-primary/50 disabled:cursor-not-allowed disabled:hover:bg-transparent"
       >
-        <ChevronRight aria-hidden="true" className={cn("size-4 transition-transform", expanded && "rotate-90")} />
+        <ChevronRight
+          aria-hidden="true"
+          className={cn("size-4 transition-transform", expanded && "rotate-90")}
+        />
       </button>
     </span>
   );
@@ -219,7 +227,11 @@ const ListItemRoot = forwardRef<HTMLElement, ListItemProps>(function ListItemRoo
   const showSelection = selectable && selectionPosition !== "none" && selectionIndicator !== "none";
   // The tint follows one state at a time: selected rows in `selection` mode,
   // the single active row in `active` mode, nothing in `none` mode.
-  const highlightMatches: Record<ListHighlightMode, boolean> = { selection: selected, active, none: false };
+  const highlightMatches: Record<ListHighlightMode, boolean> = {
+    selection: selected,
+    active,
+    none: false,
+  };
   const highlighted = highlightMatches[highlight];
   const slotOffset = itemRowSlotOffset(alignment);
 
@@ -244,7 +256,8 @@ const ListItemRoot = forwardRef<HTMLElement, ListItemProps>(function ListItemRoo
 
   const renderChevron = (position: ListChevronPosition) => {
     if (chevronPosition !== position || !showChevron) return null;
-    if (!hasChildren) return <span aria-hidden="true" className={cn("size-4 shrink-0", slotOffset)} />;
+    if (!hasChildren)
+      return <span aria-hidden="true" className={cn("size-4 shrink-0", slotOffset)} />;
     return (
       <ExpandChevron
         expanded={expanded}
@@ -279,7 +292,8 @@ const ListItemRoot = forwardRef<HTMLElement, ListItemProps>(function ListItemRoo
     className,
   });
 
-  const rowStyle = depth > 0 ? { paddingLeft: `calc(var(--spacing) * ${2 + depth * 4})` } : undefined;
+  const rowStyle =
+    depth > 0 ? { paddingLeft: `calc(var(--spacing) * ${2 + depth * 4})` } : undefined;
 
   // One text color drives the label and the content icons so the row reads as a
   // single unit: soft by default, firmer on hover, brand when selected/active.
@@ -305,7 +319,9 @@ const ListItemRoot = forwardRef<HTMLElement, ListItemProps>(function ListItemRoo
 
   if (href) {
     const LinkComp: ElementType = linkAs ?? "a";
-    const destination: Record<string, string | undefined> = linkAs ? { [linkHrefProp]: href } : { href };
+    const destination: Record<string, string | undefined> = linkAs
+      ? { [linkHrefProp]: href }
+      : { href };
     return (
       <LinkComp
         ref={ref as Ref<HTMLAnchorElement>}

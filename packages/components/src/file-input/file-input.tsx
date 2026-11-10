@@ -1,3 +1,5 @@
+import { cn } from "@kdo/utils";
+import { X } from "lucide-react";
 import {
   Fragment,
   forwardRef,
@@ -9,9 +11,6 @@ import {
   useId,
   useState,
 } from "react";
-
-import { cn } from "@kdo/utils";
-import { X } from "lucide-react";
 
 import { Badge, type BadgeProps } from "../badge";
 import { Button, type ButtonProps } from "../button";
@@ -212,7 +211,10 @@ export const FileInput = forwardRef<HTMLDivElement, FileInputProps>(function Fil
     return (
       <div
         data-slot={`file-input-${side}`}
-        className={cn(addOnGroupBase, side === "start" ? "border-primary border-r" : "border-primary border-l")}
+        className={cn(
+          addOnGroupBase,
+          side === "start" ? "border-primary border-r" : "border-primary border-l",
+        )}
       >
         {visible}
       </div>
@@ -244,7 +246,10 @@ export const FileInput = forwardRef<HTMLDivElement, FileInputProps>(function Fil
           aria-label={ariaLabel}
           aria-describedby={fieldCtx?.descriptionPresent ? fieldCtx.descriptionId : undefined}
           data-slot="file-input-value"
-          className={cn("flex-1 truncate text-sm", disabled ? "cursor-not-allowed!" : "cursor-pointer!")}
+          className={cn(
+            "flex-1 truncate text-sm",
+            disabled ? "cursor-not-allowed!" : "cursor-pointer!",
+          )}
           size={size}
           type="text"
           value={displayName}
@@ -277,11 +282,16 @@ export const FileInput = forwardRef<HTMLDivElement, FileInputProps>(function Fil
           >
             <span className="flex flex-col gap-0.5">
               {tooltipFiles.map((file) => (
-                <span key={`${file.name}-${file.size}-${file.lastModified}`} className="block max-w-60 truncate">
+                <span
+                  key={`${file.name}-${file.size}-${file.lastModified}`}
+                  className="block max-w-60 truncate"
+                >
                   {file.name}
                 </span>
               ))}
-              {hiddenFilesMore > 0 && <span className="opacity-70">{`+${hiddenFilesMore} more`}</span>}
+              {hiddenFilesMore > 0 && (
+                <span className="opacity-70">{`+${hiddenFilesMore} more`}</span>
+              )}
             </span>
           </Tooltip>
         )}

@@ -1,7 +1,6 @@
-import { Fragment, forwardRef, type HTMLAttributes, type ReactNode } from "react";
-
 import { cn } from "@kdo/utils";
 import { Check, CircleAlert, Play, X } from "lucide-react";
+import { Fragment, forwardRef, type HTMLAttributes, type ReactNode } from "react";
 
 import { Button } from "../button";
 import { FileTypeIcon } from "../lib/file-type-icon";
@@ -118,11 +117,17 @@ export const FilePreview = forwardRef<HTMLUListElement, FilePreviewProps>(functi
   ref,
 ) {
   return (
-    <ul {...props} ref={ref} data-slot="file-preview" className={cn("flex flex-col gap-1", className)}>
+    <ul
+      {...props}
+      ref={ref}
+      data-slot="file-preview"
+      className={cn("flex flex-col gap-1", className)}
+    >
       {items.map((item, index) => {
         const isImage = item.type?.startsWith("image/");
         const isVideo = item.type?.startsWith("video/");
-        const hasThumb = !item.corrupt && ((isImage && !!item.src) || (isVideo && !!(item.src || item.poster)));
+        const hasThumb =
+          !item.corrupt && ((isImage && !!item.src) || (isVideo && !!(item.src || item.poster)));
         const label = item.name ?? item.id;
         const state = itemState(item);
         const failed = state === "failed";
@@ -152,7 +157,9 @@ export const FilePreview = forwardRef<HTMLUListElement, FilePreviewProps>(functi
                 aria-hidden="true"
                 className="pointer-events-none absolute inset-0 flex items-center justify-center"
               >
-                <Play className={cn("fill-white text-white drop-shadow-sm", filePreviewPlaySizes[size])} />
+                <Play
+                  className={cn("fill-white text-white drop-shadow-sm", filePreviewPlaySizes[size])}
+                />
               </span>
             </>
           );
@@ -179,7 +186,8 @@ export const FilePreview = forwardRef<HTMLUListElement, FilePreviewProps>(functi
 
         let secondary: ReactNode = null;
         if (state === "idle") {
-          if (item.meta) secondary = <span className="block truncate text-tertiary text-xs">{item.meta}</span>;
+          if (item.meta)
+            secondary = <span className="block truncate text-tertiary text-xs">{item.meta}</span>;
         } else {
           secondary = (
             <span className="flex min-w-0 items-center gap-1.5 text-xs">
@@ -191,7 +199,9 @@ export const FilePreview = forwardRef<HTMLUListElement, FilePreviewProps>(functi
                   </span>
                 </>
               ) : null}
-              <span className={cn("flex shrink-0 items-center gap-1", filePreviewStatusColors[state])}>
+              <span
+                className={cn("flex shrink-0 items-center gap-1", filePreviewStatusColors[state])}
+              >
                 {showStatusIcon ? <StatusIcon status={state} /> : null}
                 {item.statusMessage ?? statusLabels?.[state] ?? filePreviewStatusMessages[state]}
               </span>
@@ -202,7 +212,11 @@ export const FilePreview = forwardRef<HTMLUListElement, FilePreviewProps>(functi
         return (
           <Fragment key={item.id}>
             {separator && index > 0 ? (
-              <li aria-hidden="true" data-slot="file-preview-separator" className="mx-2 border-primary border-t" />
+              <li
+                aria-hidden="true"
+                data-slot="file-preview-separator"
+                className="mx-2 border-primary border-t"
+              />
             ) : null}
             <li
               data-slot="file-preview-item"
@@ -233,7 +247,12 @@ export const FilePreview = forwardRef<HTMLUListElement, FilePreviewProps>(functi
               )}
 
               <span className="flex min-w-0 flex-1 flex-col">
-                <span className={cn("block truncate font-medium text-primary", filePreviewTextSizes[size])}>
+                <span
+                  className={cn(
+                    "block truncate font-medium text-primary",
+                    filePreviewTextSizes[size],
+                  )}
+                >
                   {item.name ?? item.id}
                 </span>
                 {secondary}
@@ -248,7 +267,13 @@ export const FilePreview = forwardRef<HTMLUListElement, FilePreviewProps>(functi
               </span>
 
               {failed && onRetry ? (
-                <Button type="button" variant="text" color="brand" size="xs" onClick={() => onRetry(item.id)}>
+                <Button
+                  type="button"
+                  variant="text"
+                  color="brand"
+                  size="xs"
+                  onClick={() => onRetry(item.id)}
+                >
                   Try again
                 </Button>
               ) : null}

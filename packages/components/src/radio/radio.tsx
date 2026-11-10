@@ -1,6 +1,5 @@
-import { type ChangeEvent, forwardRef, type MouseEvent, useContext, useId } from "react";
-
 import { cn } from "@kdo/utils";
+import { type ChangeEvent, forwardRef, type MouseEvent, useContext, useId } from "react";
 
 import { FieldContext } from "../field/field-context";
 import type { RadioProps } from "./radio.type";
@@ -42,7 +41,10 @@ const RadioRoot = forwardRef<HTMLInputElement, RadioProps>(function RadioRoot(
   const labelId = useId();
   const descriptionId = useId();
   const describedBy =
-    [description ? descriptionId : undefined, fieldCtx?.descriptionPresent ? fieldCtx.descriptionId : undefined]
+    [
+      description ? descriptionId : undefined,
+      fieldCtx?.descriptionPresent ? fieldCtx.descriptionId : undefined,
+    ]
       .filter(Boolean)
       .join(" ") || undefined;
 

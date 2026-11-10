@@ -1,6 +1,5 @@
-import { forwardRef } from "react";
-
 import { cn } from "@kdo/utils";
+import { forwardRef } from "react";
 
 import type { StepProgressProps } from "./step-progress.type";
 import {
@@ -30,7 +29,8 @@ export const StepProgress = forwardRef<HTMLDivElement, StepProgressProps>(functi
 ) {
   const count = Math.max(1, Math.round(total));
   const current = Math.min(Math.max(1, Math.round(value)), count);
-  const hasHeader = startContent != null || label != null || description != null || endContent != null || showValue;
+  const hasHeader =
+    startContent != null || label != null || description != null || endContent != null || showValue;
 
   return (
     <div

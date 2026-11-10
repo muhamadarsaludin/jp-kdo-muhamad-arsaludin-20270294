@@ -15,7 +15,10 @@ export type TabsScrollButtonLabels = {
   end?: string;
 };
 
-export type TabsProps = Omit<ComponentPropsWithoutRef<"div">, "children" | "defaultValue" | "onChange"> & {
+export type TabsProps = Omit<
+  ComponentPropsWithoutRef<"div">,
+  "children" | "defaultValue" | "onChange"
+> & {
   children?: ReactNode;
   value?: string;
   defaultValue?: string;

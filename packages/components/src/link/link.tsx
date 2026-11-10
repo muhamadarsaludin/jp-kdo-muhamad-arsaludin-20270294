@@ -1,6 +1,5 @@
-import type { ElementType } from "react";
-
 import { cn } from "@kdo/utils";
+import type { ElementType } from "react";
 
 import type { LinkProps } from "./link.type";
 import { linkVariants } from "./link-variants";

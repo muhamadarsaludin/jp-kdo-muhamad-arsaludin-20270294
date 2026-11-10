@@ -1,6 +1,14 @@
-import { type ChangeEvent, forwardRef, useCallback, useContext, useEffect, useId, useRef, useState } from "react";
-
 import { cn } from "@kdo/utils";
+import {
+  type ChangeEvent,
+  forwardRef,
+  useCallback,
+  useContext,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+} from "react";
 
 import { FieldContext } from "../field/field-context";
 import { inputInnerVariants, inputTextSizes } from "../input/input-variants";
@@ -39,8 +47,9 @@ const TextAreaRoot = forwardRef<HTMLTextAreaElement, TextAreaProps>(function Tex
   const effectiveMaxLength = maxLength ?? fieldCtx?.max;
   const effectiveStatus = status ?? fieldCtx?.status ?? "default";
   const describedBy =
-    [ariaDescribedBy, fieldCtx?.descriptionPresent ? fieldCtx.descriptionId : undefined].filter(Boolean).join(" ") ||
-    undefined;
+    [ariaDescribedBy, fieldCtx?.descriptionPresent ? fieldCtx.descriptionId : undefined]
+      .filter(Boolean)
+      .join(" ") || undefined;
 
   const areaRef = useRef<HTMLTextAreaElement | null>(null);
   const setAreaRef = useCallback(

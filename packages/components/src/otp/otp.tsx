@@ -1,3 +1,4 @@
+import { cn } from "@kdo/utils";
 import {
   type ChangeEvent,
   type ClipboardEvent,
@@ -13,8 +14,6 @@ import {
   useRef,
   useState,
 } from "react";
-
-import { cn } from "@kdo/utils";
 
 import { FieldContext } from "../field/field-context";
 import type { OtpMode, OtpProps } from "./otp.type";
@@ -37,7 +36,10 @@ function fitCells(cells: string[], length: number): string[] {
   return next;
 }
 
-export function resolveSeparatorPositions(length: number, separator: boolean | number | undefined): number[] {
+export function resolveSeparatorPositions(
+  length: number,
+  separator: boolean | number | undefined,
+): number[] {
   let group = 0;
   if (separator === true) group = 2;
   else if (typeof separator === "number") group = Math.floor(separator);
@@ -80,8 +82,8 @@ const OtpRoot = forwardRef<HTMLFieldSetElement, OtpProps>(function OtpRoot(
   const isControlled = value !== undefined;
   // Re-sanitize every render so controlled values, defaultValue, and runtime
   // mode switches can never display rejected characters.
-  const cells = fitCells(isControlled ? splitCells(value, length) : internalCells, length).map((cell) =>
-    sanitizeValue(cell, mode).slice(0, 1),
+  const cells = fitCells(isControlled ? splitCells(value, length) : internalCells, length).map(
+    (cell) => sanitizeValue(cell, mode).slice(0, 1),
   );
 
   const inputsRef = useRef<Array<HTMLInputElement | null>>([]);
@@ -141,7 +143,10 @@ const OtpRoot = forwardRef<HTMLFieldSetElement, OtpProps>(function OtpRoot(
 
   const instanceId = useId();
   const slots = useMemo(() => Array.from({ length }, (_, position) => position), [length]);
-  const separatorPositions = useMemo(() => resolveSeparatorPositions(length, separator), [length, separator]);
+  const separatorPositions = useMemo(
+    () => resolveSeparatorPositions(length, separator),
+    [length, separator],
+  );
 
   const commit = (nextCells: string[], focusIndex?: number) => {
     const nextValue = nextCells.join("");
@@ -229,7 +234,11 @@ const OtpRoot = forwardRef<HTMLFieldSetElement, OtpProps>(function OtpRoot(
   return (
     <fieldset
       ref={ref}
-      className={cn("flex min-w-0 items-center gap-2 border-0 p-0", disabled && "opacity-50", className)}
+      className={cn(
+        "flex min-w-0 items-center gap-2 border-0 p-0",
+        disabled && "opacity-50",
+        className,
+      )}
       {...props}
     >
       {slots.map((position) => (
@@ -239,7 +248,12 @@ const OtpRoot = forwardRef<HTMLFieldSetElement, OtpProps>(function OtpRoot(
               –
             </span>
           )}
-          <div className={cn(otpCellVariants({ variant, shape, status: effectiveStatus, size }), cellClassName)}>
+          <div
+            className={cn(
+              otpCellVariants({ variant, shape, status: effectiveStatus, size }),
+              cellClassName,
+            )}
+          >
             <input
               ref={(node) => {
                 inputsRef.current[position] = node;

@@ -1,6 +1,10 @@
 import { createContext, useContext } from "react";
 
-import type { DropdownSelectionIndicator, DropdownSelectionMode, DropdownSelectionPosition } from "./dropdown.type";
+import type {
+  DropdownSelectionIndicator,
+  DropdownSelectionMode,
+  DropdownSelectionPosition,
+} from "./dropdown.type";
 
 export type DropdownContextValue = {
   close: () => void;

@@ -23,8 +23,15 @@ export const DropdownItem = forwardRef<HTMLButtonElement, DropdownItemProps>(fun
   },
   ref,
 ) {
-  const { close, focusTrigger, selectionMode, selectedValue, selectValue, selectionIndicator, selectionPosition } =
-    useDropdownContext();
+  const {
+    close,
+    focusTrigger,
+    selectionMode,
+    selectedValue,
+    selectValue,
+    selectionIndicator,
+    selectionPosition,
+  } = useDropdownContext();
   const isRadio = selectionMode === "single" && value !== undefined;
   const isSelected = selected ?? (isRadio && value === selectedValue);
   const isManuallySelected = !isRadio && selected === true;

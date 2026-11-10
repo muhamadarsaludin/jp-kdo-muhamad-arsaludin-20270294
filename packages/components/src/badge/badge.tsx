@@ -1,6 +1,5 @@
-import { forwardRef, type ReactNode } from "react";
-
 import { cn } from "@kdo/utils";
+import { forwardRef, type ReactNode } from "react";
 
 import type { BadgeDotProps, BadgeProps } from "./badge.type";
 import { badgeDotVariants, badgeVariants } from "./badge.variants";
@@ -28,7 +27,10 @@ const BadgeRoot = forwardRef<HTMLSpanElement, BadgeProps>(function BadgeRoot(
   return (
     <span
       ref={ref}
-      className={cn(badgeVariants({ shape, size, variant, color, borderless, transparent }), className)}
+      className={cn(
+        badgeVariants({ shape, size, variant, color, borderless, transparent }),
+        className,
+      )}
       {...props}
     >
       {startContent && (
@@ -36,7 +38,11 @@ const BadgeRoot = forwardRef<HTMLSpanElement, BadgeProps>(function BadgeRoot(
           {startContent}
         </span>
       )}
-      {isText(children) && children !== "" ? <span className="min-w-0 truncate">{children}</span> : children}
+      {isText(children) && children !== "" ? (
+        <span className="min-w-0 truncate">{children}</span>
+      ) : (
+        children
+      )}
       {endContent && (
         <span data-slot="end" className="flex shrink-0 items-center">
           {endContent}

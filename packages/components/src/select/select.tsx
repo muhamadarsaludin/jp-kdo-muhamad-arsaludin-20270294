@@ -1,3 +1,5 @@
+import { cn } from "@kdo/utils";
+import { ChevronDown } from "lucide-react";
 import {
   Children,
   Fragment,
@@ -12,9 +14,6 @@ import {
   useRef,
   useState,
 } from "react";
-
-import { cn } from "@kdo/utils";
-import { ChevronDown } from "lucide-react";
 
 import { Badge } from "../badge/badge";
 import { FieldContext } from "../field/field-context";
@@ -52,7 +51,11 @@ function optionMetas(children: ReactNode): OptionMeta[] {
   const metas: OptionMeta[] = [];
   eachOptionElement(children, ({ value, disabled, children: label }) => {
     if (typeof value !== "string") return;
-    metas.push({ value, disabled: disabled === true, label: typeof label === "string" ? label : "" });
+    metas.push({
+      value,
+      disabled: disabled === true,
+      label: typeof label === "string" ? label : "",
+    });
   });
   return metas;
 }
@@ -91,7 +94,9 @@ const SelectListbox = forwardRef<
 
   const enabledNodes = useCallback(() => {
     if (listRef.current === null) return [];
-    return Array.from(listRef.current.querySelectorAll<HTMLElement>('[role="option"]:not([disabled])'));
+    return Array.from(
+      listRef.current.querySelectorAll<HTMLElement>('[role="option"]:not([disabled])'),
+    );
   }, []);
 
   const focusNode = useCallback(
@@ -114,7 +119,9 @@ const SelectListbox = forwardRef<
     const values = nodes.map((node) => node.dataset.optionValue);
     let target = 0;
     if (selectedValues.length > 0) {
-      const selected = values.findIndex((value) => value !== undefined && selectedValues.includes(value));
+      const selected = values.findIndex(
+        (value) => value !== undefined && selectedValues.includes(value),
+      );
       if (selected !== -1) target = selected;
     }
     const node = nodes[target];
@@ -158,7 +165,8 @@ const SelectListbox = forwardRef<
       typeBuffer.current = `${typeBuffer.current}${character}`.slice(-8);
       const query = typeBuffer.current.toLowerCase();
       const values = metas.map((meta) => meta.value);
-      const start = activeValue === undefined ? 0 : (values.indexOf(activeValue) + 1) % values.length;
+      const start =
+        activeValue === undefined ? 0 : (values.indexOf(activeValue) + 1) % values.length;
       for (let offset = 0; offset < values.length; offset += 1) {
         const meta = metas[(start + offset) % metas.length];
         if (meta?.label.toLowerCase().startsWith(query) === true) {
@@ -253,8 +261,9 @@ const SelectRoot = forwardRef<HTMLDivElement, SelectProps>(function SelectRoot(p
   const fieldCtx = useContext(FieldContext);
   const effectiveId = id ?? fieldCtx?.controlId;
   const describedBy =
-    [ariaDescribedBy, fieldCtx?.descriptionPresent ? fieldCtx.descriptionId : undefined].filter(Boolean).join(" ") ||
-    undefined;
+    [ariaDescribedBy, fieldCtx?.descriptionPresent ? fieldCtx.descriptionId : undefined]
+      .filter(Boolean)
+      .join(" ") || undefined;
   const multiple = selectionMode === "multiple";
   const listboxId = useId();
 
@@ -305,7 +314,9 @@ const SelectRoot = forwardRef<HTMLDivElement, SelectProps>(function SelectRoot(p
       if (multiple) {
         const isSelected = selectedValues.includes(next);
         if (required && isSelected && selectedValues.length === 1) return;
-        const nextValues = isSelected ? selectedValues.filter((item) => item !== next) : [...selectedValues, next];
+        const nextValues = isSelected
+          ? selectedValues.filter((item) => item !== next)
+          : [...selectedValues, next];
         if (!isValueControlled) setInternalValue(nextValues);
         (onValueChange as ((values: string[]) => void) | undefined)?.(nextValues);
         return;
@@ -319,7 +330,15 @@ const SelectRoot = forwardRef<HTMLDivElement, SelectProps>(function SelectRoot(p
       onOpenChange?.(false);
       focusSelectTrigger(popoverRef.current);
     },
-    [multiple, required, selectedValues, isValueControlled, onValueChange, isOpenControlled, onOpenChange],
+    [
+      multiple,
+      required,
+      selectedValues,
+      isValueControlled,
+      onValueChange,
+      isOpenControlled,
+      onOpenChange,
+    ],
   );
 
   const selectedLabels = findOptionLabels(children, selectedValues);
@@ -333,7 +352,13 @@ const SelectRoot = forwardRef<HTMLDivElement, SelectProps>(function SelectRoot(p
     onKeyDown?.(event);
     if (event.defaultPrevented) return;
     if (disabled || isOpen) return;
-    if (event.key !== "ArrowDown" && event.key !== "ArrowUp" && event.key !== "Enter" && event.key !== " ") return;
+    if (
+      event.key !== "ArrowDown" &&
+      event.key !== "ArrowUp" &&
+      event.key !== "Enter" &&
+      event.key !== " "
+    )
+      return;
     event.preventDefault();
     openTray();
   };
@@ -411,7 +436,12 @@ const SelectRoot = forwardRef<HTMLDivElement, SelectProps>(function SelectRoot(p
           contentClassName={contentClassName}
           className="w-full"
         >
-          <SelectListbox id={listboxId} label={ariaLabel} labelledBy={ariaLabelledBy} multiple={multiple}>
+          <SelectListbox
+            id={listboxId}
+            label={ariaLabel}
+            labelledBy={ariaLabelledBy}
+            multiple={multiple}
+          >
             {children}
           </SelectListbox>
         </Popover>

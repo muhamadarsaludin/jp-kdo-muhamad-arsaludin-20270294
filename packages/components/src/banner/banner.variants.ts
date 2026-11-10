@@ -38,8 +38,16 @@ export const bannerVariants = cva("flex w-full items-start gap-2 rounded-lg bord
     },
   },
   compoundVariants: [
-    ...bannerColors.map((color) => ({ variant: "soft" as const, color, className: softStyles[color] })),
-    ...bannerColors.map((color) => ({ variant: "outline" as const, color, className: outlineStyles[color] })),
+    ...bannerColors.map((color) => ({
+      variant: "soft" as const,
+      color,
+      className: softStyles[color],
+    })),
+    ...bannerColors.map((color) => ({
+      variant: "outline" as const,
+      color,
+      className: outlineStyles[color],
+    })),
   ],
   defaultVariants: {
     color: "brand",

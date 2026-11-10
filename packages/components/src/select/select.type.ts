@@ -2,14 +2,21 @@ import type { ComponentPropsWithoutRef, ReactNode } from "react";
 
 import type { InputSize } from "../input/input.type";
 import type { InputVariant } from "../input/input-variants";
-import type { PopoverLabelProps, PopoverPosition, PopoverSeparatorProps } from "../popover/popover.type";
+import type {
+  PopoverLabelProps,
+  PopoverPosition,
+  PopoverSeparatorProps,
+} from "../popover/popover.type";
 import type { Status } from "../type";
 
 export type SelectSelectionIndicator = "none" | "radio" | "checkmark";
 
 export type SelectSelectionPosition = "start" | "end";
 
-type SelectCommonProps = Omit<ComponentPropsWithoutRef<"div">, "children" | "onKeyDown" | "defaultValue" | "value"> & {
+type SelectCommonProps = Omit<
+  ComponentPropsWithoutRef<"div">,
+  "children" | "onKeyDown" | "defaultValue" | "value"
+> & {
   children?: ReactNode;
   placeholder?: string;
   disabled?: boolean;

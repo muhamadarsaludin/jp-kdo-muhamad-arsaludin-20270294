@@ -1,6 +1,5 @@
-import { type ChangeEvent, forwardRef, type MouseEvent, useContext, useId, useState } from "react";
-
 import { cn } from "@kdo/utils";
+import { type ChangeEvent, forwardRef, type MouseEvent, useContext, useId, useState } from "react";
 
 import { FieldContext } from "../field/field-context";
 import type { SwitchProps } from "./switch.type";
@@ -42,7 +41,10 @@ const SwitchRoot = forwardRef<HTMLInputElement, SwitchProps>(function SwitchRoot
   const labelId = useId();
   const descriptionId = useId();
   const describedBy =
-    [description ? descriptionId : undefined, fieldCtx?.descriptionPresent ? fieldCtx.descriptionId : undefined]
+    [
+      description ? descriptionId : undefined,
+      fieldCtx?.descriptionPresent ? fieldCtx.descriptionId : undefined,
+    ]
       .filter(Boolean)
       .join(" ") || undefined;
 
@@ -123,7 +125,11 @@ const SwitchRoot = forwardRef<HTMLInputElement, SwitchProps>(function SwitchRoot
       {(label || description) && (
         <span className={cn("inline-flex min-w-0 flex-col", labelClassName)}>
           {label && (
-            <span id={labelId} data-slot="label" className={cn("font-medium text-primary", switchLabelSizes[size])}>
+            <span
+              id={labelId}
+              data-slot="label"
+              className={cn("font-medium text-primary", switchLabelSizes[size])}
+            >
               {label}
             </span>
           )}

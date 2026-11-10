@@ -64,7 +64,8 @@ export const inputIconStatusColors = {
   success: "text-success-primary",
 } as const;
 
-export const inputContentBase = "flex shrink-0 items-center gap-2 font-medium text-tertiary [&_svg]:shrink-0" as const;
+export const inputContentBase =
+  "flex shrink-0 items-center gap-2 font-medium text-tertiary [&_svg]:shrink-0" as const;
 
 // Extra button normalisation applied to Input content slots (kept separate so
 // FileInput — which also hosts buttons in its slots — can opt out).
