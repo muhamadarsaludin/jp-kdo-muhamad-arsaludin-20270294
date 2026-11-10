@@ -94,9 +94,31 @@ func main() {
 	servisService := service.NewServisService(servisRepo)
 	servisHandler := handler.NewServisHandler(servisService)
 
+	dashboardRepo := repository.NewDashboardRepository(queries)
+	dashboardService := service.NewDashboardService(dashboardRepo)
+	dashboardHandler := handler.NewDashboardHandler(dashboardService, peminjamanService)
+
+	exportHandler := handler.NewExportHandler(kendaraanService, pegawaiService, peminjamanService)
+
+	penggunaAdminRepo := repository.NewPenggunaAdminRepository(queries)
+	penggunaService := service.NewPenggunaService(penggunaAdminRepo)
+	penggunaHandler := handler.NewPenggunaHandler(penggunaService)
+
+	handlers := router.Handlers{
+		Auth:            authHandler,
+		PerangkatDaerah: pdHandler,
+		Pegawai:         pegawaiHandler,
+		Kendaraan:       kendaraanHandler,
+		Peminjaman:      peminjamanHandler,
+		Servis:          servisHandler,
+		Dashboard:       dashboardHandler,
+		Export:          exportHandler,
+		Pengguna:        penggunaHandler,
+	}
+
 	srv := &http.Server{
 		Addr:              ":" + cfg.AppPort,
-		Handler:           router.New(pool, authHandler, pdHandler, pegawaiHandler, kendaraanHandler, peminjamanHandler, servisHandler, jwtManager),
+		Handler:           router.New(pool, handlers, jwtManager, cfg.CORSOrigins),
 		ReadHeaderTimeout: 10 * time.Second,
 	}
 

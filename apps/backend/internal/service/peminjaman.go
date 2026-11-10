@@ -311,3 +311,30 @@ func mapPeminjaman(
 		UpdatedAt:            updatedAt.Time,
 	}
 }
+
+// Export mengambil seluruh peminjaman sesuai filter tanpa pagination.
+func (s *PeminjamanService) Export(ctx context.Context, q dto.PeminjamanListQuery) ([]dto.PeminjamanResponse, error) {
+	sortBy, sortOrder := normalisasiSortPeminjaman(q.SortBy, q.SortOrder)
+
+	rows, _, err := s.repo.List(ctx, repository.PeminjamanListParams{
+		Search:      strings.TrimSpace(q.Search),
+		Status:      q.Status,
+		KendaraanID: q.KendaraanID,
+		PegawaiID:   q.PegawaiID,
+		Dari:        q.Dari,
+		Sampai:      q.Sampai,
+		SortBy:      sortBy,
+		SortOrder:   sortOrder,
+		Limit:       ExportLimit,
+		Offset:      0,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	items := make([]dto.PeminjamanResponse, 0, len(rows))
+	for _, row := range rows {
+		items = append(items, mapListPeminjaman(row))
+	}
+	return items, nil
+}

@@ -267,3 +267,28 @@ func mapPegawai(
 		UpdatedAt:           updatedAt.Time,
 	}
 }
+
+// Export mengambil seluruh pegawai sesuai filter tanpa pagination.
+func (s *PegawaiService) Export(ctx context.Context, q dto.PegawaiListQuery) ([]dto.PegawaiResponse, error) {
+	sortBy, sortOrder := normalisasiSortPegawai(q.SortBy, q.SortOrder)
+
+	rows, _, err := s.repo.List(ctx, repository.PegawaiListParams{
+		Search:            strings.TrimSpace(q.Search),
+		PerangkatDaerahID: q.PerangkatDaerahID,
+		Golongan:          q.Golongan,
+		StatusPegawai:     q.StatusPegawai,
+		SortBy:            sortBy,
+		SortOrder:         sortOrder,
+		Limit:             ExportLimit,
+		Offset:            0,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	items := make([]dto.PegawaiResponse, 0, len(rows))
+	for _, row := range rows {
+		items = append(items, mapListPegawai(row))
+	}
+	return items, nil
+}

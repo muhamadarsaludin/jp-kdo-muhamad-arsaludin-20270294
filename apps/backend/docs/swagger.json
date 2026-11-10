@@ -110,6 +110,330 @@
                 }
             }
         },
+        "/api/v1/dashboard/biaya-servis-bulanan": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "dashboard"
+                ],
+                "summary": "Biaya servis bulanan",
+                "responses": {
+                    "200": {
+                        "description": "dibungkus data",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/dto.DashboardBiayaBulananItem"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/dashboard/kendaraan-per-kondisi": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "dashboard"
+                ],
+                "summary": "Kendaraan per kondisi",
+                "responses": {
+                    "200": {
+                        "description": "dibungkus data",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/dto.DashboardKondisiItem"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/dashboard/kendaraan-per-opd": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "dashboard"
+                ],
+                "summary": "Kendaraan per perangkat daerah",
+                "responses": {
+                    "200": {
+                        "description": "dibungkus data",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/dto.DashboardOpdItem"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/dashboard/peminjaman-menunggu": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "dashboard"
+                ],
+                "summary": "Peminjaman menunggu persetujuan",
+                "responses": {
+                    "200": {
+                        "description": "dibungkus data",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/dto.PeminjamanResponse"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/dashboard/stats": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "dashboard"
+                ],
+                "summary": "Ringkasan dashboard",
+                "responses": {
+                    "200": {
+                        "description": "dibungkus data",
+                        "schema": {
+                            "$ref": "#/definitions/dto.DashboardStats"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/export/kendaraan.csv": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "text/csv"
+                ],
+                "tags": [
+                    "export"
+                ],
+                "summary": "Export kendaraan CSV",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Cari nopol/merek/tipe",
+                        "name": "search",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter status",
+                        "name": "status",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter kondisi",
+                        "name": "kondisi",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter jenis",
+                        "name": "jenis",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "berkas CSV",
+                        "schema": {
+                            "type": "file"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/export/pegawai.csv": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "text/csv"
+                ],
+                "tags": [
+                    "export"
+                ],
+                "summary": "Export pegawai CSV",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Cari nama/NIP",
+                        "name": "search",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter golongan",
+                        "name": "golongan",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter status pegawai",
+                        "name": "status",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "berkas CSV",
+                        "schema": {
+                            "type": "file"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/export/peminjaman.csv": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "text/csv"
+                ],
+                "tags": [
+                    "export"
+                ],
+                "summary": "Export peminjaman CSV",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Cari kode/keperluan/tujuan",
+                        "name": "search",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter status",
+                        "name": "status",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Tanggal mulai",
+                        "name": "dari",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Tanggal selesai",
+                        "name": "sampai",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "berkas CSV",
+                        "schema": {
+                            "type": "file"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/kendaraan": {
             "get": {
                 "security": [
@@ -1339,6 +1663,265 @@
                 }
             }
         },
+        "/api/v1/pengguna": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "pengguna"
+                ],
+                "summary": "Daftar pengguna",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Halaman",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Jumlah per halaman",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Cari nama/email",
+                        "name": "search",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "admin|operator|pimpinan",
+                        "name": "role",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Filter status",
+                        "name": "is_active",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "dibungkus data + meta",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/dto.PenggunaAdminResponse"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "pengguna"
+                ],
+                "summary": "Tambah pengguna",
+                "parameters": [
+                    {
+                        "description": "Data akun",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.PenggunaRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "dibungkus data",
+                        "schema": {
+                            "$ref": "#/definitions/dto.PenggunaAdminResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/pengguna/{id}": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "pengguna"
+                ],
+                "summary": "Ubah pengguna",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID pengguna",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Data akun",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.PenggunaRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "dibungkus data",
+                        "schema": {
+                            "$ref": "#/definitions/dto.PenggunaAdminResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Admin tidak dapat menghapus akunnya sendiri.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "pengguna"
+                ],
+                "summary": "Hapus pengguna",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID pengguna",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "tidak ada isi"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/perangkat-daerah": {
             "get": {
                 "security": [
@@ -1785,6 +2368,94 @@
         }
     },
     "definitions": {
+        "dto.DashboardBiayaBulananItem": {
+            "type": "object",
+            "properties": {
+                "bulan": {
+                    "type": "string",
+                    "example": "2026-11"
+                },
+                "total": {
+                    "type": "number",
+                    "example": 1250000
+                }
+            }
+        },
+        "dto.DashboardKondisiItem": {
+            "type": "object",
+            "properties": {
+                "kondisi": {
+                    "type": "string",
+                    "example": "baik"
+                },
+                "total": {
+                    "type": "integer",
+                    "example": 7
+                }
+            }
+        },
+        "dto.DashboardOpdItem": {
+            "type": "object",
+            "properties": {
+                "nama": {
+                    "type": "string",
+                    "example": "Dinas Pendidikan"
+                },
+                "total": {
+                    "type": "integer",
+                    "example": 2
+                }
+            }
+        },
+        "dto.DashboardStats": {
+            "type": "object",
+            "properties": {
+                "biaya_servis_bulan_ini": {
+                    "type": "number",
+                    "example": 450000
+                },
+                "biaya_servis_total": {
+                    "type": "number",
+                    "example": 13250000
+                },
+                "digunakan": {
+                    "type": "integer",
+                    "example": 2
+                },
+                "dihapuskan": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "peminjaman_aktif": {
+                    "type": "integer",
+                    "example": 2
+                },
+                "peminjaman_diajukan": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "perbaikan": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "tersedia": {
+                    "type": "integer",
+                    "example": 6
+                },
+                "total_kendaraan": {
+                    "type": "integer",
+                    "example": 10
+                },
+                "total_opd": {
+                    "type": "integer",
+                    "example": 4
+                },
+                "total_pegawai": {
+                    "type": "integer",
+                    "example": 12
+                }
+            }
+        },
         "dto.KendaraanRequest": {
             "type": "object",
             "required": [
@@ -2309,6 +2980,77 @@
                 "updated_at": {
                     "type": "string",
                     "example": "2026-11-10T12:00:00+07:00"
+                }
+            }
+        },
+        "dto.PenggunaAdminResponse": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string",
+                    "example": "2026-11-10T12:00:00+07:00"
+                },
+                "email": {
+                    "type": "string",
+                    "example": "operator2@kdo.go.id"
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 4
+                },
+                "is_active": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "nama": {
+                    "type": "string",
+                    "example": "Operator Aset"
+                },
+                "role": {
+                    "type": "string",
+                    "example": "operator"
+                },
+                "updated_at": {
+                    "type": "string",
+                    "example": "2026-11-10T12:00:00+07:00"
+                }
+            }
+        },
+        "dto.PenggunaRequest": {
+            "type": "object",
+            "required": [
+                "email",
+                "nama",
+                "role"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "maxLength": 100,
+                    "example": "operator2@kdo.go.id"
+                },
+                "is_active": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "nama": {
+                    "type": "string",
+                    "maxLength": 100,
+                    "example": "Operator Aset"
+                },
+                "password": {
+                    "type": "string",
+                    "minLength": 8,
+                    "example": "rahasia123"
+                },
+                "role": {
+                    "type": "string",
+                    "enum": [
+                        "admin",
+                        "operator",
+                        "pimpinan"
+                    ],
+                    "example": "operator"
                 }
             }
         },

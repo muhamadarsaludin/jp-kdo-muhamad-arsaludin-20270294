@@ -1,5 +1,68 @@
 basePath: /
 definitions:
+  dto.DashboardBiayaBulananItem:
+    properties:
+      bulan:
+        example: 2026-11
+        type: string
+      total:
+        example: 1250000
+        type: number
+    type: object
+  dto.DashboardKondisiItem:
+    properties:
+      kondisi:
+        example: baik
+        type: string
+      total:
+        example: 7
+        type: integer
+    type: object
+  dto.DashboardOpdItem:
+    properties:
+      nama:
+        example: Dinas Pendidikan
+        type: string
+      total:
+        example: 2
+        type: integer
+    type: object
+  dto.DashboardStats:
+    properties:
+      biaya_servis_bulan_ini:
+        example: 450000
+        type: number
+      biaya_servis_total:
+        example: 13250000
+        type: number
+      digunakan:
+        example: 2
+        type: integer
+      dihapuskan:
+        example: 1
+        type: integer
+      peminjaman_aktif:
+        example: 2
+        type: integer
+      peminjaman_diajukan:
+        example: 1
+        type: integer
+      perbaikan:
+        example: 1
+        type: integer
+      tersedia:
+        example: 6
+        type: integer
+      total_kendaraan:
+        example: 10
+        type: integer
+      total_opd:
+        example: 4
+        type: integer
+      total_pegawai:
+        example: 12
+        type: integer
+    type: object
   dto.KendaraanRequest:
     properties:
       bahan_bakar:
@@ -399,6 +462,59 @@ definitions:
         example: "2026-11-10T12:00:00+07:00"
         type: string
     type: object
+  dto.PenggunaAdminResponse:
+    properties:
+      created_at:
+        example: "2026-11-10T12:00:00+07:00"
+        type: string
+      email:
+        example: operator2@kdo.go.id
+        type: string
+      id:
+        example: 4
+        type: integer
+      is_active:
+        example: true
+        type: boolean
+      nama:
+        example: Operator Aset
+        type: string
+      role:
+        example: operator
+        type: string
+      updated_at:
+        example: "2026-11-10T12:00:00+07:00"
+        type: string
+    type: object
+  dto.PenggunaRequest:
+    properties:
+      email:
+        example: operator2@kdo.go.id
+        maxLength: 100
+        type: string
+      is_active:
+        example: true
+        type: boolean
+      nama:
+        example: Operator Aset
+        maxLength: 100
+        type: string
+      password:
+        example: rahasia123
+        minLength: 8
+        type: string
+      role:
+        enum:
+        - admin
+        - operator
+        - pimpinan
+        example: operator
+        type: string
+    required:
+    - email
+    - nama
+    - role
+    type: object
   dto.PenggunaResponse:
     properties:
       email:
@@ -666,6 +782,205 @@ paths:
       summary: Profil pengguna aktif
       tags:
       - auth
+  /api/v1/dashboard/biaya-servis-bulanan:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: dibungkus data
+          schema:
+            items:
+              $ref: '#/definitions/dto.DashboardBiayaBulananItem'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+      security:
+      - BearerAuth: []
+      summary: Biaya servis bulanan
+      tags:
+      - dashboard
+  /api/v1/dashboard/kendaraan-per-kondisi:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: dibungkus data
+          schema:
+            items:
+              $ref: '#/definitions/dto.DashboardKondisiItem'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+      security:
+      - BearerAuth: []
+      summary: Kendaraan per kondisi
+      tags:
+      - dashboard
+  /api/v1/dashboard/kendaraan-per-opd:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: dibungkus data
+          schema:
+            items:
+              $ref: '#/definitions/dto.DashboardOpdItem'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+      security:
+      - BearerAuth: []
+      summary: Kendaraan per perangkat daerah
+      tags:
+      - dashboard
+  /api/v1/dashboard/peminjaman-menunggu:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: dibungkus data
+          schema:
+            items:
+              $ref: '#/definitions/dto.PeminjamanResponse'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+      security:
+      - BearerAuth: []
+      summary: Peminjaman menunggu persetujuan
+      tags:
+      - dashboard
+  /api/v1/dashboard/stats:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: dibungkus data
+          schema:
+            $ref: '#/definitions/dto.DashboardStats'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+      security:
+      - BearerAuth: []
+      summary: Ringkasan dashboard
+      tags:
+      - dashboard
+  /api/v1/export/kendaraan.csv:
+    get:
+      parameters:
+      - description: Cari nopol/merek/tipe
+        in: query
+        name: search
+        type: string
+      - description: Filter status
+        in: query
+        name: status
+        type: string
+      - description: Filter kondisi
+        in: query
+        name: kondisi
+        type: string
+      - description: Filter jenis
+        in: query
+        name: jenis
+        type: string
+      produces:
+      - text/csv
+      responses:
+        "200":
+          description: berkas CSV
+          schema:
+            type: file
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+      security:
+      - BearerAuth: []
+      summary: Export kendaraan CSV
+      tags:
+      - export
+  /api/v1/export/pegawai.csv:
+    get:
+      parameters:
+      - description: Cari nama/NIP
+        in: query
+        name: search
+        type: string
+      - description: Filter golongan
+        in: query
+        name: golongan
+        type: string
+      - description: Filter status pegawai
+        in: query
+        name: status
+        type: string
+      produces:
+      - text/csv
+      responses:
+        "200":
+          description: berkas CSV
+          schema:
+            type: file
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+      security:
+      - BearerAuth: []
+      summary: Export pegawai CSV
+      tags:
+      - export
+  /api/v1/export/peminjaman.csv:
+    get:
+      parameters:
+      - description: Cari kode/keperluan/tujuan
+        in: query
+        name: search
+        type: string
+      - description: Filter status
+        in: query
+        name: status
+        type: string
+      - description: Tanggal mulai
+        in: query
+        name: dari
+        type: string
+      - description: Tanggal selesai
+        in: query
+        name: sampai
+        type: string
+      produces:
+      - text/csv
+      responses:
+        "200":
+          description: berkas CSV
+          schema:
+            type: file
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+      security:
+      - BearerAuth: []
+      summary: Export peminjaman CSV
+      tags:
+      - export
   /api/v1/kendaraan:
     get:
       description: Mendukung search nopol/merek/tipe, filter OPD/kondisi/status/jenis/tahun,
@@ -1452,6 +1767,171 @@ paths:
       summary: Tolak peminjaman
       tags:
       - peminjaman
+  /api/v1/pengguna:
+    get:
+      parameters:
+      - description: Halaman
+        in: query
+        name: page
+        type: integer
+      - description: Jumlah per halaman
+        in: query
+        name: limit
+        type: integer
+      - description: Cari nama/email
+        in: query
+        name: search
+        type: string
+      - description: admin|operator|pimpinan
+        in: query
+        name: role
+        type: string
+      - description: Filter status
+        in: query
+        name: is_active
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: dibungkus data + meta
+          schema:
+            items:
+              $ref: '#/definitions/dto.PenggunaAdminResponse'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+      security:
+      - BearerAuth: []
+      summary: Daftar pengguna
+      tags:
+      - pengguna
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Data akun
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.PenggunaRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: dibungkus data
+          schema:
+            $ref: '#/definitions/dto.PenggunaAdminResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+      security:
+      - BearerAuth: []
+      summary: Tambah pengguna
+      tags:
+      - pengguna
+  /api/v1/pengguna/{id}:
+    delete:
+      description: Admin tidak dapat menghapus akunnya sendiri.
+      parameters:
+      - description: ID pengguna
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: tidak ada isi
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+      security:
+      - BearerAuth: []
+      summary: Hapus pengguna
+      tags:
+      - pengguna
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID pengguna
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Data akun
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.PenggunaRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: dibungkus data
+          schema:
+            $ref: '#/definitions/dto.PenggunaAdminResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+      security:
+      - BearerAuth: []
+      summary: Ubah pengguna
+      tags:
+      - pengguna
   /api/v1/perangkat-daerah:
     get:
       description: Mendukung search, filter is_active, sorting, dan pagination.

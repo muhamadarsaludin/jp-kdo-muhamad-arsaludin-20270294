@@ -374,3 +374,33 @@ func mapKendaraan(
 		UpdatedAt:           updatedAt.Time,
 	}
 }
+
+// ExportLimit adalah batas maksimum baris untuk export CSV.
+const ExportLimit = 100000
+
+// Export mengambil seluruh kendaraan sesuai filter tanpa pagination.
+func (s *KendaraanService) Export(ctx context.Context, q dto.KendaraanListQuery) ([]dto.KendaraanResponse, error) {
+	sortBy, sortOrder := normalisasiSortKendaraan(q.SortBy, q.SortOrder)
+
+	rows, _, err := s.repo.List(ctx, repository.KendaraanListParams{
+		Search:            strings.TrimSpace(q.Search),
+		PerangkatDaerahID: q.PerangkatDaerahID,
+		Kondisi:           q.Kondisi,
+		Status:            q.Status,
+		Jenis:             q.Jenis,
+		Tahun:             q.Tahun,
+		SortBy:            sortBy,
+		SortOrder:         sortOrder,
+		Limit:             ExportLimit,
+		Offset:            0,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	items := make([]dto.KendaraanResponse, 0, len(rows))
+	for _, row := range rows {
+		items = append(items, mapListKendaraan(row))
+	}
+	return items, nil
+}

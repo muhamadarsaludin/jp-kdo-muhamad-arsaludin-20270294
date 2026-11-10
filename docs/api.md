@@ -445,6 +445,52 @@ Aturan:
 
 ---
 
+## Dashboard
+
+Semua endpoint memerlukan `Authorization: Bearer <token>`.
+
+| Endpoint | Isi |
+| --- | --- |
+| `GET /api/v1/dashboard/stats` | total kendaraan, tersedia, digunakan, perbaikan, dihapuskan, pegawai, OPD, peminjaman diajukan/aktif, biaya servis |
+| `GET /api/v1/dashboard/kendaraan-per-kondisi` | jumlah kendaraan per kondisi |
+| `GET /api/v1/dashboard/kendaraan-per-opd` | jumlah kendaraan per perangkat daerah |
+| `GET /api/v1/dashboard/biaya-servis-bulanan` | total biaya servis 6 bulan terakhir (bulan kosong = 0) |
+| `GET /api/v1/dashboard/peminjaman-menunggu` | maksimal 5 pengajuan berstatus `diajukan` |
+
+---
+
+## Export CSV
+
+| Endpoint | Isi |
+| --- | --- |
+| `GET /api/v1/export/kendaraan.csv` | data kendaraan |
+| `GET /api/v1/export/pegawai.csv` | data pegawai |
+| `GET /api/v1/export/peminjaman.csv` | data peminjaman |
+
+- Mendukung filter yang sama dengan endpoint list (`search`, `status`, `kondisi`, dll.).
+- Response `text/csv` dengan `Content-Disposition: attachment`.
+- Memakai UTF-8 BOM agar terbuka benar di Excel.
+
+---
+
+## Pengguna (khusus admin)
+
+| Method | Path | Keterangan |
+| --- | --- | --- |
+| GET | `/api/v1/pengguna` | Daftar akun + filter role/is_active |
+| POST | `/api/v1/pengguna` | Tambah akun (password min. 8) |
+| PUT | `/api/v1/pengguna/{id}` | Ubah akun; password opsional |
+| DELETE | `/api/v1/pengguna/{id}` | Soft delete |
+
+Aturan:
+
+- Hanya role `admin`.
+- Email unik → `409` bila duplikat.
+- Admin tidak dapat menonaktifkan atau menghapus akunnya sendiri → `400`.
+- Password disimpan sebagai bcrypt hash.
+
+---
+
 ## Akun Demo
 
 | Role | Email | Password |
