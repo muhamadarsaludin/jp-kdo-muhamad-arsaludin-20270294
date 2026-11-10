@@ -151,6 +151,7 @@ Frontend memisahkan kode per fitur (`features/*`) dengan komponen UI reusable.
 .
 ├── Agents.md                 # kontrak kerja & konvensi proyek
 ├── README.md
+├── Makefile                  # shortcut perintah harian
 ├── package.json              # script root (turbo)
 ├── pnpm-workspace.yaml
 ├── turbo.json
@@ -225,7 +226,8 @@ Semua tabel menggunakan soft delete (`deleted_at`) dan kolom waktu otomatis.
 | Node.js | ≥ 20 |
 | pnpm | ≥ 9 |
 | Docker Desktop | terbaru (untuk PostgreSQL) |
-| sqlc + golang-migrate CLI | opsional, hanya untuk regenerasi |
+| sqlc CLI | opsional, hanya untuk regenerate query |
+| Make | opsional (shortcut perintah) |
 
 ---
 
@@ -311,6 +313,29 @@ pnpm check:fix  # perbaiki otomatis
 | `pnpm db:ps` | Cek status container |
 | `sqlc generate` | Regenerate kode dari query (di `apps/backend`) |
 | `swag init -g cmd/api/main.go -o docs` | Regenerate Swagger |
+
+### Perintah Makefile
+
+Semua perintah di bawah dijalankan dari root repo.
+
+| Perintah | Fungsi |
+| --- | --- |
+| `make help` | Daftar seluruh perintah |
+| `make setup` | Install dependency + nyalakan DB + migrasi + seed |
+| `make run` | Jalankan API |
+| `make dev` | Jalankan semua app lewat Turbo |
+| `make build` | Build backend & frontend |
+| `make test` / `make check` | Test / lint & verifikasi |
+| `make db-up` / `db-down` / `db-reset` | Kelola container PostgreSQL |
+| `make db-shell` | Masuk ke psql interaktif |
+| `make migrate-up` | Jalankan semua migrasi |
+| `make migrate-down` | Turunkan satu langkah migrasi |
+| `make migrate-reset` | Rollback semua lalu migrasi ulang |
+| `make migrate-version` | Cek versi migrasi |
+| `make migrate-create NAME=tambah_kolom` | Buat file migrasi baru |
+| `make migrate-force VERSION=3` | Paksa versi (saat status dirty) |
+| `make seed` | Isi data contoh |
+| `make sqlc` / `make swag` | Regenerate sqlc / Swagger |
 
 ---
 

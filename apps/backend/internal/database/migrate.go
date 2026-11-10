@@ -13,63 +13,108 @@ import (
 	"kdo/backend/db/migrations"
 )
 
-// Migrate menjalankan seluruh migrasi yang belum diterapkan.
-// File SQL diambil dari embed.FS sehingga tidak membutuhkan CLI.
-func Migrate(databaseURL string) error {
+// newMigrator menyiapkan instance migrate beserta fungsi pembersihnya.
+func newMigrator(databaseURL string) (*migrate.Migrate, func(), error) {
 	source, err := iofs.New(migrations.FS, ".")
 	if err != nil {
-		return fmt.Errorf("siapkan source migrasi: %w", err)
+		return nil, nil, fmt.Errorf("siapkan source migrasi: %w", err)
 	}
 
 	db, err := sql.Open("pgx", databaseURL)
 	if err != nil {
-		return fmt.Errorf("buka koneksi migrasi: %w", err)
+		return nil, nil, fmt.Errorf("buka koneksi migrasi: %w", err)
 	}
-	defer db.Close()
 
 	driver, err := pgxmigrate.WithInstance(db, &pgxmigrate.Config{})
 	if err != nil {
-		return fmt.Errorf("buat driver migrasi: %w", err)
+		db.Close()
+		return nil, nil, fmt.Errorf("buat driver migrasi: %w", err)
 	}
 
 	m, err := migrate.NewWithInstance("iofs", source, "pgx", driver)
 	if err != nil {
-		return fmt.Errorf("inisialisasi migrasi: %w", err)
+		db.Close()
+		return nil, nil, fmt.Errorf("inisialisasi migrasi: %w", err)
 	}
-	defer m.Close()
 
-	if err := m.Up(); err != nil {
-		if errors.Is(err, migrate.ErrNoChange) {
-			return nil
-		}
+	cleanup := func() {
+		_, _ = m.Close()
+		_ = db.Close()
+	}
+	return m, cleanup, nil
+}
+
+// Migrate menjalankan seluruh migrasi yang belum diterapkan.
+// File SQL diambil dari embed.FS sehingga tidak membutuhkan CLI.
+func Migrate(databaseURL string) error {
+	m, cleanup, err := newMigrator(databaseURL)
+	if err != nil {
+		return err
+	}
+	defer cleanup()
+
+	if err := m.Up(); err != nil && !errors.Is(err, migrate.ErrNoChange) {
 		return fmt.Errorf("jalankan migrasi: %w", err)
+	}
+	return nil
+}
+
+// MigrateSteps menjalankan n langkah migrasi (positif = up, negatif = down).
+func MigrateSteps(databaseURL string, steps int) error {
+	m, cleanup, err := newMigrator(databaseURL)
+	if err != nil {
+		return err
+	}
+	defer cleanup()
+
+	if err := m.Steps(steps); err != nil && !errors.Is(err, migrate.ErrNoChange) {
+		return fmt.Errorf("jalankan %d langkah migrasi: %w", steps, err)
 	}
 	return nil
 }
 
 // Rollback membatalkan seluruh migrasi (dipakai manual saat development).
 func Rollback(databaseURL string) error {
-	source, err := iofs.New(migrations.FS, ".")
+	m, cleanup, err := newMigrator(databaseURL)
 	if err != nil {
-		return fmt.Errorf("siapkan source migrasi: %w", err)
+		return err
 	}
+	defer cleanup()
 
-	db, err := sql.Open("pgx", databaseURL)
+	if err := m.Down(); err != nil && !errors.Is(err, migrate.ErrNoChange) {
+		return fmt.Errorf("rollback migrasi: %w", err)
+	}
+	return nil
+}
+
+// MigrateVersion mengembalikan versi migrasi saat ini dan status dirty.
+func MigrateVersion(databaseURL string) (uint, bool, error) {
+	m, cleanup, err := newMigrator(databaseURL)
 	if err != nil {
-		return fmt.Errorf("buka koneksi migrasi: %w", err)
+		return 0, false, err
 	}
-	defer db.Close()
+	defer cleanup()
 
-	driver, err := pgxmigrate.WithInstance(db, &pgxmigrate.Config{})
+	version, dirty, err := m.Version()
 	if err != nil {
-		return fmt.Errorf("buat driver migrasi: %w", err)
+		if errors.Is(err, migrate.ErrNilVersion) {
+			return 0, false, nil
+		}
+		return 0, false, fmt.Errorf("baca versi migrasi: %w", err)
 	}
+	return version, dirty, nil
+}
 
-	m, err := migrate.NewWithInstance("iofs", source, "pgx", driver)
+// MigrateForce memaksa versi migrasi (dipakai saat status dirty).
+func MigrateForce(databaseURL string, version int) error {
+	m, cleanup, err := newMigrator(databaseURL)
 	if err != nil {
-		return fmt.Errorf("inisialisasi migrasi: %w", err)
+		return err
 	}
-	defer m.Close()
+	defer cleanup()
 
-	return m.Down()
+	if err := m.Force(version); err != nil {
+		return fmt.Errorf("force versi migrasi: %w", err)
+	}
+	return nil
 }

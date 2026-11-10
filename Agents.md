@@ -107,6 +107,7 @@ lihat dashboard berubah, dan data bertahan setelah restart.
 .
 ├── Agents.md
 ├── README.md
+├── Makefile                    # shortcut perintah harian
 ├── package.json                # root workspace + script turbo
 ├── pnpm-workspace.yaml         # apps/* dan packages/*
 ├── pnpm-lock.yaml
@@ -491,6 +492,26 @@ pnpm db:ps                # status container
 
 > Perintah `docker compose` harus menyertakan `-f apps/backend/docker-compose.yml`
 > bila dijalankan manual dari root. Script `pnpm db:*` sudah membungkusnya.
+
+### Shortcut Makefile (dari root)
+
+```bash
+make setup                # install + db-up + migrate-up + seed
+make run                  # jalankan API
+make migrate-up           # migrasi naik
+make migrate-down         # turun satu langkah
+make migrate-reset        # rollback semua + migrasi ulang
+make migrate-version      # cek versi & status dirty
+make migrate-create NAME=tambah_kolom
+make migrate-force VERSION=3
+make seed                 # isi data contoh
+make db-shell             # psql interaktif
+make sqlc                 # regenerate query
+make swag                 # regenerate Swagger
+```
+
+CLI `migrate` eksternal **tidak diperlukan**; migrasi dijalankan lewat `cmd/migrate`
+yang memakai file `embed.FS` yang sama dengan aplikasi.
 
 > Biome **bukan** test runner. Test backend memakai `go test ./...`; test frontend memakai
 > Vitest dan dieksekusi lewat task `test` di Turbo.
