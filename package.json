@@ -11,7 +11,6 @@
   "scripts": {
     "dev": "turbo run dev",
     "dev:web": "turbo run dev --filter=@kdo/web",
-    "dev:backend": "turbo run dev --filter=@kdo/backend",
     "build": "turbo run build",
     "lint": "biome lint .",
     "typecheck": "turbo run typecheck",
@@ -20,11 +19,6 @@
     "format:check": "biome format .",
     "check": "biome check .",
     "check:fix": "biome check --write .",
-    "db:up": "docker compose -f apps/backend/docker-compose.yml up -d db",
-    "db:down": "docker compose -f apps/backend/docker-compose.yml down",
-    "db:reset": "docker compose -f apps/backend/docker-compose.yml down -v",
-    "db:logs": "docker compose -f apps/backend/docker-compose.yml logs -f db",
-    "db:ps": "docker compose -f apps/backend/docker-compose.yml ps",
     "clean": "turbo run clean && rm -rf node_modules"
   },
   "devDependencies": {

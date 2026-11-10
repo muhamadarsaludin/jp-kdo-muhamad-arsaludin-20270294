@@ -25,7 +25,7 @@ func Load() *Config {
 	_ = godotenv.Load()
 
 	return &Config{
-		AppPort:         env("APP_PORT", "8090"),
+		AppPort:         env("APP_PORT", "8080"),
 		AppEnv:          env("APP_ENV", "development"),
 		DatabaseURL:     env("DATABASE_URL", "postgres://kdo:kdo@localhost:5435/kdo?sslmode=disable"),
 		JWTSecret:       env("JWT_SECRET", "dev-secret-jangan-dipakai-di-produksi"),

@@ -29,7 +29,7 @@ import (
 // @description     Kelola kendaraan dinas, pegawai, perangkat daerah, peminjaman, dan servis.
 // @contact.name    Muhamad Arsaludin
 // @contact.email   muhamadarsaludin71@gmail.com
-// @host            localhost:8090
+// @host            localhost:8080
 // @BasePath        /
 // @schemes         http
 // @securityDefinitions.apikey BearerAuth

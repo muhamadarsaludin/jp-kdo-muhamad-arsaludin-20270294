@@ -1,7 +1,7 @@
 # Dokumentasi API — KDO
 
-Base URL: `http://localhost:8090`
-Swagger UI: `http://localhost:8090/swagger/index.html`
+Base URL: `http://localhost:8080`
+Swagger UI: `http://localhost:8080/swagger/index.html`
 
 Semua response memakai JSON.
 

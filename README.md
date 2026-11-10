@@ -110,7 +110,8 @@ Dibangun sebagai tugas **Ujian Praktik Junior Programmer — BPAD**.
 | Ikon & notifikasi | lucide-react, sonner |
 
 ### Infrastruktur
-- **Monorepo** dengan **pnpm workspaces + Turborepo** (`apps/backend`, `apps/web`).
+- **Monorepo** dengan **pnpm workspaces + Turborepo** untuk frontend (`apps/web`, `packages/*`).
+- **Backend Go** berdiri sendiri dan dikelola lewat `apps/backend/Makefile`.
 - **Docker Compose** untuk PostgreSQL di `apps/backend/docker-compose.yml` (port host 5435).
 - **Biome** sebagai linter + formatter (menggantikan ESLint & Prettier).
 - Vitest untuk unit test frontend, `go test` untuk backend.
@@ -151,8 +152,7 @@ Frontend memisahkan kode per fitur (`features/*`) dengan komponen UI reusable.
 .
 ├── Agents.md                 # kontrak kerja & konvensi proyek
 ├── README.md
-├── Makefile                  # shortcut perintah harian
-├── package.json              # script root (turbo)
+├── package.json              # script root (turbo, khusus frontend)
 ├── pnpm-workspace.yaml
 ├── turbo.json
 ├── biome.json                # lint + format
@@ -160,7 +160,8 @@ Frontend memisahkan kode per fitur (`features/*`) dengan komponen UI reusable.
 │   ├── api.md                # dokumentasi endpoint
 │   └── erd.md                # diagram relasi
 ├── apps/
-│   ├── backend/              # Go + Gin + pgx + sqlc (@kdo/backend)
+│   ├── backend/              # Go + Gin + pgx + sqlc
+│   │   ├── Makefile          # seluruh perintah backend
 │   │   ├── docker-compose.yml # PostgreSQL 16 (port host 5435)
 │   │   ├── .env.example
 │   │   ├── cmd/api/main.go
@@ -170,12 +171,11 @@ Frontend memisahkan kode per fitur (`features/*`) dengan komponen UI reusable.
 │   │   │   ├── queries/      # sumber query sqlc
 │   │   │   └── seed/         # data contoh (.sql, idempoten)
 │   │   ├── docs/             # Swagger hasil generate
-│   │   ├── internal/
-│   │   │   ├── config/ database/ dto/
-│   │   │   ├── repository/ service/ handler/
-│   │   │   ├── middleware/ router/ response/
-│   │   │   └── seed/ utils/
-│   │   └── package.json      # wrapper script turbo → go
+│   │   └── internal/
+│   │       ├── auth/ config/ database/ dto/
+│   │       ├── repository/ service/ handler/
+│   │       ├── middleware/ router/ response/
+│   │       └── seed/ utils/
 │   └── web/                  # React + Vite + TS + Tailwind (@kdo/web)
 │       └── src/
 │           ├── components/ui/ components/layout/
@@ -227,7 +227,7 @@ Semua tabel menggunakan soft delete (`deleted_at`) dan kolom waktu otomatis.
 | pnpm | ≥ 9 |
 | Docker Desktop | terbaru (untuk PostgreSQL) |
 | sqlc CLI | opsional, hanya untuk regenerate query |
-| Make | opsional (shortcut perintah) |
+| Make | untuk perintah backend |
 
 ---
 
@@ -244,88 +244,85 @@ cd jp-kdo
 
 ```bash
 pnpm install
-cp apps/backend/.env.example apps/backend/.env
+cd apps/backend && go mod download
+cp .env.example .env
+cd ../..
 cp apps/web/.env.example apps/web/.env
 ```
 
-Sesuaikan `apps/backend/.env` bila perlu (default sudah cocok dengan `apps/backend/docker-compose.yml`).
+Sesuaikan `apps/backend/.env` bila perlu (default sudah cocok dengan `docker-compose.yml`).
 
 ### 3. Jalankan database
 
 ```bash
-pnpm db:up
-# atau: docker compose -f apps/backend/docker-compose.yml up -d db
+cd apps/backend
+make db-up
 ```
 
-Tunggu hingga PostgreSQL siap (`pnpm db:ps` → status `healthy`).
+Cek status dengan `make db-ps` (harus `healthy`).
 Database berjalan di `localhost:5435` (bukan 5432, agar tidak bentrok dengan PostgreSQL lain).
 
 ### 4. Jalankan backend
 
 ```bash
-pnpm dev:backend
-# atau: cd apps/backend && go run ./cmd/api
+cd apps/backend
+make run
 ```
+
+Atau sekali jalan: `make setup` (nyalakan DB + migrasi + seed), lalu `make run`.
 
 Saat pertama kali dijalankan, backend otomatis:
 1. menjalankan migrasi database (golang-migrate dari file yang di-`embed`),
 2. mengisi data contoh bila `SEED_ON_START=true`.
 
-API tersedia di `http://localhost:8090`, health check di `GET /health`,
-dokumentasi Swagger di `http://localhost:8090/swagger/index.html`.
+API tersedia di `http://localhost:8080`, health check di `GET /health`,
+dokumentasi Swagger di `http://localhost:8080/swagger/index.html`.
 
 ### 5. Jalankan frontend
 
 ```bash
 pnpm dev:web
-# atau: cd apps/web && pnpm dev
 ```
 
 Buka `http://localhost:5173`.
 
-Atau jalankan keduanya sekaligus dengan `pnpm dev`.
+Backend dan frontend dijalankan terpisah: backend lewat Makefile, frontend lewat Turbo.
 
 ### 6. Build, lint & test
 
 ```bash
-pnpm build      # build backend + frontend lewat turbo
-pnpm test       # go test + vitest
-pnpm check      # biome: lint + format + import
-pnpm check:fix  # perbaiki otomatis
+# backend
+cd apps/backend && make test && make check
+
+# root (frontend & kualitas kode)
+pnpm build
+pnpm check
+pnpm check:fix
 ```
 
 ### Perintah Penting
 
+**Root (frontend & tooling JS):**
+
 | Perintah | Fungsi |
 | --- | --- |
-| `pnpm dev` | Jalankan backend + web sekaligus |
-| `pnpm dev:backend` | Jalankan API (hot reload manual) |
+| `pnpm install` | Install dependency workspace |
+| `pnpm dev` | Jalankan app frontend lewat Turbo |
 | `pnpm dev:web` | Jalankan dev server frontend |
-| `pnpm build` | Build semua app |
-| `pnpm test` | Test backend & frontend |
+| `pnpm build` | Build frontend |
 | `pnpm lint` | Biome lint |
 | `pnpm check` | Biome check (lint + format + import) |
 | `pnpm format` | Format kode |
-| `pnpm db:up` | Nyalakan PostgreSQL |
-| `pnpm db:down` | Matikan container |
-| `pnpm db:reset` | Hapus volume database (reset total) |
-| `pnpm db:logs` | Lihat log PostgreSQL |
-| `pnpm db:ps` | Cek status container |
-| `sqlc generate` | Regenerate kode dari query (di `apps/backend`) |
-| `swag init -g cmd/api/main.go -o docs` | Regenerate Swagger |
 
-### Perintah Makefile
-
-Semua perintah di bawah dijalankan dari root repo.
+**Backend (dijalankan dari `apps/backend`):**
 
 | Perintah | Fungsi |
 | --- | --- |
 | `make help` | Daftar seluruh perintah |
-| `make setup` | Install dependency + nyalakan DB + migrasi + seed |
+| `make setup` | Nyalakan DB + migrasi + seed |
 | `make run` | Jalankan API |
-| `make dev` | Jalankan semua app lewat Turbo |
-| `make build` | Build backend & frontend |
-| `make test` / `make check` | Test / lint & verifikasi |
+| `make build` | Build binary ke `bin/api` |
+| `make test` / `make check` | Test / verifikasi format & vet |
 | `make db-up` / `db-down` / `db-reset` | Kelola container PostgreSQL |
 | `make db-shell` | Masuk ke psql interaktif |
 | `make migrate-up` | Jalankan semua migrasi |
@@ -361,7 +358,7 @@ Data seed mencakup 4 perangkat daerah, 12 pegawai, 10 kendaraan, 6 peminjaman
 
 | Variabel | Default | Keterangan |
 | --- | --- | --- |
-| `APP_PORT` | `8090` | Port API |
+| `APP_PORT` | `8080` | Port API |
 | `APP_ENV` | `development` | Mode aplikasi |
 | `POSTGRES_USER` | `kdo` | User database (dipakai compose) |
 | `POSTGRES_PASSWORD` | `kdo` | Password database (dipakai compose) |
@@ -377,7 +374,7 @@ Data seed mencakup 4 perangkat daerah, 12 pegawai, 10 kendaraan, 6 peminjaman
 
 | Variabel | Default | Keterangan |
 | --- | --- | --- |
-| `VITE_API_BASE_URL` | `http://localhost:8090/api/v1` | Base URL API |
+| `VITE_API_BASE_URL` | `http://localhost:8080/api/v1` | Base URL API |
 
 ---
 
@@ -487,12 +484,12 @@ dengan bantuan **AI coding agent OpenCode** yang berjalan di dalam terminal VS C
 
 | Masalah | Solusi |
 | --- | --- |
-| `connection refused` ke PostgreSQL | Pastikan `pnpm db:up` berjalan dan container `healthy`; cek port 5435 tidak dipakai instans lain |
-| `password authentication failed` | Hapus volume lama: `pnpm db:reset`, lalu jalankan ulang backend |
+| `connection refused` ke PostgreSQL | Pastikan `cd apps/backend && make db-up` berjalan dan container `healthy`; cek port 5435 tidak dipakai instans lain |
+| `password authentication failed` | Hapus volume lama: `cd apps/backend && make db-reset`, lalu jalankan ulang backend |
 | Frontend gagal fetch (CORS) | Samakan `CORS_ORIGINS` di backend dengan URL dev frontend |
 | Token selalu invalid | Pastikan `JWT_SECRET` konsisten dan tidak berubah saat backend restart |
-| Data seed tidak muncul | Set `SEED_ON_START=true` atau jalankan `SEED_ON_START=true go run ./cmd/api` |
-| Port 8090/5173/5435 dipakai | Ubah `APP_PORT`, `POSTGRES_PORT`, atau jalankan `pnpm dev:web -- --port 5174` |
+| Data seed tidak muncul | Set `SEED_ON_START=true` atau jalankan `cd apps/backend && make seed` |
+| Port 8080/5173/5435 dipakai | Ubah `APP_PORT`, `POSTGRES_PORT`, atau jalankan `pnpm dev:web -- --port 5174` |
 
 ---
 

@@ -91,12 +91,11 @@ lihat dashboard berubah, dan data bertahan setelah restart.
 | Notifikasi | `sonner` |
 
 ### Infrastruktur
-- **Monorepo**: pnpm workspaces + Turborepo (`turbo.json` di root).
+- **Monorepo**: pnpm workspaces + Turborepo untuk frontend (`apps/web`, `packages/*`).
+- **Backend Go tidak masuk workspace pnpm/Turbo**; dikelola lewat `apps/backend/Makefile`.
 - Docker Compose **hanya untuk PostgreSQL**, file di `apps/backend/docker-compose.yml`
   (host port 5435). Backend & frontend jalan native saat demo.
 - **Biome** untuk lint + format + urutkan import (menggantikan ESLint & Prettier).
-- Perintah harian lewat script root (`pnpm dev`, `pnpm build`, `pnpm check`); Turborepo
-  mengorkestrasi task per package.
 - Tanpa query builder tambahan, tanpa state manager global (cukup Query + Context auth).
 
 ---
@@ -107,9 +106,8 @@ lihat dashboard berubah, dan data bertahan setelah restart.
 .
 ├── Agents.md
 ├── README.md
-├── Makefile                    # shortcut perintah harian
-├── package.json                # root workspace + script turbo
-├── pnpm-workspace.yaml         # apps/* dan packages/*
+├── package.json                # script root (turbo, frontend)
+├── pnpm-workspace.yaml         # apps/web + packages/*
 ├── pnpm-lock.yaml
 ├── turbo.json                  # definisi task: dev, build, lint, typecheck, test
 ├── .editorconfig
@@ -120,12 +118,12 @@ lihat dashboard berubah, dan data bertahan setelah restart.
 │   ├── api.md                  # kontrak API (diupdate manual per endpoint baru)
 │   └── erd.md                  # diagram relasi (Mermaid)
 ├── apps/
-│   ├── backend/                # Go + Gin + pgx + sqlc  → @kdo/backend
+│   ├── backend/                # Go + Gin + pgx + sqlc  → bukan workspace pnpm
+│   │   ├── Makefile            # seluruh perintah backend
 │   │   ├── docker-compose.yml  # PostgreSQL 16 (host port 5435)
 │   │   ├── go.mod
 │   │   ├── sqlc.yaml           # konfigurasi generate query
 │   │   ├── .env.example
-│   │   ├── package.json        # wrapper script turbo → perintah go
 │   │   ├── cmd/
 │   │   │   └── api/main.go     # config → db → migrate → seed → router
 │   │   ├── db/
@@ -176,10 +174,10 @@ lihat dashboard berubah, dan data bertahan setelah restart.
 ```
 
 **Konvensi workspace:**
-- Nama package: `@kdo/backend` dan `@kdo/web`; filter turbo memakai nama ini
-  (`pnpm dev --filter=@kdo/web`).
-- `apps/backend/package.json` **hanya** wrapper script (mis. `dev: go run ./cmd/api`)
-  supaya Go ikut terorchestrasi Turborepo. Semua logika tetap di Go.
+- Nama package frontend: `@kdo/web`; filter turbo memakai nama ini (`pnpm dev:web`).
+- **Backend tidak punya `package.json` dan tidak terdaftar di `pnpm-workspace.yaml`.**
+  Semua perintah Go lewat `apps/backend/Makefile`.
+- `pnpm-workspace.yaml` hanya berisi `apps/web` dan `packages/*`.
 - Folder dibuat kosong pada tahap scaffolding; kode diisi per fase di §10.
 
 **Aturan struktur:**
@@ -439,7 +437,7 @@ Setiap endpoint baru **wajib** ditambahkan ke `docs/api.md` pada commit yang sam
 
 ### `.env` backend (`apps/backend/.env`)
 ```
-APP_PORT=8090
+APP_PORT=8080
 APP_ENV=development
 CORS_ORIGINS=http://localhost:5173
 
@@ -459,59 +457,54 @@ SEED_ON_START=true
 
 ### `.env` frontend (`apps/web/.env`)
 ```
-VITE_API_BASE_URL=http://localhost:8090/api/v1
+VITE_API_BASE_URL=http://localhost:8080/api/v1
 ```
 
-### Perintah (dijalankan dari root repo)
+### Perintah frontend (dari root repo)
 ```bash
 pnpm install              # install dependency workspace
-pnpm dev                  # jalankan semua app lewat turbo
-pnpm dev:backend          # filter @kdo/backend
+pnpm dev                  # jalankan frontend lewat turbo
 pnpm dev:web              # filter @kdo/web
-pnpm build                # build backend + web
-pnpm test                 # jalankan test (Go + Vitest)
+pnpm build                # build frontend
+pnpm test                 # test frontend (Vitest)
 
 pnpm lint                 # biome lint .
 pnpm check                # biome check . (lint + format + import)
 pnpm check:fix            # biome check --write .
 pnpm format               # biome format --write .
-
-# backend (dari apps/backend)
-go run ./cmd/api          # jalankan API (migrasi otomatis)
-sqlc generate             # regenerate kode dari db/queries/*.sql
-swag init -g cmd/api/main.go -o docs   # regenerate dokumentasi Swagger
-migrate create -ext sql -dir db/migrations -seq nama_migrasi  # migrasi baru
-go test ./...
-
-pnpm db:up                # nyalakan PostgreSQL (compose di apps/backend)
-pnpm db:down              # matikan container
-pnpm db:reset             # hapus volume database
-pnpm db:logs              # log PostgreSQL
-pnpm db:ps                # status container
 ```
 
-> Perintah `docker compose` harus menyertakan `-f apps/backend/docker-compose.yml`
-> bila dijalankan manual dari root. Script `pnpm db:*` sudah membungkusnya.
-
-### Shortcut Makefile (dari root)
-
+### Perintah backend (dari `apps/backend`)
 ```bash
-make setup                # install + db-up + migrate-up + seed
-make run                  # jalankan API
+make help                 # daftar perintah
+make setup                # nyalakan DB + migrasi + seed
+make run                  # jalankan API (migrasi otomatis)
+make build                # binary ke bin/api
+make test                 # go test ./...
+make check                # cek gofmt + go vet
+
+make db-up                # nyalakan PostgreSQL
+make db-down              # matikan container
+make db-reset             # hapus volume database
+make db-logs              # log PostgreSQL
+make db-ps                # status container
+make db-shell             # psql interaktif
+
 make migrate-up           # migrasi naik
 make migrate-down         # turun satu langkah
 make migrate-reset        # rollback semua + migrasi ulang
 make migrate-version      # cek versi & status dirty
 make migrate-create NAME=tambah_kolom
 make migrate-force VERSION=3
+
 make seed                 # isi data contoh
-make db-shell             # psql interaktif
 make sqlc                 # regenerate query
 make swag                 # regenerate Swagger
 ```
 
-CLI `migrate` eksternal **tidak diperlukan**; migrasi dijalankan lewat `cmd/migrate`
-yang memakai file `embed.FS` yang sama dengan aplikasi.
+> Docker Compose dijalankan dari `apps/backend` (file ada di folder itu).
+> CLI `migrate` eksternal **tidak diperlukan**; migrasi memakai `cmd/migrate`
+> dengan file `embed.FS` yang sama dengan aplikasi.
 
 > Biome **bukan** test runner. Test backend memakai `go test ./...`; test frontend memakai
 > Vitest dan dieksekusi lewat task `test` di Turbo.
@@ -553,7 +546,7 @@ Seed juga mengisi minimal: 4 perangkat daerah, 12 pegawai, 10 kendaraan, 6 pemin
 
 ## 11. Definisi Selesai (Definition of Done)
 
-- [ ] `pnpm db:up` lalu backend jalan tanpa error di mesin bersih.
+- [ ] `cd apps/backend && make db-up` lalu backend jalan tanpa error di mesin bersih.
 - [ ] Migrasi golang-migrate membuat semua tabel + relasi + index unik (up & down jalan).
 - [ ] `sqlc generate` menghasilkan kode tanpa error dan tidak ada query di luar `db/queries`.
 - [ ] Seed menghasilkan data contoh yang konsisten dan idempoten.
@@ -564,7 +557,7 @@ Seed juga mengisi minimal: 4 perangkat daerah, 12 pegawai, 10 kendaraan, 6 pemin
 - [ ] Dashboard menampilkan angka nyata dari DB, bukan hardcode.
 - [ ] Search, filter, sort, pagination bekerja di semua list.
 - [ ] Export CSV terbuka benar di Excel (delimiter koma, UTF-8 BOM).
-- [ ] `go build ./...`, `go vet ./...`, `pnpm build`, `pnpm check` bersih.
+- [ ] `cd apps/backend && make build && make check` bersih, `pnpm build`, `pnpm check` bersih.
 - [ ] README berisi langkah run < 5 menit + akun demo + screenshot.
 - [ ] Tidak ada secret/`.env` ter-commit.
 
