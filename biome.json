@@ -14,6 +14,7 @@
       "!**/.turbo",
       "!**/coverage",
       "!**/pnpm-lock.yaml",
+      "!**/apps/backend/docs",
       "!**/*.md"
     ]
   },

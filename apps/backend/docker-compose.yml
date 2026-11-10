@@ -1,0 +1,27 @@
+name: kdo
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: kdo-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-kdo}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-kdo}
+      POSTGRES_DB: ${POSTGRES_DB:-kdo}
+      TZ: Asia/Jakarta
+      PGTZ: Asia/Jakarta
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - kdo_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-kdo} -d ${POSTGRES_DB:-kdo}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+volumes:
+  kdo_pgdata:
+    name: kdo_pgdata

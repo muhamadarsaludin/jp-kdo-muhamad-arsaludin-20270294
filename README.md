@@ -110,7 +110,7 @@ Dibangun sebagai tugas **Ujian Praktik Junior Programmer — BPAD**.
 
 ### Infrastruktur
 - **Monorepo** dengan **pnpm workspaces + Turborepo** (`apps/backend`, `apps/web`).
-- **Docker Compose** untuk PostgreSQL.
+- **Docker Compose** untuk PostgreSQL di `apps/backend/docker-compose.yml` (port host 5435).
 - **Biome** sebagai linter + formatter (menggantikan ESLint & Prettier).
 - Vitest untuk unit test frontend, `go test` untuk backend.
 - **Tanpa Redis**: JWT stateless, tidak ada session store terpusat.
@@ -154,12 +154,13 @@ Frontend memisahkan kode per fitur (`features/*`) dengan komponen UI reusable.
 ├── pnpm-workspace.yaml
 ├── turbo.json
 ├── biome.json                # lint + format
-├── docker-compose.yml        # PostgreSQL 16
 ├── docs/
 │   ├── api.md                # dokumentasi endpoint
 │   └── erd.md                # diagram relasi
 ├── apps/
 │   ├── backend/              # Go + Gin + pgx + sqlc (@kdo/backend)
+│   │   ├── docker-compose.yml # PostgreSQL 16 (port host 5435)
+│   │   ├── .env.example
 │   │   ├── cmd/api/main.go
 │   │   ├── sqlc.yaml
 │   │   ├── db/
@@ -243,15 +244,17 @@ cp apps/backend/.env.example apps/backend/.env
 cp apps/web/.env.example apps/web/.env
 ```
 
-Sesuaikan `apps/backend/.env` bila perlu (default sudah cocok dengan `docker-compose.yml`).
+Sesuaikan `apps/backend/.env` bila perlu (default sudah cocok dengan `apps/backend/docker-compose.yml`).
 
 ### 3. Jalankan database
 
 ```bash
-docker compose up -d db
+pnpm db:up
+# atau: docker compose -f apps/backend/docker-compose.yml up -d db
 ```
 
-Tunggu hingga PostgreSQL siap (`docker compose ps` → status `healthy`).
+Tunggu hingga PostgreSQL siap (`pnpm db:ps` → status `healthy`).
+Database berjalan di `localhost:5435` (bukan 5432, agar tidak bentrok dengan PostgreSQL lain).
 
 ### 4. Jalankan backend
 
@@ -264,8 +267,8 @@ Saat pertama kali dijalankan, backend otomatis:
 1. menjalankan migrasi database (golang-migrate dari file yang di-`embed`),
 2. mengisi data contoh bila `SEED_ON_START=true`.
 
-API tersedia di `http://localhost:8080`, health check di `GET /health`,
-dokumentasi Swagger di `http://localhost:8080/swagger/index.html`.
+API tersedia di `http://localhost:8090`, health check di `GET /health`,
+dokumentasi Swagger di `http://localhost:8090/swagger/index.html`.
 
 ### 5. Jalankan frontend
 
@@ -299,10 +302,13 @@ pnpm check:fix  # perbaiki otomatis
 | `pnpm lint` | Biome lint |
 | `pnpm check` | Biome check (lint + format + import) |
 | `pnpm format` | Format kode |
+| `pnpm db:up` | Nyalakan PostgreSQL |
+| `pnpm db:down` | Matikan container |
+| `pnpm db:reset` | Hapus volume database (reset total) |
+| `pnpm db:logs` | Lihat log PostgreSQL |
+| `pnpm db:ps` | Cek status container |
 | `sqlc generate` | Regenerate kode dari query (di `apps/backend`) |
 | `swag init -g cmd/api/main.go -o docs` | Regenerate Swagger |
-| `docker compose up -d db` | Nyalakan PostgreSQL |
-| `docker compose down -v` | Reset database (hapus volume) |
 
 ---
 
@@ -328,9 +334,13 @@ Data seed mencakup 4 perangkat daerah, 12 pegawai, 10 kendaraan, 6 peminjaman
 
 | Variabel | Default | Keterangan |
 | --- | --- | --- |
-| `APP_PORT` | `8080` | Port API |
+| `APP_PORT` | `8090` | Port API |
 | `APP_ENV` | `development` | Mode aplikasi |
-| `DATABASE_URL` | `postgres://kdo:kdo@localhost:5432/kdo?sslmode=disable` | Koneksi PostgreSQL |
+| `POSTGRES_USER` | `kdo` | User database (dipakai compose) |
+| `POSTGRES_PASSWORD` | `kdo` | Password database (dipakai compose) |
+| `POSTGRES_DB` | `kdo` | Nama database |
+| `POSTGRES_PORT` | `5435` | Port host PostgreSQL |
+| `DATABASE_URL` | `postgres://kdo:kdo@localhost:5435/kdo?sslmode=disable` | Koneksi PostgreSQL |
 | `JWT_SECRET` | — | Wajib, minimal 32 karakter |
 | `JWT_EXPIRED_HOURS` | `12` | Masa berlaku token |
 | `CORS_ORIGINS` | `http://localhost:5173` | Origin frontend yang diizinkan |
@@ -340,7 +350,7 @@ Data seed mencakup 4 perangkat daerah, 12 pegawai, 10 kendaraan, 6 peminjaman
 
 | Variabel | Default | Keterangan |
 | --- | --- | --- |
-| `VITE_API_BASE_URL` | `http://localhost:8080/api/v1` | Base URL API |
+| `VITE_API_BASE_URL` | `http://localhost:8090/api/v1` | Base URL API |
 
 ---
 
@@ -450,12 +460,12 @@ dengan bantuan **AI coding agent OpenCode** yang berjalan di dalam terminal VS C
 
 | Masalah | Solusi |
 | --- | --- |
-| `connection refused` ke PostgreSQL | Pastikan `docker compose up -d db` berjalan dan container `healthy`; cek port 5432 tidak dipakai instans lain |
-| `password authentication failed` | Hapus volume lama: `docker compose down -v`, lalu jalankan ulang backend |
+| `connection refused` ke PostgreSQL | Pastikan `pnpm db:up` berjalan dan container `healthy`; cek port 5435 tidak dipakai instans lain |
+| `password authentication failed` | Hapus volume lama: `pnpm db:reset`, lalu jalankan ulang backend |
 | Frontend gagal fetch (CORS) | Samakan `CORS_ORIGINS` di backend dengan URL dev frontend |
 | Token selalu invalid | Pastikan `JWT_SECRET` konsisten dan tidak berubah saat backend restart |
 | Data seed tidak muncul | Set `SEED_ON_START=true` atau jalankan `SEED_ON_START=true go run ./cmd/api` |
-| Port 8080/5173 dipakai | Ubah `APP_PORT` atau jalankan `pnpm dev:web -- --port 5174` |
+| Port 8090/5173/5435 dipakai | Ubah `APP_PORT`, `POSTGRES_PORT`, atau jalankan `pnpm dev:web -- --port 5174` |
 
 ---
 

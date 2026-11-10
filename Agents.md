@@ -92,7 +92,8 @@ lihat dashboard berubah, dan data bertahan setelah restart.
 
 ### Infrastruktur
 - **Monorepo**: pnpm workspaces + Turborepo (`turbo.json` di root).
-- Docker Compose untuk PostgreSQL saja (backend & frontend jalan native saat demo).
+- Docker Compose **hanya untuk PostgreSQL**, file di `apps/backend/docker-compose.yml`
+  (host port 5435). Backend & frontend jalan native saat demo.
 - **Biome** untuk lint + format + urutkan import (menggantikan ESLint & Prettier).
 - Perintah harian lewat script root (`pnpm dev`, `pnpm build`, `pnpm check`); Turborepo
   mengorkestrasi task per package.
@@ -110,7 +111,6 @@ lihat dashboard berubah, dan data bertahan setelah restart.
 ├── pnpm-workspace.yaml         # apps/* dan packages/*
 ├── pnpm-lock.yaml
 ├── turbo.json                  # definisi task: dev, build, lint, typecheck, test
-├── docker-compose.yml          # PostgreSQL 16 (Fase 1)
 ├── .editorconfig
 ├── .gitignore
 ├── .nvmrc
@@ -120,6 +120,7 @@ lihat dashboard berubah, dan data bertahan setelah restart.
 │   └── erd.md                  # diagram relasi (Mermaid)
 ├── apps/
 │   ├── backend/                # Go + Gin + pgx + sqlc  → @kdo/backend
+│   │   ├── docker-compose.yml  # PostgreSQL 16 (host port 5435)
 │   │   ├── go.mod
 │   │   ├── sqlc.yaml           # konfigurasi generate query
 │   │   ├── .env.example
@@ -435,18 +436,27 @@ Setiap endpoint baru **wajib** ditambahkan ke `docs/api.md` pada commit yang sam
 
 ### `.env` backend (`apps/backend/.env`)
 ```
-APP_PORT=8080
+APP_PORT=8090
 APP_ENV=development
-DATABASE_URL=postgres://kdo:kdo@localhost:5432/kdo?sslmode=disable
+CORS_ORIGINS=http://localhost:5173
+
+POSTGRES_USER=kdo
+POSTGRES_PASSWORD=kdo
+POSTGRES_DB=kdo
+POSTGRES_PORT=5435
+DATABASE_URL=postgres://kdo:kdo@localhost:5435/kdo?sslmode=disable
+
 JWT_SECRET=ganti-di-produksi-minimal-32-karakter
 JWT_EXPIRED_HOURS=12
-CORS_ORIGINS=http://localhost:5173
 SEED_ON_START=true
 ```
 
+> Satu file `.env` dipakai backend **dan** docker compose (compose membaca `.env` di
+> folder yang sama dengan `docker-compose.yml`).
+
 ### `.env` frontend (`apps/web/.env`)
 ```
-VITE_API_BASE_URL=http://localhost:8080/api/v1
+VITE_API_BASE_URL=http://localhost:8090/api/v1
 ```
 
 ### Perintah (dijalankan dari root repo)
@@ -470,10 +480,15 @@ swag init -g cmd/api/main.go -o docs   # regenerate dokumentasi Swagger
 migrate create -ext sql -dir db/migrations -seq nama_migrasi  # migrasi baru
 go test ./...
 
-docker compose up -d db   # nyalakan PostgreSQL
-docker compose down       # matikan container
-docker compose down -v    # reset volume database
+pnpm db:up                # nyalakan PostgreSQL (compose di apps/backend)
+pnpm db:down              # matikan container
+pnpm db:reset             # hapus volume database
+pnpm db:logs              # log PostgreSQL
+pnpm db:ps                # status container
 ```
+
+> Perintah `docker compose` harus menyertakan `-f apps/backend/docker-compose.yml`
+> bila dijalankan manual dari root. Script `pnpm db:*` sudah membungkusnya.
 
 > Biome **bukan** test runner. Test backend memakai `go test ./...`; test frontend memakai
 > Vitest dan dieksekusi lewat task `test` di Turbo.
@@ -515,7 +530,7 @@ Seed juga mengisi minimal: 4 perangkat daerah, 12 pegawai, 10 kendaraan, 6 pemin
 
 ## 11. Definisi Selesai (Definition of Done)
 
-- [ ] `docker compose up -d db` lalu backend jalan tanpa error di mesin bersih.
+- [ ] `pnpm db:up` lalu backend jalan tanpa error di mesin bersih.
 - [ ] Migrasi golang-migrate membuat semua tabel + relasi + index unik (up & down jalan).
 - [ ] `sqlc generate` menghasilkan kode tanpa error dan tidak ada query di luar `db/queries`.
 - [ ] Seed menghasilkan data contoh yang konsisten dan idempoten.

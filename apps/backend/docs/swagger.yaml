@@ -1,0 +1,48 @@
+basePath: /
+definitions:
+  handler.HealthResponse:
+    properties:
+      database:
+        example: up
+        type: string
+      status:
+        example: ok
+        type: string
+      time:
+        example: "2026-11-10T10:00:00+07:00"
+        type: string
+      version:
+        example: 1.0.0
+        type: string
+    type: object
+host: localhost:8090
+info:
+  contact:
+    email: muhamadarsaludin71@gmail.com
+    name: Muhamad Arsaludin
+  description: |-
+    API Aplikasi Kendaraan Dinas Operasional (KDO).
+    Kelola kendaraan dinas, pegawai, perangkat daerah, peminjaman, dan servis.
+  title: KDO API
+  version: "1.0"
+paths:
+  /health:
+    get:
+      description: Mengembalikan status aplikasi dan koneksi PostgreSQL.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.HealthResponse'
+        "503":
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/handler.HealthResponse'
+      summary: Health check
+      tags:
+      - system
+schemes:
+- http
+swagger: "2.0"

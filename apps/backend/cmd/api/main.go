@@ -1,0 +1,83 @@
+package main
+
+import (
+	"context"
+	"errors"
+	"log/slog"
+	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
+
+	"kdo/backend/internal/config"
+	"kdo/backend/internal/database"
+	"kdo/backend/internal/router"
+	"kdo/backend/internal/seed"
+
+	_ "kdo/backend/docs"
+)
+
+// @title           KDO API
+// @version         1.0
+// @description     API Aplikasi Kendaraan Dinas Operasional (KDO).
+// @description     Kelola kendaraan dinas, pegawai, perangkat daerah, peminjaman, dan servis.
+// @contact.name    Muhamad Arsaludin
+// @contact.email   muhamadarsaludin71@gmail.com
+// @host            localhost:8090
+// @BasePath        /
+// @schemes         http
+func main() {
+	cfg := config.Load()
+
+	logger := slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
+		Level: slog.LevelInfo,
+	}))
+	slog.SetDefault(logger)
+
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+	defer stop()
+
+	pool, err := database.NewPool(ctx, cfg.DatabaseURL)
+	if err != nil {
+		slog.Error("gagal menyiapkan database", "error", err)
+		os.Exit(1)
+	}
+	defer pool.Close()
+
+	if err := database.Migrate(cfg.DatabaseURL); err != nil {
+		slog.Error("gagal menjalankan migrasi", "error", err)
+		os.Exit(1)
+	}
+	slog.Info("migrasi selesai")
+
+	if cfg.SeedOnStart {
+		if err := seed.Run(ctx, pool); err != nil {
+			slog.Error("gagal mengisi data seed", "error", err)
+			os.Exit(1)
+		}
+	}
+
+	srv := &http.Server{
+		Addr:              ":" + cfg.AppPort,
+		Handler:           router.New(pool),
+		ReadHeaderTimeout: 10 * time.Second,
+	}
+
+	go func() {
+		slog.Info("server berjalan", "port", cfg.AppPort, "docs", "http://localhost:"+cfg.AppPort+"/swagger/index.html")
+		if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+			slog.Error("server berhenti tidak normal", "error", err)
+			os.Exit(1)
+		}
+	}()
+
+	<-ctx.Done()
+	slog.Info("menghentikan server")
+
+	shutdownCtx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	if err := srv.Shutdown(shutdownCtx); err != nil {
+		slog.Error("gagal shutdown", "error", err)
+	}
+}
