@@ -110,6 +110,309 @@
                 }
             }
         },
+        "/api/v1/perangkat-daerah": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Mendukung search, filter is_active, sorting, dan pagination.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "perangkat-daerah"
+                ],
+                "summary": "Daftar perangkat daerah",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Halaman (default 1)",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Jumlah per halaman (default 10, max 100)",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Cari kode/nama/singkatan",
+                        "name": "search",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Filter status aktif",
+                        "name": "is_active",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "nama|kode|created_at",
+                        "name": "sort",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "asc|desc",
+                        "name": "order",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "dibungkus data + meta",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/dto.PerangkatDaerahResponse"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "perangkat-daerah"
+                ],
+                "summary": "Tambah perangkat daerah",
+                "parameters": [
+                    {
+                        "description": "Data perangkat daerah",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.PerangkatDaerahRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "dibungkus data",
+                        "schema": {
+                            "$ref": "#/definitions/dto.PerangkatDaerahResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/perangkat-daerah/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "perangkat-daerah"
+                ],
+                "summary": "Detail perangkat daerah",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID perangkat daerah",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "dibungkus data",
+                        "schema": {
+                            "$ref": "#/definitions/dto.PerangkatDaerahResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "perangkat-daerah"
+                ],
+                "summary": "Ubah perangkat daerah",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID perangkat daerah",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Data perangkat daerah",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.PerangkatDaerahRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "dibungkus data",
+                        "schema": {
+                            "$ref": "#/definitions/dto.PerangkatDaerahResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Menolak penghapusan bila masih ada pegawai atau kendaraan aktif.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "perangkat-daerah"
+                ],
+                "summary": "Hapus perangkat daerah",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID perangkat daerah",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "tidak ada isi"
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorBody"
+                        }
+                    }
+                }
+            }
+        },
         "/health": {
             "get": {
                 "description": "Mengembalikan status aplikasi dan koneksi PostgreSQL.",
@@ -190,6 +493,102 @@
                 "role": {
                     "type": "string",
                     "example": "admin"
+                }
+            }
+        },
+        "dto.PerangkatDaerahRequest": {
+            "type": "object",
+            "required": [
+                "kode",
+                "nama"
+            ],
+            "properties": {
+                "alamat": {
+                    "type": "string",
+                    "example": "Jl. Merdeka No. 1"
+                },
+                "email": {
+                    "type": "string",
+                    "maxLength": 100,
+                    "example": "disdik@kdo.go.id"
+                },
+                "is_active": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "kode": {
+                    "type": "string",
+                    "maxLength": 20,
+                    "example": "DISPENDIK"
+                },
+                "nama": {
+                    "type": "string",
+                    "maxLength": 150,
+                    "example": "Dinas Pendidikan"
+                },
+                "nama_kepala": {
+                    "type": "string",
+                    "maxLength": 100,
+                    "example": "Drs. Bambang Sutrisno, M.Si"
+                },
+                "singkatan": {
+                    "type": "string",
+                    "maxLength": 30,
+                    "example": "Disdik"
+                },
+                "telepon": {
+                    "type": "string",
+                    "maxLength": 20,
+                    "example": "021-5550101"
+                }
+            }
+        },
+        "dto.PerangkatDaerahResponse": {
+            "type": "object",
+            "properties": {
+                "alamat": {
+                    "type": "string",
+                    "example": "Jl. Merdeka No. 1"
+                },
+                "created_at": {
+                    "type": "string",
+                    "example": "2026-11-10T12:00:00+07:00"
+                },
+                "email": {
+                    "type": "string",
+                    "example": "disdik@kdo.go.id"
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "is_active": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "kode": {
+                    "type": "string",
+                    "example": "DISPENDIK"
+                },
+                "nama": {
+                    "type": "string",
+                    "example": "Dinas Pendidikan"
+                },
+                "nama_kepala": {
+                    "type": "string",
+                    "example": "Drs. Bambang Sutrisno, M.Si"
+                },
+                "singkatan": {
+                    "type": "string",
+                    "example": "Disdik"
+                },
+                "telepon": {
+                    "type": "string",
+                    "example": "021-5550101"
+                },
+                "updated_at": {
+                    "type": "string",
+                    "example": "2026-11-10T12:00:00+07:00"
                 }
             }
         },

@@ -74,9 +74,13 @@ func main() {
 	authService := service.NewAuthService(penggunaRepo, jwtManager)
 	authHandler := handler.NewAuthHandler(authService)
 
+	pdRepo := repository.NewPerangkatDaerahRepository(queries)
+	pdService := service.NewPerangkatDaerahService(pdRepo)
+	pdHandler := handler.NewPerangkatDaerahHandler(pdService)
+
 	srv := &http.Server{
 		Addr:              ":" + cfg.AppPort,
-		Handler:           router.New(pool, authHandler, jwtManager),
+		Handler:           router.New(pool, authHandler, pdHandler, jwtManager),
 		ReadHeaderTimeout: 10 * time.Second,
 	}
 

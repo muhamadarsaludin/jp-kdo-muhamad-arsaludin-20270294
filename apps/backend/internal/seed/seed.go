@@ -22,7 +22,7 @@ func Run(ctx context.Context, pool *pgxpool.Pool) error {
 	defer tx.Rollback(ctx) //nolint:errcheck
 
 	var existing int
-	if err := tx.QueryRow(ctx, `SELECT count(*) FROM perangkat_daerah`).Scan(&existing); err != nil {
+	if err := tx.QueryRow(ctx, `SELECT count(*) FROM perangkat_daerah WHERE deleted_at IS NULL`).Scan(&existing); err != nil {
 		return fmt.Errorf("cek data seed: %w", err)
 	}
 	if existing > 0 {

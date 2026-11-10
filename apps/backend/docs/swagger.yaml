@@ -39,6 +39,78 @@ definitions:
         example: admin
         type: string
     type: object
+  dto.PerangkatDaerahRequest:
+    properties:
+      alamat:
+        example: Jl. Merdeka No. 1
+        type: string
+      email:
+        example: disdik@kdo.go.id
+        maxLength: 100
+        type: string
+      is_active:
+        example: true
+        type: boolean
+      kode:
+        example: DISPENDIK
+        maxLength: 20
+        type: string
+      nama:
+        example: Dinas Pendidikan
+        maxLength: 150
+        type: string
+      nama_kepala:
+        example: Drs. Bambang Sutrisno, M.Si
+        maxLength: 100
+        type: string
+      singkatan:
+        example: Disdik
+        maxLength: 30
+        type: string
+      telepon:
+        example: 021-5550101
+        maxLength: 20
+        type: string
+    required:
+    - kode
+    - nama
+    type: object
+  dto.PerangkatDaerahResponse:
+    properties:
+      alamat:
+        example: Jl. Merdeka No. 1
+        type: string
+      created_at:
+        example: "2026-11-10T12:00:00+07:00"
+        type: string
+      email:
+        example: disdik@kdo.go.id
+        type: string
+      id:
+        example: 1
+        type: integer
+      is_active:
+        example: true
+        type: boolean
+      kode:
+        example: DISPENDIK
+        type: string
+      nama:
+        example: Dinas Pendidikan
+        type: string
+      nama_kepala:
+        example: Drs. Bambang Sutrisno, M.Si
+        type: string
+      singkatan:
+        example: Disdik
+        type: string
+      telepon:
+        example: 021-5550101
+        type: string
+      updated_at:
+        example: "2026-11-10T12:00:00+07:00"
+        type: string
+    type: object
   handler.HealthResponse:
     properties:
       database:
@@ -141,6 +213,199 @@ paths:
       summary: Profil pengguna aktif
       tags:
       - auth
+  /api/v1/perangkat-daerah:
+    get:
+      description: Mendukung search, filter is_active, sorting, dan pagination.
+      parameters:
+      - description: Halaman (default 1)
+        in: query
+        name: page
+        type: integer
+      - description: Jumlah per halaman (default 10, max 100)
+        in: query
+        name: limit
+        type: integer
+      - description: Cari kode/nama/singkatan
+        in: query
+        name: search
+        type: string
+      - description: Filter status aktif
+        in: query
+        name: is_active
+        type: boolean
+      - description: nama|kode|created_at
+        in: query
+        name: sort
+        type: string
+      - description: asc|desc
+        in: query
+        name: order
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: dibungkus data + meta
+          schema:
+            items:
+              $ref: '#/definitions/dto.PerangkatDaerahResponse'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+      security:
+      - BearerAuth: []
+      summary: Daftar perangkat daerah
+      tags:
+      - perangkat-daerah
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Data perangkat daerah
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.PerangkatDaerahRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: dibungkus data
+          schema:
+            $ref: '#/definitions/dto.PerangkatDaerahResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+      security:
+      - BearerAuth: []
+      summary: Tambah perangkat daerah
+      tags:
+      - perangkat-daerah
+  /api/v1/perangkat-daerah/{id}:
+    delete:
+      description: Menolak penghapusan bila masih ada pegawai atau kendaraan aktif.
+      parameters:
+      - description: ID perangkat daerah
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: tidak ada isi
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+      security:
+      - BearerAuth: []
+      summary: Hapus perangkat daerah
+      tags:
+      - perangkat-daerah
+    get:
+      parameters:
+      - description: ID perangkat daerah
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: dibungkus data
+          schema:
+            $ref: '#/definitions/dto.PerangkatDaerahResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+      security:
+      - BearerAuth: []
+      summary: Detail perangkat daerah
+      tags:
+      - perangkat-daerah
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID perangkat daerah
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Data perangkat daerah
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.PerangkatDaerahRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: dibungkus data
+          schema:
+            $ref: '#/definitions/dto.PerangkatDaerahResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/response.ErrorBody'
+      security:
+      - BearerAuth: []
+      summary: Ubah perangkat daerah
+      tags:
+      - perangkat-daerah
   /health:
     get:
       description: Mengembalikan status aplikasi dan koneksi PostgreSQL.

@@ -102,6 +102,85 @@ Memerlukan header `Authorization`.
 
 ---
 
+## Perangkat Daerah
+
+Semua endpoint memerlukan `Authorization: Bearer <token>`.
+Endpoint tulis hanya untuk role `admin` dan `operator`.
+
+### `GET /api/v1/perangkat-daerah`
+
+Query: `page`, `limit` (max 100), `search`, `is_active`, `sort` (`nama|kode|created_at`),
+`order` (`asc|desc`).
+
+```json
+{
+  "data": [
+    {
+      "id": 3,
+      "kode": "BPAD",
+      "nama": "Badan Pengelolaan Keuangan dan Aset Daerah",
+      "singkatan": "BPAD",
+      "alamat": "Jl. Keuangan No. 7",
+      "telepon": "021-5550103",
+      "email": "bpad@kdo.go.id",
+      "nama_kepala": "Agus Setiawan, S.E., M.M",
+      "is_active": true,
+      "created_at": "2026-11-10T12:15:01+07:00",
+      "updated_at": "2026-11-10T12:15:01+07:00"
+    }
+  ],
+  "meta": { "page": 1, "limit": 10, "total": 4, "total_pages": 1 }
+}
+```
+
+### `GET /api/v1/perangkat-daerah/{id}`
+
+Sukses `200` dengan objek pada `data`. Tidak ditemukan → `404`.
+
+### `POST /api/v1/perangkat-daerah`
+
+```json
+{
+  "kode": "dishub",
+  "nama": "Dinas Perhubungan",
+  "singkatan": "Dishub",
+  "alamat": "Jl. Transportasi No. 2",
+  "telepon": "021-5550105",
+  "email": "dishub@kdo.go.id",
+  "nama_kepala": "Ir. Joko Susilo",
+  "is_active": true
+}
+```
+
+- `kode` otomatis diubah menjadi uppercase.
+- `is_active` opsional, default `true`.
+- Sukses `201`, `kode`/`nama` duplikat → `409`.
+- `kode` wajib, `nama` wajib, `email` harus valid → `400`.
+
+### `PUT /api/v1/perangkat-daerah/{id}`
+
+Body sama dengan create. Bila `is_active` tidak dikirim, nilai lama dipertahankan.
+Sukses `200`, tidak ditemukan `404`, duplikat `409`.
+
+### `DELETE /api/v1/perangkat-daerah/{id}`
+
+- Sukses `204` tanpa body.
+- `404` bila tidak ada.
+- `409` bila masih memiliki pegawai atau kendaraan aktif, contoh:
+
+```json
+{
+  "error": {
+    "code": "CONFLICT",
+    "message": "data masih memiliki relasi: masih ada 3 pegawai dan 2 kendaraan"
+  }
+}
+```
+
+Penghapusan bersifat **soft delete**; data tidak hilang dari database.
+
+---
+
 ## Akun Demo
 
 | Role | Email | Password |

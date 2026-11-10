@@ -14,7 +14,12 @@ import (
 )
 
 // New menyusun seluruh route aplikasi.
-func New(pool *pgxpool.Pool, authHandler *handler.AuthHandler, jwtManager *auth.Manager) *gin.Engine {
+func New(
+	pool *pgxpool.Pool,
+	authHandler *handler.AuthHandler,
+	pdHandler *handler.PerangkatDaerahHandler,
+	jwtManager *auth.Manager,
+) *gin.Engine {
 	r := gin.New()
 	r.Use(gin.Logger(), gin.Recovery())
 
@@ -36,6 +41,15 @@ func New(pool *pgxpool.Pool, authHandler *handler.AuthHandler, jwtManager *auth.
 	terlindungi := api.Group("")
 	terlindungi.Use(middleware.Auth(jwtManager))
 	terlindungi.GET("/auth/me", authHandler.Me)
+
+	pd := terlindungi.Group("/perangkat-daerah")
+	pd.GET("", pdHandler.List)
+	pd.GET("/:id", pdHandler.Get)
+
+	pdTulis := middleware.RequireRole("admin", "operator")
+	pd.POST("", pdTulis, pdHandler.Create)
+	pd.PUT("/:id", pdTulis, pdHandler.Update)
+	pd.DELETE("/:id", pdTulis, pdHandler.Delete)
 
 	return r
 }
