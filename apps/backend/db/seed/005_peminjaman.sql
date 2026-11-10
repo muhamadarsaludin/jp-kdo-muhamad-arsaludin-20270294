@@ -1,0 +1,58 @@
+-- Seed peminjaman (6 transaksi dengan status berbeda).
+INSERT INTO peminjaman (kode_peminjaman, kendaraan_id, pegawai_id, perangkat_daerah_id,
+                        keperluan, tujuan, tanggal_mulai, tanggal_selesai, status, catatan,
+                        disetujui_oleh)
+VALUES
+    ('PJM-20261105-0001',
+     (SELECT id FROM kendaraan WHERE nomor_polisi = 'D 3344 KDS'),
+     (SELECT id FROM pegawai WHERE nip = '198507212011012005'),
+     (SELECT perangkat_daerah_id FROM pegawai WHERE nip = '198507212011012005'),
+     'Koordinasi lintas sektor', 'Kecamatan Sukamaju',
+     TIMESTAMPTZ '2026-11-09 08:00:00+07', TIMESTAMPTZ '2026-11-11 17:00:00+07',
+     'disetujui', 'Disetujui untuk kegiatan dinas',
+     (SELECT id FROM pengguna WHERE lower(email) = 'admin@kdo.go.id')),
+
+    ('PJM-20261108-0002',
+     (SELECT id FROM kendaraan WHERE nomor_polisi = 'H 6677 ST'),
+     (SELECT id FROM pegawai WHERE nip = '197701152003121010'),
+     (SELECT perangkat_daerah_id FROM pegawai WHERE nip = '197701152003121010'),
+     'Rapat koordinasi daerah', 'Kantor Gubernur',
+     TIMESTAMPTZ '2026-11-10 08:00:00+07', TIMESTAMPTZ '2026-11-12 16:00:00+07',
+     'disetujui', NULL,
+     (SELECT id FROM pengguna WHERE lower(email) = 'admin@kdo.go.id')),
+
+    ('PJM-20261110-0003',
+     (SELECT id FROM kendaraan WHERE nomor_polisi = 'B 1234 XYZ'),
+     (SELECT id FROM pegawai WHERE nip = '199001202015031003'),
+     (SELECT perangkat_daerah_id FROM pegawai WHERE nip = '199001202015031003'),
+     'Monitoring sekolah', 'Kecamatan Cendana',
+     TIMESTAMPTZ '2026-11-15 07:00:00+07', TIMESTAMPTZ '2026-11-16 18:00:00+07',
+     'diajukan', 'Menunggu persetujuan pimpinan', NULL),
+
+    ('PJM-20261020-0004',
+     (SELECT id FROM kendaraan WHERE nomor_polisi = 'B 5678 ABC'),
+     (SELECT id FROM pegawai WHERE nip = '198203152009012002'),
+     (SELECT perangkat_daerah_id FROM pegawai WHERE nip = '198203152009012002'),
+     'Pengambilan dokumen', 'Kantor Pusat',
+     TIMESTAMPTZ '2026-10-21 09:00:00+07', TIMESTAMPTZ '2026-10-22 15:00:00+07',
+     'selesai', 'Sudah dikembalikan',
+     (SELECT id FROM pengguna WHERE lower(email) = 'admin@kdo.go.id')),
+
+    ('PJM-20261015-0005',
+     (SELECT id FROM kendaraan WHERE nomor_polisi = 'N 2211 KDO'),
+     (SELECT id FROM pegawai WHERE nip = '198812012012011008'),
+     (SELECT perangkat_daerah_id FROM pegawai WHERE nip = '198812012012011008'),
+     'Pengiriman barang', 'Gudang Aset',
+     TIMESTAMPTZ '2026-10-16 08:00:00+07', TIMESTAMPTZ '2026-10-17 12:00:00+07',
+     'ditolak', 'Kendaraan dalam perbaikan',
+     (SELECT id FROM pengguna WHERE lower(email) = 'pimpinan@kdo.go.id')),
+
+    ('PJM-20261010-0006',
+     (SELECT id FROM kendaraan WHERE nomor_polisi = 'H 8899 ST'),
+     (SELECT id FROM pegawai WHERE nip = '198309182010011011'),
+     (SELECT perangkat_daerah_id FROM pegawai WHERE nip = '198309182010011011'),
+     'Kunjungan lapangan', 'Kecamatan Sukamaju',
+     TIMESTAMPTZ '2026-10-11 08:00:00+07', TIMESTAMPTZ '2026-10-12 17:00:00+07',
+     'dibatalkan', 'Kegiatan dibatalkan',
+     (SELECT id FROM pengguna WHERE lower(email) = 'admin@kdo.go.id'))
+ON CONFLICT DO NOTHING;

@@ -129,7 +129,8 @@ lihat dashboard berubah, dan data bertahan setelah restart.
 │   │   │   └── api/main.go     # config → db → migrate → seed → router
 │   │   ├── db/
 │   │   │   ├── migrations/     # 000001_init.up.sql / .down.sql (golang-migrate)
-│   │   │   └── queries/        # *.sql, sumber generate sqlc
+│   │   │   ├── queries/        # *.sql, sumber generate sqlc
+│   │   │   └── seed/           # *.sql data contoh (dijalankan setelah migrasi)
 │   │   ├── docs/               # hasil `swag init` (swagger.json, docs.go)
 │   │   └── internal/
 │   │       ├── config/config.go

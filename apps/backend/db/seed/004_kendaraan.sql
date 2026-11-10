@@ -1,0 +1,17 @@
+-- Seed kendaraan dinas (10 unit).
+-- Status 'digunakan' pada D 3344 KDS dan H 6677 ST konsisten dengan peminjaman disetujui.
+INSERT INTO kendaraan (nomor_polisi, nomor_rangka, nomor_mesin, merek, tipe, tahun_produksi,
+                       warna, jenis, bahan_bakar, kapasitas_cc, odometer_km, kondisi, status,
+                       tanggal_pajak, tanggal_stnk, perangkat_daerah_id, penanggung_jawab_id)
+VALUES
+    ('B 1234 XYZ', 'MHKA1BA3JKA00001', '1NR-F000001', 'Toyota', 'Avanza', 2019, 'Silver', 'minibus', 'bensin', 1500, 48210, 'baik', 'tersedia', DATE '2027-02-10', DATE '2027-02-10', (SELECT id FROM perangkat_daerah WHERE kode = 'DISPENDIK'), (SELECT id FROM pegawai WHERE nip = '198203152009012002')),
+    ('B 5678 ABC', 'MH1JFB210MK00002', 'JM21E000002', 'Honda', 'Vario 125', 2021, 'Hitam', 'motor', 'bensin', 125, 18900, 'baik', 'tersedia', DATE '2026-12-01', DATE '2026-12-01', (SELECT id FROM perangkat_daerah WHERE kode = 'DISPENDIK'), (SELECT id FROM pegawai WHERE nip = '199001202015031003')),
+    ('D 1122 KDO', 'MHR1D5G8GJA00003', '4JK1E000003', 'Isuzu', 'Hilux', 2017, 'Putih', 'pickup', 'solar', 2500, 96500, 'rusak_ringan', 'tersedia', DATE '2026-11-20', DATE '2026-11-20', (SELECT id FROM perangkat_daerah WHERE kode = 'DINKES'), (SELECT id FROM pegawai WHERE nip = '198507212011012005')),
+    ('D 3344 KDS', 'MHYEW2121PJ00004', 'K15C-000004', 'Suzuki', 'Ertiga', 2020, 'Putih', 'minibus', 'bensin', 1500, 31200, 'baik', 'digunakan', DATE '2027-01-15', DATE '2027-01-15', (SELECT id FROM perangkat_daerah WHERE kode = 'DINKES'), (SELECT id FROM pegawai WHERE nip = '199203102017022006')),
+    ('AB 7788 BP', 'MHFXW42G8J800005', '2KD-000005', 'Toyota', 'Hiace Ambulans', 2018, 'Putih', 'ambulans', 'solar', 2500, 74300, 'baik', 'tersedia', DATE '2026-12-15', DATE '2026-12-15', (SELECT id FROM perangkat_daerah WHERE kode = 'DINKES'), (SELECT id FROM pegawai WHERE nip = '198507212011012005')),
+    ('N 2211 KDO', 'MHK1B1BE9JK00006', '4D56-000006', 'Mitsubishi', 'L300', 2015, 'Putih', 'pickup', 'solar', 2500, 132400, 'rusak_ringan', 'perbaikan', DATE '2026-12-05', DATE '2026-12-05', (SELECT id FROM perangkat_daerah WHERE kode = 'BPAD'), (SELECT id FROM pegawai WHERE nip = '198812012012011008')),
+    ('N 4455 KDO', 'MH1JF2110MK00007', 'JM21E000007', 'Honda', 'Beat', 2022, 'Merah', 'motor', 'bensin', 110, 11250, 'baik', 'tersedia', DATE '2027-03-01', DATE '2027-03-01', (SELECT id FROM perangkat_daerah WHERE kode = 'BPAD'), (SELECT id FROM pegawai WHERE nip = '199505252019031009')),
+    ('H 6677 ST', 'MHFXW42G5K800008', '2KD-000008', 'Toyota', 'Innova', 2021, 'Hitam', 'minibus', 'bensin', 2400, 42800, 'baik', 'digunakan', DATE '2027-04-10', DATE '2027-04-10', (SELECT id FROM perangkat_daerah WHERE kode = 'SETDA'), (SELECT id FROM pegawai WHERE nip = '198309182010011011')),
+    ('H 8899 ST', 'MH3SE8810LK00009', 'G3E4E000009', 'Yamaha', 'NMAX', 2020, 'Abu-abu', 'motor', 'bensin', 155, 23400, 'baik', 'tersedia', DATE '2026-12-20', DATE '2026-12-20', (SELECT id FROM perangkat_daerah WHERE kode = 'SETDA'), (SELECT id FROM pegawai WHERE nip = '199411072018012012')),
+    ('L 1010 KD', 'MDHNT32J1EK000010', 'QR25-000010', 'Nissan', 'X-Trail', 2014, 'Perak', 'mobil', 'bensin', 2500, 188900, 'rusak_berat', 'dihapuskan', DATE '2026-06-30', DATE '2026-06-30', (SELECT id FROM perangkat_daerah WHERE kode = 'BPAD'), (SELECT id FROM pegawai WHERE nip = '198812012012011008'))
+ON CONFLICT DO NOTHING;

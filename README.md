@@ -165,7 +165,8 @@ Frontend memisahkan kode per fitur (`features/*`) dengan komponen UI reusable.
 │   │   ├── sqlc.yaml
 │   │   ├── db/
 │   │   │   ├── migrations/   # golang-migrate (.up/.down.sql)
-│   │   │   └── queries/      # sumber query sqlc
+│   │   │   ├── queries/      # sumber query sqlc
+│   │   │   └── seed/         # data contoh (.sql, idempoten)
 │   │   ├── docs/             # Swagger hasil generate
 │   │   ├── internal/
 │   │   │   ├── config/ database/ dto/

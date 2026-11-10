@@ -347,8 +347,9 @@ Aturan:
 - Migrasi **tidak boleh** diedit setelah dijalankan; buat file baru.
 - Setiap `up` wajib punya `down` yang benar-benar mengembalikan kondisi sebelumnya.
 - Migrasi dijalankan otomatis saat startup lewat `embed.FS`; CLI hanya untuk development.
-- Seed data **bukan** migrasi; dijalankan aplikasi saat `SEED_ON_START=true` dan idempoten
-  (`ON CONFLICT DO NOTHING`).
+- Seed data **bukan** bagian dari migrasi. File ada di `db/seed/*.sql`, dijalankan
+  berurutan oleh aplikasi setelah migrasi saat `SEED_ON_START=true`, dibungkus satu
+  transaksi, dan idempoten (`ON CONFLICT DO NOTHING` + cek data existing).
 
 ---
 
